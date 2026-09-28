@@ -149,6 +149,58 @@ export function generateAssistantResponse(
     };
   }
 
+  // Safe Abstention Check: Legal Guarantee or Compliance Certification
+  const isGuaranteeQuery =
+    q.includes('guarantee') ||
+    q.includes('वारंटी') ||
+    q.includes('ಖಾತರಿ') ||
+    q.includes('ಗ್ಯಾರಂಟಿ') ||
+    q.includes('உத்தரவாதம்') ||
+    q.includes('హామీ');
+
+  if (isGuaranteeQuery) {
+    const guaranteeAnswers: Partial<Record<LanguageCode, { answer: string; why: string }>> = {
+      hi: {
+        answer: 'IP-SAKTI किसी भी पेटेंट अनुदान अथवा विधिक सफलता की 100% गारंटी नहीं दे सकता। पेटेंट की स्वीकृति पूर्णतः भारतीय पेटेंट कार्यालय के परीक्षक के मूल्यांकन, पूर्वकला (Prior Art) और धारा 3(p) की वैधानिक शर्तों पर निर्भर करती है।',
+        why: 'विधिक एवं विनियामक परिणाम प्रशासनिक विवेक और परीक्षा प्रक्रिया के अधीन होते हैं, जिनकी कोई एआई या सलाहकार गारंटी नहीं दे सकता।',
+      },
+      kn: {
+        answer: 'IP-SAKTI ಯಾವುದೇ ಪೇಟೆಂಟ್ ಮಂಜೂರಾತಿ ಅಥವಾ ಕಾನೂನು ಯಶಸ್ಸಿಗೆ 100% ಗ್ಯಾರಂಟಿ ನೀಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಪೇಟೆಂಟ್ ಅನುಮೋದನೆಯು ಭಾರತೀಯ ಪೇಟೆಂಟ್ ಕಚೇರಿಯ ಪರೀಕ್ಷಕರ ಮೌಲ್ಯಮಾಪನ, ಪೂರ್ವಕಲೆ (Prior Art) ಮತ್ತು Section 3(p) ಶಾಸನಬದ್ಧ ಷರತ್ತುಗಳ ಮೇಲೆ ಅವಲಂಬಿತವಾಗಿರುತ್ತದೆ.',
+        why: 'ಕಾನೂನು ಮತ್ತು ನಿಯಂತ್ರಕ ಫಲಿತಾಂಶಗಳು ಆಡಳಿತಾತ್ಮಕ ವಿವೇಚನೆಗೆ ಒಳಪಟ್ಟಿರುತ್ತವೆ, ಆದ್ದರಿಂದ ಯಾವುದೇ ಎಐ ವ್ಯವಸ್ಥೆಯು ಖಾತರಿ ನೀಡಲು ಸಾಧ್ಯವಿಲ್ಲ.',
+      },
+      ta: {
+        answer: 'IP-SAKTI எந்தவொரு காப்புரிமை ஒப்புதலுக்கும் 100% உத்தரவாதம் அளிக்க முடியாது. காப்புரிமை வழங்குவது இந்திய காப்புரிமை அலுவலகத்தின் பரிசோதனை, முன் கலை (Prior Art) மற்றும் Section 3(p) விதிகளுக்கு உட்பட்டது.',
+        why: 'சட்டரீதியான முடிவுகள் நிர்வாக ஆய்வுக்கு உட்பட்டவை, இதற்கு எந்தவொரு அமைப்பும் உத்தரவாதம் தர முடியாது.',
+      },
+      te: {
+        answer: 'IP-SAKTI ఎలాంటి పేటెంట్ మంజూరు లేదా చట్టపరమైన విజయానికి 100% హామీ ఇవ్వలేదు. పేటెంట్ ఆమోదం అనేది భారత పేటెంట్ కార్యాలయ పరీక్ష, పూర్వ కళ (TKDL) మరియు Section 3(p) నిబంధనలపై ఆధారపడి ఉంటుంది.',
+        why: 'చట్టపరమైన మరియు నియంత్రణ ఫలితాలు పరిపాలనా నిర్ణయాలపై ఆధారపడి ఉంటాయి.',
+      },
+    };
+
+    const localized = guaranteeAnswers[effectiveLang] || {
+      answer: 'IP-SAKTI cannot guarantee that any patent will be granted or that any regulatory filing will succeed. Patent grant decisions are strictly within the statutory discretion of the Indian Patent Office (IPO) and require overcoming Section 3(p) and Section 3(e) prior art hurdles.',
+      why: 'Statutory outcomes depend on formal patent examiner evaluation and verified clinical/synergistic evidence, which no automated intelligence tool can guarantee.',
+    };
+
+    return {
+      answer: localized.answer,
+      why: localized.why,
+      evidence: [
+        makeCitation('PATENTS_ACT_SEC_3P', 'Section 3(p) creates a statutory hurdle requiring empirical non-obviousness before any patent grant.'),
+      ],
+      whatIsMissing: ['Formal prior-art search report and examination by the Controller of Patents.'],
+      whatThisMeans: 'The system operates as a decision-support guide, not an indemnifying or outcome-guaranteeing legal counsel.',
+      nextAction: [
+        'Conduct a formal TKDL prior-art search.',
+        'Obtain laboratory synergy data (Combination Index < 1.0) before filing.',
+      ],
+      confidence: 'INSUFFICIENT_EVIDENCE',
+      confidenceExplanation: 'Outcome guarantee requests trigger mandatory safe abstention.',
+      isAbstained: true,
+    };
+  }
+
   // Case context summary
   const caseTitle = caseData?.title || 'General Ayurvedic Asset';
   const ingredients = caseData?.formulation?.ingredients || [];

@@ -9,6 +9,11 @@ import { generateAssistantResponse } from '@/lib/intelligence/assistant';
 import { StructuredAssistantResponse, Citation } from '@/lib/intelligence/types';
 import EvidenceDrawer from '@/components/intelligence/EvidenceDrawer';
 import EvidenceStrengthBadge from '@/components/intelligence/EvidenceStrengthBadge';
+import { useSpeechRecognition } from '@/lib/voice/useSpeechRecognition';
+import { useSpeechSynthesis } from '@/lib/voice/useSpeechSynthesis';
+import VoiceInputButton from '@/components/voice/VoiceInputButton';
+import AudioResponsePlayer from '@/components/voice/AudioResponsePlayer';
+import { getVoiceStrings, getVoiceLocaleMeta } from '@/lib/voice/locales';
 
 interface ChatMessage {
   id: string;
@@ -27,6 +32,11 @@ function AssistantContent() {
   const [selectedCaseId, setSelectedCaseId] = useState<string>(cases[0]?.id || '');
   const [inputQuery, setInputQuery] = useState('');
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
+  const [voiceMode, setVoiceMode] = useState<boolean>(false);
+  const [autoReadResponses, setAutoReadResponses] = useState<boolean>(false);
+
+  const voiceStrings = getVoiceStrings(language);
+  const voiceLocaleMeta = getVoiceLocaleMeta(language);
 
   // Match case from context query param if provided
   useEffect(() => {
@@ -76,9 +86,43 @@ function AssistantContent() {
     });
   }, [language]);
 
+  const {
+    status: speechStatus,
+    interimTranscript,
+    errorMessage: speechError,
+    isSupported: isSpeechSupported,
+    startListening,
+    stopListening,
+    reset: resetSpeech,
+  } = useSpeechRecognition({
+    language,
+    onTranscriptChange: (text) => {
+      setInputQuery(text);
+    },
+    onFinalTranscript: (finalText) => {
+      setInputQuery(finalText);
+      if (voiceMode && finalText.trim()) {
+        handleSend(finalText.trim());
+      }
+    },
+  });
+
+  const {
+    status: ttsStatus,
+    speakingMessageId,
+    speak: ttsSpeak,
+    pause: ttsPause,
+    resume: ttsResume,
+    stop: ttsStop,
+  } = useSpeechSynthesis();
+
   const handleSend = (textToSend?: string) => {
     const q = (textToSend || inputQuery).trim();
     if (!q) return;
+
+    // Release microphone and cancel active speech
+    stopListening();
+    ttsStop();
 
     const userMsg: ChatMessage = {
       id: 'msg-' + Date.now(),
@@ -88,9 +132,10 @@ function AssistantContent() {
     };
 
     const structured = generateAssistantResponse(q, activeCase, language);
+    const botMsgId = 'msg-bot-' + Date.now();
 
     const botMsg: ChatMessage = {
-      id: 'msg-bot-' + Date.now(),
+      id: botMsgId,
       sender: 'assistant',
       structured,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -98,6 +143,18 @@ function AssistantContent() {
 
     setMessages((prev) => [...prev, userMsg, botMsg]);
     setInputQuery('');
+    resetSpeech();
+
+    // Auto-read response if enabled or in Voice Mode
+    if (autoReadResponses || voiceMode) {
+      setTimeout(() => {
+        ttsSpeak(structured.answer, botMsgId, language, () => {
+          if (voiceMode) {
+            startListening();
+          }
+        });
+      }, 300);
+    }
   };
 
   const getSampleQuestions = (lang: string) => {
@@ -186,33 +243,100 @@ function AssistantContent() {
               </p>
             </div>
 
-            {/* Case Selector Dropdown */}
-            {cases.length > 0 && (
-              <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.5rem 0.85rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
-                  {t('assistant.activeCase')}
-                </label>
-                <select
-                  value={selectedCaseId}
-                  onChange={(e) => setSelectedCaseId(e.target.value)}
+            {/* Top Right Controls: Case Selector + Voice Settings Toolbar */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                {/* Voice Mode Toggle */}
+                <div style={{ display: 'inline-flex', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '2px' }}>
+                  <button
+                    type="button"
+                    onClick={() => { setVoiceMode(false); stopListening(); }}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: !voiceMode ? 'var(--color-primary)' : 'transparent',
+                      color: !voiceMode ? '#fff' : 'var(--text-muted)',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 150ms ease',
+                    }}
+                  >
+                    💬 {voiceStrings.textMode}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setVoiceMode(true); setAutoReadResponses(true); }}
+                    style={{
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: voiceMode ? 'var(--color-primary)' : 'transparent',
+                      color: voiceMode ? '#fff' : 'var(--text-muted)',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 150ms ease',
+                    }}
+                  >
+                    🎙️ {voiceStrings.voiceMode}
+                  </button>
+                </div>
+
+                {/* Auto-read Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setAutoReadResponses(!autoReadResponses)}
                   style={{
-                    background: 'transparent',
-                    border: 'none',
-                    fontSize: '0.88rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    padding: '5px 10px',
+                    borderRadius: '8px',
+                    border: '1px solid var(--border-color)',
+                    background: autoReadResponses ? 'rgba(46, 125, 50, 0.08)' : 'var(--bg-surface)',
+                    color: autoReadResponses ? 'var(--color-primary-dark)' : 'var(--text-muted)',
+                    fontSize: '0.78rem',
                     fontWeight: 600,
-                    color: 'var(--color-primary-dark)',
-                    outline: 'none',
                     cursor: 'pointer',
                   }}
+                  title={voiceStrings.autoRead}
+                  aria-pressed={autoReadResponses}
                 >
-                  {cases.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.title} ({c.jurisdiction})
-                    </option>
-                  ))}
-                </select>
+                  <span>🔊</span>
+                  <span>{autoReadResponses ? voiceStrings.autoReadOn : voiceStrings.autoReadOff}</span>
+                </button>
               </div>
-            )}
+
+              {/* Case Selector Dropdown */}
+              {cases.length > 0 && (
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.45rem 0.85rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.15rem' }}>
+                    {t('assistant.activeCase')}
+                  </label>
+                  <select
+                    value={selectedCaseId}
+                    onChange={(e) => setSelectedCaseId(e.target.value)}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      color: 'var(--color-primary-dark)',
+                      outline: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {cases.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.title} ({c.jurisdiction})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -302,9 +426,25 @@ function AssistantContent() {
                       fontSize: '0.92rem',
                       lineHeight: 1.5,
                       color: 'var(--text-primary)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.75rem',
                     }}
                   >
-                    {msg.text}
+                    <div>{msg.text}</div>
+                    <div>
+                      <AudioResponsePlayer
+                        messageId={msg.id}
+                        answerText={msg.text}
+                        language={language}
+                        synthesisStatus={ttsStatus}
+                        activeMessageId={speakingMessageId}
+                        onSpeak={(text, id) => ttsSpeak(text, id, language)}
+                        onPause={ttsPause}
+                        onResume={ttsResume}
+                        onStop={ttsStop}
+                      />
+                    </div>
                   </div>
                 )}
 
@@ -324,12 +464,25 @@ function AssistantContent() {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                     }}
                   >
-                    {/* Top: Confidence Badge */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <EvidenceStrengthBadge strength={msg.structured.confidence} />
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        {msg.structured.confidenceExplanation}
-                      </span>
+                    {/* Top: Confidence Badge & TTS Audio Controls */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <EvidenceStrengthBadge strength={msg.structured.confidence} />
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {msg.structured.confidenceExplanation}
+                        </span>
+                      </div>
+                      <AudioResponsePlayer
+                        messageId={msg.id}
+                        answerText={msg.structured.answer}
+                        language={language}
+                        synthesisStatus={ttsStatus}
+                        activeMessageId={speakingMessageId}
+                        onSpeak={(text, id) => ttsSpeak(text, id, language)}
+                        onPause={ttsPause}
+                        onResume={ttsResume}
+                        onStop={ttsStop}
+                      />
                     </div>
 
                     {/* 1. ANSWER */}
@@ -473,26 +626,37 @@ function AssistantContent() {
               e.preventDefault();
               handleSend();
             }}
-            style={{ display: 'flex', gap: '0.5rem' }}
+            style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
           >
             <input
               type="text"
-              placeholder={t('assistant.placeholder')}
+              placeholder={speechStatus === 'LISTENING' ? voiceStrings.listening : t('assistant.placeholder')}
               value={inputQuery}
               onChange={(e) => setInputQuery(e.target.value)}
               style={{
                 flex: 1,
                 padding: '0.75rem 1rem',
                 borderRadius: '8px',
-                border: '1.5px solid var(--border-color)',
+                border: speechStatus === 'LISTENING' ? '1.5px solid #dc2626' : '1.5px solid var(--border-color)',
                 background: 'var(--bg-base)',
                 fontSize: '0.92rem',
                 color: 'var(--text-primary)',
                 outline: 'none',
               }}
             />
+            <VoiceInputButton
+              status={speechStatus}
+              language={language}
+              isSupported={isSpeechSupported}
+              onStart={startListening}
+              onStop={stopListening}
+              errorMessage={speechError}
+              interimTranscript={interimTranscript}
+              onDismissError={resetSpeech}
+            />
             <button
               type="submit"
+              disabled={!inputQuery.trim()}
               style={{
                 background: 'var(--color-primary)',
                 color: '#fff',
@@ -501,12 +665,20 @@ function AssistantContent() {
                 borderRadius: '8px',
                 fontWeight: 600,
                 fontSize: '0.9rem',
-                cursor: 'pointer',
+                cursor: inputQuery.trim() ? 'pointer' : 'not-allowed',
+                opacity: inputQuery.trim() ? 1 : 0.7,
               }}
             >
               {t('assistant.send')} 🚀
             </button>
           </form>
+
+          {/* Transcript review hint if speech was recorded */}
+          {inputQuery && speechStatus === 'IDLE' && (
+            <div style={{ marginTop: '0.4rem', fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span>✍️ {voiceStrings.reviewTranscript}</span>
+            </div>
+          )}
 
         </div>
 
