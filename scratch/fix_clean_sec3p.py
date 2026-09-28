@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+
+sec3p_map = {
+    'EN': 'Section 3(p): An invention which is traditional knowledge or an aggregation of known properties is not patentable.',
+    'HI': 'Section 3(p): पारंपरिक ज्ञान या ज्ञात घटकों के ज्ञात गुणों का एकत्रीकरण पेटेंट योग्य नहीं है।',
+    'KN': 'Section 3(p): ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಞಾನವಾಗಿರುವ ಅಥವಾ ತಿಳಿದ ಗುಣಲಕ್ಷಣಗಳ ಒಟ್ಟುಗೂಡಿಸುವಿಕೆ ಆಗಿರುವ ಆವಿಷ್ಕಾರವು ಪೇಟೆಂಟ್ ಪಡೆಯಲು ಅರ್ಹವಲ್ಲ.',
+    'TA': 'Section 3(p): பாரம்பரிய அறிவாக இருக்கும் அல்லது அறியப்பட்ட கூறுகளின் பண்புகளின் நகலாக இருக்கும் கண்டுபிடிப்பு காப்புரிமை பெறத்தக்கது அல்ல.',
+    'TE': 'Section 3(p): సాంప్రదాయ పరిజ్ఞానంగా ఉన్న లేదా తెలిసిన భాగాల లక్షణాల కలయికగా ఉన్న ఆవిష్కరణ పేటెంట్ పొందేందుకు అర్హత లేదు.',
+    'ML': 'Section 3(p): പരമ്പരാഗത അറിവായതോ പരമ്പരാഗതമായി അറിയപ്പെടുന്ന ഘടകങ്ങളുടെ ഗുണങ്ങളുടെ സംയോജനമോ ആയ ഒരു കണ്ടുപിടുത്തത്തിന് പേറ്റന്റ് ലഭ്യമല്ല.',
+    'MR': 'Section 3(p): पारंपारिक ज्ञान असणारा किंवा पारंपारिक घटकांच्या ज्ञात गुणधर्मांचे एकत्रीकरण असणारा शोध पेटंटपात्र नाही.',
+    'BN': 'Section 3(p): ঐতিহ্যগত জ্ঞান বা ঐতিহ্যগতভাবে পরিচিত উপাদানগুলির পরিচিত বৈশিষ্ট্যের সমষ্টি পেটেন্টযোগ্য নয়।',
+    'GU': 'Section 3(p): પરંપરાગત જ્ઞાન છે અથવા પરંપરાગત રીતે જાણીતા ઘટકોના ગુણધર્મોનું માત્ર એકત્રીકરણ છે તે પેટન્ટપાત્ર નથી.',
+    'PA': 'Section 3(p): ਇੱਕ ਕਾਢ ਜੋ ਰਵਾਇਤੀ ਗਿਆਨ ਹੈ ਜਾਂ ਰਵਾਇਤੀ ਤੌਰ ਤੇ ਜਾਣੇ ਜਾਂਦੇ ਹਿੱਸਿਆਂ ਦੇ ਗੁਣਾਂ ਦਾ ਜੋੜ ਹੈ, ਪੇਟੈਂਟ ਯੋਗ ਨਹੀਂ ਹੈ।',
+    'OR': 'Section 3(p): ଏକ ଉଦ୍ଭାବନ ଯାହା ପାରମ୍ପରିକ ଜ୍ଞାନ ଅଟେ ତାହା ପେଟେଣ୍ଟ ଯୋଗ୍ୟ ନୁହେଁ।',
+    'AS': 'Section 3(p): পৰম্পৰাগত জ্ঞান বা উপাদানসমূহৰ জ্ঞাত গুণৰ একত্ৰীকৰণ পেটেণ্টযোগ্য নহয়।',
+    'UR': 'Section 3(p): ایک ایسی ایجاد جو روایتی علم ہے پیٹنٹ کے قابل نہیں ہے۔',
+    'SA': 'Section 3(p): पारम्परिकज्ञानम् अथवा ज्ञातगुणानां समुच्चयः स्वाम्यपत्रयोग्यं न भवति।',
+    'KOK': 'Section 3(p): पारंपारीक ज्ञान आशिल्लो वा वखदी घटकांचो संगम आशिल्लो सोद पेटंटपात्र ना।',
+    'MAI': 'Section 3(p): पारंपरिक ज्ञान अथवा ज्ञात घटकक गुणक एकत्रीकरण पेटेंट योग्य नहि अछि।',
+    'DOI': 'Section 3(p): पारंपारिक ज्ञान या ज्ञात घटकें दे ज्ञात गुणें दा जोड़ पेटेंट योग्य नेईं ऐ।',
+    'KS': 'Section 3(p): روایتی علم یا پٔتمین چیزن ہند مجموعہٕ پیٹنٹ حقدار نہٕ۔',
+    'SD': 'Section 3(p): روايتي علم يا معلوم جزن جو ميڙ پيٽنٽ جي لائق ناهي۔',
+    'MNI': 'Section 3(p): অরিবা লৌশিং নত্রগা মশক খঙলবা পোৎলমশিংগী অপুনবা অমা পেতেন্ট য়ারোই।',
+    'BRX': 'Section 3(p): गावनि आगोलाव गियान एबा मोनथिखांनाय गुनफोरनि ज' जानाया पेटेन्ट जानो हाया।',
+    'SAT': 'Section 3(p): ᱟᱹᱨᱤᱪᱟᱹᱞᱤ ᱜᱮᱭᱟᱱ ᱫᱚ ᱯᱮᱴᱮᱱᱴ ᱵᱟᱝ ᱧᱟᱢᱚᱜᱼᱟ᱾',
+    'NE': 'Section 3(p): परम्परागत ज्ञान वा ज्ञात गुणहरूको संकलन पेटेन्ट योग्य छैन।'
+}
+
+with open('frontend/src/i18n/translations/index.ts', encoding='utf-8') as f:
+    lines = f.readlines()
+
+new_lines = []
+current_lang = 'EN'
+skip_until_next_key = False
+
+for line in lines:
+    stripped = line.strip()
+    if stripped.startswith('export const ') and '_TRANSLATIONS' in stripped:
+        for l in sec3p_map:
+            if f'{l}_TRANSLATIONS' in stripped:
+                current_lang = l
+                break
+        new_lines.append(line)
+        continue
+
+    if '"home.evidence.sec3pText":' in line:
+        val = sec3p_map.get(current_lang, sec3p_map['EN'])
+        new_lines.append(f'  "home.evidence.sec3pText": "{val}",\n')
+        # If line ended with \", it might have a broken line following
+        if line.rstrip().endswith('\\",') or line.rstrip().endswith('\\"'):
+            skip_until_next_key = True
+        continue
+
+    if skip_until_next_key:
+        if stripped.startswith('"') and '":' in stripped:
+            skip_until_next_key = False
+            new_lines.append(line)
+        else:
+            # skipping corrupted leftover piece
+            continue
+    else:
+        new_lines.append(line)
+
+with open('frontend/src/i18n/translations/index.ts', 'w', encoding='utf-8') as f:
+    f.writelines(new_lines)
+
+print("Properly replaced all sec3pText lines without broken quotes!")

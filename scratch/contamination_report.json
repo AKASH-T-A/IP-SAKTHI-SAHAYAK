@@ -1,0 +1,650 @@
+{
+  "EN": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "HI": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "KN": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "TA": {
+    "total": 609,
+    "devanagari_in_non_dev": 131,
+    "dev_keys_sample": [
+      [
+        "home.hero.multilingual",
+        "बहुभाषी समर्थन"
+      ],
+      [
+        "home.hero.multilingual_title",
+        "22 भारतीय भाषाओं + अंग्रेजी में उपलब्ध"
+      ],
+      [
+        "home.hero.multilingual_desc",
+        "संपूर्ण मंच — AI उत्तर, साक्ष्य कार्ड और वर्गीकरण व्याख्या सहित — भारत की सभी 22 आधिकारिक भाषाओं और अंग्रेजी में उपलब्ध है। विधिक पदों को उनके प्रामाणिक रूप में सुरक्षित रखा गया है।"
+      ],
+      [
+        "home.features.versioning_updates",
+        "संस्करण अद्यतन"
+      ],
+      [
+        "home.features.abstention_protects",
+        "सुरक्षित परिहार"
+      ],
+      [
+        "home.workflows.heading",
+        "आप क्या करना चाहते हैं?"
+      ],
+      [
+        "home.demo.badge",
+        "प्रतिनिधिक डेमो प्रकरण"
+      ],
+      [
+        "home.demo.simulation",
+        "दृष्टांत स्वरूप अनुकरण"
+      ],
+      [
+        "home.demo.title",
+        "योग से कार्ययोजना तक केवल कुछ मिनटों में"
+      ],
+      [
+        "home.demo.story",
+        "डॉ. प्रिया ने अश्वगंधा का एक संशोधित योग विकसित किया है। वह जानना चाहती हैं कि क्या IP सुरक्षा उपलब्ध है, कौन से नियम लागू होते हैं, और क्या ABS आवश्यकताएं महत्वपूर्ण हैं — वह भी हिंदी में।"
+      ]
+    ]
+  },
+  "TE": {
+    "total": 609,
+    "devanagari_in_non_dev": 131,
+    "dev_keys_sample": [
+      [
+        "home.hero.multilingual",
+        "बहुभाषी समर्थन"
+      ],
+      [
+        "home.hero.multilingual_title",
+        "22 भारतीय भाषाओं + अंग्रेजी में उपलब्ध"
+      ],
+      [
+        "home.hero.multilingual_desc",
+        "संपूर्ण मंच — AI उत्तर, साक्ष्य कार्ड और वर्गीकरण व्याख्या सहित — भारत की सभी 22 आधिकारिक भाषाओं और अंग्रेजी में उपलब्ध है। विधिक पदों को उनके प्रामाणिक रूप में सुरक्षित रखा गया है।"
+      ],
+      [
+        "home.features.versioning_updates",
+        "संस्करण अद्यतन"
+      ],
+      [
+        "home.features.abstention_protects",
+        "सुरक्षित परिहार"
+      ],
+      [
+        "home.workflows.heading",
+        "आप क्या करना चाहते हैं?"
+      ],
+      [
+        "home.demo.badge",
+        "प्रतिनिधिक डेमो प्रकरण"
+      ],
+      [
+        "home.demo.simulation",
+        "दृष्टांत स्वरूप अनुकरण"
+      ],
+      [
+        "home.demo.title",
+        "योग से कार्ययोजना तक केवल कुछ मिनटों में"
+      ],
+      [
+        "home.demo.story",
+        "डॉ. प्रिया ने अश्वगंधा का एक संशोधित योग विकसित किया है। वह जानना चाहती हैं कि क्या IP सुरक्षा उपलब्ध है, कौन से नियम लागू होते हैं, और क्या ABS आवश्यकताएं महत्वपूर्ण हैं — वह भी हिंदी में।"
+      ]
+    ]
+  },
+  "ML": {
+    "total": 609,
+    "devanagari_in_non_dev": 139,
+    "dev_keys_sample": [
+      [
+        "home.hero.multilingual",
+        "बहुभाषी समर्थन"
+      ],
+      [
+        "home.hero.multilingual_title",
+        "22 भारतीय भाषाओं + अंग्रेजी में उपलब्ध"
+      ],
+      [
+        "home.hero.multilingual_desc",
+        "संपूर्ण मंच — AI उत्तर, साक्ष्य कार्ड और वर्गीकरण व्याख्या सहित — भारत की सभी 22 आधिकारिक भाषाओं और अंग्रेजी में उपलब्ध है। विधिक पदों को उनके प्रामाणिक रूप में सुरक्षित रखा गया है।"
+      ],
+      [
+        "home.features.versioning_updates",
+        "संस्करण अद्यतन"
+      ],
+      [
+        "home.features.abstention_protects",
+        "सुरक्षित परिहार"
+      ],
+      [
+        "home.workflows.heading",
+        "आप क्या करना चाहते हैं?"
+      ],
+      [
+        "home.intake.ayurvedicFormulationHint",
+        "शास्त्रीय अथवा स्वत्वाधिकारी (Proprietary) बहु-औषधीय"
+      ],
+      [
+        "home.intake.herbalProductHint",
+        "सत्व (Extracts), आहार पूरक, पादप-औषधियां"
+      ],
+      [
+        "home.intake.plantResourceHint",
+        "औषधीय वनस्पति, ABS/NBA पूर्व-अनुमति"
+      ],
+      [
+        "home.intake.traditionalKnowledgeHint",
+        "शास्त्रीय ग्रंथ, TKDL पूर्व-कला समीक्षा"
+      ]
+    ]
+  },
+  "MR": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "BN": {
+    "total": 609,
+    "devanagari_in_non_dev": 345,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "GU": {
+    "total": 609,
+    "devanagari_in_non_dev": 320,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "PA": {
+    "total": 609,
+    "devanagari_in_non_dev": 345,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "OR": {
+    "total": 609,
+    "devanagari_in_non_dev": 345,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "AS": {
+    "total": 609,
+    "devanagari_in_non_dev": 345,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "UR": {
+    "total": 609,
+    "devanagari_in_non_dev": 451,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ],
+      [
+        "common.save",
+        "सहेजें"
+      ]
+    ]
+  },
+  "SA": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "KOK": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "MAI": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "DOI": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "KS": {
+    "total": 609,
+    "devanagari_in_non_dev": 451,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ],
+      [
+        "common.save",
+        "सहेजें"
+      ]
+    ]
+  },
+  "SD": {
+    "total": 609,
+    "devanagari_in_non_dev": 451,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ],
+      [
+        "common.save",
+        "सहेजें"
+      ]
+    ]
+  },
+  "MNI": {
+    "total": 609,
+    "devanagari_in_non_dev": 347,
+    "dev_keys_sample": [
+      [
+        "nav.admin",
+        "प्रशासक पैनल"
+      ],
+      [
+        "nav.searchPlaceholder",
+        "अधिनियम, पेटेंट, नियम, साक्ष्य खोजें..."
+      ],
+      [
+        "nav.startCase",
+        "प्रकरण प्रारंभ करें"
+      ],
+      [
+        "nav.trySearching",
+        "यह खोजने का प्रयास करें"
+      ],
+      [
+        "nav.pressEnter",
+        "खोजने के लिए Enter दबाएं"
+      ],
+      [
+        "nav.searchScope",
+        "खोज में कानून, पेटेंट, नियम और साक्ष्य सम्मिलित हैं"
+      ],
+      [
+        "nav.signIn",
+        "लॉग इन"
+      ],
+      [
+        "nav.signOut",
+        "लॉग आउट"
+      ],
+      [
+        "nav.myCases",
+        "मेरे प्रकरण"
+      ],
+      [
+        "common.loading",
+        "लोड हो रहा है..."
+      ]
+    ]
+  },
+  "BRX": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  },
+  "SAT": {
+    "total": 609,
+    "devanagari_in_non_dev": 24,
+    "dev_keys_sample": [
+      [
+        "cases.emptyDesc",
+        "ᱮᱛᱚᱦᱚᱵ ᱞᱟᱹᱜᱤᱫ ᱢᱤᱫ ᱱᱟᱣᱟ ᱠᱮᱥ ᱵᱮᱱᱟᱣ ᱢᱮ।"
+      ],
+      [
+        "home.hero.multilingual_desc",
+        "ᱯᱩᱨᱟᱹ ᱯᱞᱮᱴᱯᱷᱚᱨᱢ — AI ᱛᱮᱞᱟ, ᱥᱟᱹᱵᱩᱛ ᱠᱟᱨᱰ ᱟᱨ ᱛᱷᱚᱠ ᱵᱮᱠᱷᱟ ᱥᱟᱶ — ᱥᱤᱧᱚᱛ ᱨᱮᱱᱟᱜ ᱡᱚᱛᱚ ᱒᱒ ᱥᱚᱨᱠᱟᱨᱤ ᱯᱟᱹᱨᱥᱤ ᱟᱨ ᱤᱝᱞᱤᱥ ᱛᱮ ᱧᱟᱢᱚᱜ-ᱟ। ᱟᱹᱭᱤᱱᱟᱹᱨᱤ ᱟᱹᱲᱟᱹ ᱠᱚ ᱟᱠᱚᱣᱟᱜ ᱢᱩᱲ ᱨᱩᱯ ᱛᱮ ᱫᱚᱦᱚ ᱟᱠᱟᱱᱟ।"
+      ],
+      [
+        "home.demo.story",
+        "ᱚᱥᱣᱚᱜᱚᱱᱫᱷᱟ-ᱵᱨᱟᱦᱢᱤ ᱥᱤᱨᱚᱯ ᱪᱮᱫᱞᱮᱠᱟ ᱯᱟᱨᱠᱷᱟᱣᱚᱜ-ᱟ ᱧᱮᱞ ᱢᱮ: Section 3(p) ᱞᱟᱦᱟ-ᱠᱟᱹᱢᱤ, Rule 158B ᱢᱟᱱᱟᱣ, FSSAI ᱟᱹᱭᱩᱥ ᱟᱦᱟᱨ ᱛᱷᱚᱠ ᱟᱨ ABS ᱞᱟᱦᱟ-ᱟᱭᱫᱟᱹᱨᱤ।"
+      ],
+      [
+        "home.demo.notice",
+        "ᱡᱚᱛᱚ ᱥᱚᱞᱦᱟ ᱥᱚᱡᱷᱮ ᱥᱚᱨᱠᱟᱨᱤ ᱜᱮᱡᱮᱴ ᱟᱹᱭᱤᱱ ᱥᱟᱶ ᱡᱚᱲᱟᱣ ᱢᱮᱱᱟᱜ-ᱟ।"
+      ],
+      [
+        "home.evidence.whyRelevant",
+        "ᱱᱚᱣᱟ ᱪᱮᱫᱟᱜ ᱞᱟᱜᱟᱣᱜ-ᱟ: ᱡᱩᱫᱤ ᱡᱟᱦᱟᱸ ᱫᱟᱵᱤ ᱥᱮᱫᱟᱭ ᱜᱮᱭᱟᱱ ᱨᱮᱱᱟᱜ ᱥᱩᱢᱩᱝ ᱡᱚᱢᱟᱣ ᱠᱟᱱᱟ, ᱛᱚᱵᱮ Section 3(p) ᱛᱟᱹᱨᱤ ᱨᱮ ᱯᱮᱴᱮᱱᱴ ᱵᱟᱛᱤᱞᱚᱜ-ᱟ।"
+      ],
+      [
+        "home.evidence.disclaimer",
+        "ᱱᱚᱣᱟ ᱦᱟᱹᱴᱤᱧ ᱰᱤᱡᱤᱴᱟᱞ ᱥᱩᱦᱤ ᱥᱤᱧᱚᱛ ᱜᱮᱡᱮᱴ ᱠᱷᱚᱱ ᱯᱟᱨᱠᱷᱟᱣ ᱟᱠᱟᱱᱟ।"
+      ],
+      [
+        "home.domain.patentDesc",
+        "ᱥᱮᱫᱟᱭ ᱜᱮᱭᱟᱱ ᱵᱟᱫᱽ, ᱱᱟᱣᱟᱱ ᱟᱨ ᱞᱟᱦᱟ-ᱠᱟᱹᱢᱤ ᱯᱟᱨᱠᱷᱟᱣ।"
+      ],
+      [
+        "home.domain.trademarkDesc",
+        "ᱟᱹᱭᱩᱨᱵᱮᱫᱤᱠ ᱵᱨᱟᱱᱰ, ᱪᱤᱱᱦᱟᱹ, ᱛᱷᱚᱠ ᱕ ᱟᱨ ᱨᱟᱱ ᱛᱷᱚᱠ ᱨᱮᱡᱤᱥᱴᱨᱮᱥᱚᱱ।"
+      ],
+      [
+        "home.domain.giDesc",
+        "ᱴᱚᱴᱷᱟᱠᱤᱭᱟᱹ ᱫᱟᱨᱮ-ᱱᱟᱹᱲᱤ ᱟᱨ ᱥᱮᱫᱟᱭ ᱨᱟᱱ ᱦᱚᱨᱟ ᱨᱩᱠᱷᱤᱭᱟᱹ।"
+      ],
+      [
+        "home.domain.plantVarietyDesc",
+        "ᱪᱟᱹᱥᱤ ᱟᱹᱭᱫᱟᱹᱨ ᱟᱨ ᱨᱟᱱ ᱫᱟᱨᱮ ᱡᱟᱹᱛ ᱨᱮᱡᱤᱥᱴᱨᱮᱥᱚᱱ।"
+      ]
+    ]
+  },
+  "NE": {
+    "total": 609,
+    "devanagari_in_non_dev": 0,
+    "dev_keys_sample": []
+  }
+}

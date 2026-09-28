@@ -1,0 +1,102 @@
+{
+  "home.workflow.mostUsed": {
+    "en": "Most used",
+    "hi": "सर्वाधिक उपयोग"
+  },
+  "home.hero.multilingual": {
+    "en": "Multilingual Support",
+    "hi": "बहुभाषी समर्थन"
+  },
+  "home.hero.multilingual_title": {
+    "en": "Available in 22 Indian Languages + English",
+    "hi": "22 भारतीय भाषाओं + अंग्रेजी में उपलब्ध"
+  },
+  "home.hero.multilingual_desc": {
+    "en": "The full platform — including AI responses, evidence cards, and classification explanations — is available in all 22 official languages of India plus English. Legal terms are preserved in their authoritative form.",
+    "hi": "संपूर्ण मंच — AI उत्तर, साक्ष्य कार्ड और वर्गीकरण व्याख्या सहित — भारत की सभी 22 आधिकारिक भाषाओं और अंग्रेजी में उपलब्ध है। विधिक पदों को उनके प्रामाणिक रूप में सुरक्षित रखा गया है।"
+  },
+  "home.features.versioning_updates": {
+    "en": "Versioning Updates",
+    "hi": "संस्करण अद्यतन"
+  },
+  "home.features.abstention_protects": {
+    "en": "Abstention Protects",
+    "hi": "सुरक्षित परिहार"
+  },
+  "home.workflows.heading": {
+    "en": "What would you like to do?",
+    "hi": "आप क्या करना चाहते हैं?"
+  },
+  "home.intake.ayurvedicFormulation": {
+    "en": "Ayurvedic formulation",
+    "hi": "आयुर्वेदिक योग (Formulation)"
+  },
+  "home.intake.ayurvedicFormulationHint": {
+    "en": "Classical or Proprietary polyherbal",
+    "hi": "शास्त्रीय अथवा स्वत्वाधिकारी (Proprietary) बहु-औषधीय"
+  },
+  "home.intake.herbalProduct": {
+    "en": "Herbal product",
+    "hi": "हर्बल उत्पाद"
+  },
+  "home.intake.herbalProductHint": {
+    "en": "Extracts, dietary supplements, phytomedicines",
+    "hi": "सत्व (Extracts), आहार पूरक, पादप-औषधियां"
+  },
+  "home.intake.plantResource": {
+    "en": "Plant resource",
+    "hi": "पादप / जैविक संसाधन"
+  },
+  "home.intake.plantResourceHint": {
+    "en": "Medicinal flora, ABS/NBA prior-approval",
+    "hi": "औषधीय वनस्पति, ABS/NBA पूर्व-अनुमति"
+  },
+  "home.intake.traditionalKnowledge": {
+    "en": "Traditional knowledge",
+    "hi": "पारंपरिक ज्ञान"
+  },
+  "home.intake.traditionalKnowledgeHint": {
+    "en": "Classical treatise, TKDL prior-art review",
+    "hi": "शास्त्रीय ग्रंथ, TKDL पूर्व-कला समीक्षा"
+  },
+  "home.intake.novelProcess": {
+    "en": "Novel process",
+    "hi": "नवीन प्रक्रिया"
+  },
+  "home.intake.novelProcessHint": {
+    "en": "Extraction, stabilization & Section 3(p) check",
+    "hi": "निष्कर्षण, स्थिरीकरण एवं धारा 3(p) सत्यापन"
+  },
+  "home.intake.brandIdentity": {
+    "en": "Brand & Identity",
+    "hi": "ब्रांड एवं पहचान"
+  },
+  "home.intake.brandIdentityHint": {
+    "en": "Trademark classification & GI tags",
+    "hi": "व्यापार चिह्न (TM) वर्गीकरण एवं GI टैग"
+  },
+  "home.intake.geographicalIdentity": {
+    "en": "Geographical identity",
+    "hi": "भौगोलिक पहचान (GI)"
+  },
+  "home.intake.geographicalIdentityHint": {
+    "en": "GI registration for regional indigenous products",
+    "hi": "क्षेत्रीय स्वदेशी उत्पादों हेतु GI पंजीकरण"
+  },
+  "home.intake.regulatoryQuestion": {
+    "en": "Regulatory question",
+    "hi": "विनियामक प्रश्न"
+  },
+  "home.intake.regulatoryQuestionHint": {
+    "en": "AYUSH Rule 158B, Schedule T, FSSAI Aahar",
+    "hi": "आयुष नियम 158B, अनुसूची T, FSSAI आहार"
+  },
+  "home.demo.badge": {
+    "en": "Representative Demo Case",
+    "hi": "प्रतिनिधिक डेमो प्रकरण"
+  },
+  "home.demo.simulation": {
+    "en": "Illustrative Simulation",
+    "hi": "दृष्टांत स्वरूप अनुकरण"
+  }
+}
