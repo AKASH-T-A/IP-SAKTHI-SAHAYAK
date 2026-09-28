@@ -205,8 +205,8 @@ export interface CandidateClassification {
 
 export interface IPPathwayEvaluation {
   pathwayName: string;
-  category: 'Patent' | 'Trademark' | 'GI' | 'Copyright' | 'Industrial Design' | 'Plant Variety Protection' | 'Traditional Knowledge';
-  applicabilityStatus: 'POTENTIALLY_APPLICABLE' | 'RESTRICTED_BAR' | 'NOT_APPLICABLE' | 'REQUIRES_FURTHER_DATA';
+  category: 'Patent' | 'Trademark' | 'GI' | 'Copyright' | 'Industrial Design' | 'Plant Variety Protection' | 'Biological Diversity / ABS' | 'Traditional Knowledge' | 'Prior-Art Intelligence';
+  applicabilityStatus: 'APPLICABLE' | 'POTENTIALLY_APPLICABLE' | 'RESTRICTED_BAR' | 'NOT_APPLICABLE' | 'REQUIRES_FURTHER_DATA';
   headline: string;
   statutoryRequirements: string[];
   evidenceNeeded: string[];

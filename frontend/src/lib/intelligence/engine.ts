@@ -469,6 +469,125 @@ export function evaluateCaseIntelligence(caseId: string, raw: FormulationDNA): F
     });
   }
 
+  // 4. Copyright (Packaging Artwork & Literary Text)
+  ipPathways.push({
+    pathwayName: 'Artistic Packaging & Literary Copyright (Copyright Act, 1957)',
+    category: 'Copyright',
+    applicabilityStatus: 'POTENTIALLY_APPLICABLE',
+    headline: 'Copyright Protection for Original Carton Artwork, Illustrations & Formulation Dossiers',
+    statutoryRequirements: [
+      'Original artistic layout of cartons, labels, and package inserts.',
+      'Mandatory Section 45 search certificate from Trade Marks Registry for commercial artistic works.',
+      'Excludes underlying botanical recipes or functional manufacturing steps.'
+    ],
+    evidenceNeeded: ['Original vector design artwork with signed designer NOC assignment deeds'],
+    cautiousNextAction: 'Register copyright on package artwork and consumer brochures with the Copyright Office.',
+    statutoryCaveat: 'Copyright protects only the specific artistic expression and text, not the herbal recipe or manufacturing method.',
+    citations: [
+      makeCitation('DC_RULES_161_LABELLING', 'Statutory requirement for packaging labels and declarations.'),
+    ],
+  });
+
+  // 5. Industrial Design (Bottle & Blister Packaging)
+  ipPathways.push({
+    pathwayName: 'Industrial Design Protection (Designs Act, 2000)',
+    category: 'Industrial Design',
+    applicabilityStatus: 'POTENTIALLY_APPLICABLE',
+    headline: 'Visual Shape & Configuration Registration for Containers, Dispensers & Blisters',
+    statutoryRequirements: [
+      'Novel, non-functional outer bottle, dropper, or container shape.',
+      'Design must not have been previously disclosed or sold anywhere in India or abroad.',
+      'Does not protect functional or therapeutic utility.'
+    ],
+    evidenceNeeded: ['Six-perspective engineering drawings or photographs of novel bottle/container packaging'],
+    cautiousNextAction: 'File industrial design application with the Design Wing, Indian Patent Office, Kolkata prior to public release.',
+    statutoryCaveat: 'Functional mechanisms or medicinal efficacy cannot be registered as an industrial design.',
+    citations: [
+      makeCitation('DC_RULES_161_LABELLING', 'Container packaging specifications under ASU drug rules.'),
+    ],
+  });
+
+  // 6. Plant Variety Protection (PPV&FR Act, 2001)
+  ipPathways.push({
+    pathwayName: 'Plant Variety Protection (PPV&FR Act, 2001)',
+    category: 'Plant Variety Protection',
+    applicabilityStatus: 'POTENTIALLY_APPLICABLE',
+    headline: 'Breeder & Cultivar Rights for Novel or Distinct Medicinal Plants',
+    statutoryRequirements: [
+      'Applicable if proprietary cultivated varieties of medicinal plants are bred.',
+      'Must satisfy Distinctiveness, Uniformity, and Stability (DUS) criteria per Section 15.',
+      'Farmers traditional rights safeguarded under Section 39.'
+    ],
+    evidenceNeeded: ['DUS test field trial results and certified botanical lineage from PPV&FR accredited testing centre'],
+    cautiousNextAction: 'If new medicinal plant varieties are cultivated, apply for variety registration with the PPV&FR Authority.',
+    statutoryCaveat: 'Wild forest-harvested biological varieties cannot be privately monopolized as new plant varieties.',
+    citations: [
+      makeCitation('PPVFR_ACT_SEC_15', 'Novelty, distinctiveness, uniformity, and stability criteria for plant registration.'),
+    ],
+  });
+
+  // 7. Biological Diversity / ABS Clearance
+  if (dna.biologicalResourcesPresent) {
+    ipPathways.push({
+      pathwayName: 'Access & Benefit Sharing Clearance (BDA 2002 § 6 & § 7)',
+      category: 'Biological Diversity / ABS',
+      applicabilityStatus: 'APPLICABLE',
+      headline: 'Statutory NBA Approval & SBB Prior Intimation for Commercial Biological Flora',
+      statutoryRequirements: [
+        'Form I prior intimation to State Biodiversity Board for commercial sourcing.',
+        'Form III clearance from National Biodiversity Authority prior to grant of any patent.',
+        'Payment of benefit-sharing levy (0.1% to 0.5% ex-factory sales).'
+      ],
+      evidenceNeeded: ['Supply chain invoice trail proving legal domestic procurement channels and origin'],
+      cautiousNextAction: 'Submit Form I to the respective State Biodiversity Board and file NBA Form III before patent sealing.',
+      statutoryCaveat: 'Failure to notify SBB or obtain NBA clearance invalidates patent grants and incurs statutory penalties under BDA 2002.',
+      citations: [
+        makeCitation('BIOLOGICAL_DIVERSITY_SEC_6', 'Mandatory NBA approval prior to grant of patent based on biological resources.'),
+        makeCitation('BIOLOGICAL_DIVERSITY_SEC_7', 'Prior intimation to SBB by Indian commercial entities.'),
+      ],
+    });
+  }
+
+  // 8. Traditional Knowledge (Defensive Protection)
+  if (hasKnownHerb) {
+    ipPathways.push({
+      pathwayName: 'Defensive Traditional Knowledge Protection (TKDL / Treaty)',
+      category: 'Traditional Knowledge',
+      applicabilityStatus: 'APPLICABLE',
+      headline: 'Defensive Protection Grounded in Public Classical Treatises & WIPO GRATK Treaty',
+      statutoryRequirements: [
+        'Public treatise references (Charaka, Sushruta, AFI) establish non-patentable public domain.',
+        'Mandatory disclosure of biological resource and associated traditional knowledge under WIPO GRATK Treaty 2024.',
+        'Shields against third-party misappropriation and unlawful biopiracy.'
+      ],
+      evidenceNeeded: ['Verified sloka references and AFI/API monograph numbers confirming classical provenance'],
+      cautiousNextAction: 'Cite authoritative First Schedule texts in commercial filings to establish prior-art and defeat biopiracy attempts.',
+      statutoryCaveat: 'Classical Ayurvedic recipes cannot be privatized; commercial monopoly is restricted to coined brands and novel delivery platforms.',
+      citations: [
+        makeCitation('PATENTS_ACT_SEC_3P', 'Section 3(p) exclusion for traditional knowledge aggregations.'),
+      ],
+    });
+  }
+
+  // 9. Prior-Art Intelligence
+  ipPathways.push({
+    pathwayName: 'Prior-Art & Freedom-to-Operate Intelligence',
+    category: 'Prior-Art Intelligence',
+    applicabilityStatus: 'POTENTIALLY_APPLICABLE',
+    headline: 'Patent Landscape & Non-Patent Literature Clearance (FTO)',
+    statutoryRequirements: [
+      'Comprehensive clearance across IPC Class A61K 36/00 (Medicinal botanical preparations).',
+      'Evaluation of active competitor patents covering delivery systems, extraction solvents, or micro-encapsulation.',
+      'Non-patent literature search in Ayurvedic Pharmacopoeia and scientific journals.'
+    ],
+    evidenceNeeded: ['Full boolean patent clearance search across Indian, WIPO, and USPTO databases'],
+    cautiousNextAction: 'Commission professional FTO landscape search before final formulation freeze and manufacturing line tooling.',
+    statutoryCaveat: 'FTO clearance reduces infringement risk but does not guarantee immunity from competitor litigation.',
+    citations: [
+      makeCitation('PATENTS_ACT_SEC_3E', 'Exclusion of mere admixtures and aggregation of known properties.'),
+    ],
+  });
+
   // ─── F. Regulatory Pathway Evaluation ──────────────────────────────────────
   const regulatoryPathways: RegulatoryPathwayEvaluation[] = [];
 
