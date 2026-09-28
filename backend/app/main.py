@@ -71,6 +71,8 @@ async def health_check():
 
 @app.get("/api/ready")
 @app.get("/ready")
+@app.get("/api/readiness")
+@app.get("/readiness")
 async def readiness_check():
     """Readiness probe: verifies corpus availability, RAG pipeline, and dependencies."""
     from app.rag.corpus_data import STATUTORY_CORPUS

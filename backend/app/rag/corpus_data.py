@@ -1,11 +1,29 @@
 """
 IP-SAKTI Backend — Authoritative Statutory Corpus Data
-Directly mirrors verified Indian statutory texts with legal hierarchy:
-Act -> Chapter -> Section -> Subsection -> Clause.
+SIH26045
+
+Directly mirrors verified Indian & International statutory texts with legal hierarchy:
+Act/Treaty -> Chapter -> Section/Article -> Subsection -> Clause.
+Covers:
+- Indian Patents Act 1970 (§ 3(p), § 3(e), § 10(4))
+- Drugs and Cosmetics Act 1940 & Rules 1945 (Rule 158B, Rule 161, Rule 170, Schedule T)
+- Biological Diversity Act 2002 (§ 6, § 7)
+- FSSAI (Ayurveda Aahar) Regulations 2022 (Reg 3 & 8)
+- Drugs and Magic Remedies (Objectionable Advertisements) Act 1954 (§ 3)
+- TRIPS Agreement (Article 27)
+- CBD & Nagoya Protocol (Article 15)
+- WIPO GRATK Treaty 2024 (Mandatory Disclosure)
+- Patent Cooperation Treaty (PCT)
+- Madrid System (Trademarks)
+- Hague System (Designs)
+- Budapest Treaty (Microorganism deposit)
+- EU THMPD Directive 2004/24/EC
+- US FDA Botanical Drug Guidance
 """
 from typing import Dict, Any, List
 
 STATUTORY_CORPUS: List[Dict[str, Any]] = [
+    # ─── 1. Patents Act, 1970 ──────────────────────────────────────────────────
     {
         "id": "PATENTS_ACT_SEC_3P",
         "act_title": "The Patents Act, 1970",
@@ -57,6 +75,8 @@ STATUTORY_CORPUS: List[Dict[str, Any]] = [
         "content": "Every complete specification shall— disclose the source and geographical origin of the biological material in the specification, when used in an invention.",
         "plain_summary": "Mandatory disclosure requirement. Any patent specification utilizing Indian biological resources must truthfully declare geographical origin and obtain National Biodiversity Authority (NBA) approval.",
     },
+
+    # ─── 2. Drugs & Cosmetics Act, 1940 & Rules 1945 ─────────────────────────
     {
         "id": "DC_RULES_158B",
         "act_title": "Drugs and Cosmetics Rules, 1945",
@@ -74,6 +94,61 @@ STATUTORY_CORPUS: List[Dict[str, Any]] = [
         "content": "Guidelines for issue of license with respect to Ayurveda, Siddha or Unani drugs.— (I) Patent or Proprietary medicine: (A) Published literature (evidence of safety and effectiveness) as defined under clause (h) of section 3 of the Act. (B) Pilot clinical trial study as prescribed.",
         "plain_summary": "Governs licensing conditions for Ayurvedic Proprietary Medicines. Formulations altering classical proportions or introducing novel excipients require Category B proof of clinical safety and efficacy.",
     },
+    {
+        "id": "DC_RULES_161_LABELLING",
+        "act_title": "Drugs and Cosmetics Rules, 1945",
+        "title": "Drugs and Cosmetics Rules, 1945 — Rule 161 (Labelling & Packing of ASU Drugs)",
+        "short_title": "D&C Rules 1945 Rule 161",
+        "authority": "Ministry of Ayush / State Licensing Authorities",
+        "source_type": "Rule",
+        "jurisdiction": "India",
+        "section_number": "161",
+        "legal_path": "Drugs and Cosmetics Rules, 1945 > Part XVII > Rule 161",
+        "publication_date": "1945-12-21",
+        "effective_date": "1945-12-21",
+        "status": "Active",
+        "source_url": "https://ayush.gov.in/docs/drugs-and-cosmetics-act-1940.pdf",
+        "content": "Rule 161: Labelling, packing and limit of pack size of Ayurvedic, Siddha or Unani drugs.— (1) There shall be printed or written in indelible ink on the label of the innermost container of any Ayurvedic, Siddha or Unani drug and on any other covering in which that container is packed: (a) name of the drug as given in the authoritative books specified in the First Schedule; (b) true list of all ingredients with botanical names, parts used and quantities; (c) net quantity; (d) batch number; (e) manufacturing licence number; (f) name and address of manufacturer; (g) for Schedule E(1) poisonous substances, clear cautionary warning 'Caution: To be taken under medical supervision'.",
+        "plain_summary": "Mandatory labelling rules for Ayurvedic medicines. Requires classical or trade name, complete botanical composition with plant parts, Mfg Lic No., Batch No., GMP manufacturer address, and Schedule E(1) caution if applicable.",
+    },
+    {
+        "id": "DC_RULES_170_ADVERTISING",
+        "act_title": "Drugs and Cosmetics Rules, 1945",
+        "title": "Drugs and Cosmetics Rules, 1945 — Rule 170 (Prohibition of Misleading Advertisements)",
+        "short_title": "D&C Rules 1945 Rule 170",
+        "authority": "Ministry of Ayush & State Licensing Authorities",
+        "source_type": "Rule",
+        "jurisdiction": "India",
+        "section_number": "170",
+        "legal_path": "Drugs and Cosmetics Rules, 1945 > Part XVIII > Rule 170",
+        "publication_date": "2018-12-24",
+        "effective_date": "2018-12-24",
+        "status": "Active",
+        "source_url": "https://ayush.gov.in/docs/gazette-notification-rule-170.pdf",
+        "content": "Rule 170: Prohibition of advertisements of Ayurvedic, Siddha or Unani drugs.— (1) The manufacturer shall not advertise any Ayurvedic, Siddha or Unani drug without obtaining a Unique Identification Number from the State Licensing Authority. (2) No advertisement shall make misleading or exaggerated therapeutic claims, or promise guaranteed cure for diseases prohibited under the Drugs and Magic Remedies Act.",
+        "plain_summary": "Requires prior regulatory review and identification number for commercial AYUSH advertisements. Bans misleading cure guarantees and unverified therapeutic claims.",
+    },
+
+    # ─── 3. Drugs and Magic Remedies (Objectionable Advertisements) Act, 1954 ─
+    {
+        "id": "DRUGS_MAGIC_REMEDIES_ACT_SEC_3",
+        "act_title": "The Drugs and Magic Remedies (Objectionable Advertisements) Act, 1954",
+        "title": "The Drugs and Magic Remedies Act, 1954 — Section 3 & Schedule",
+        "short_title": "Drugs & Magic Remedies Act 1954 § 3",
+        "authority": "Central Drugs Standard Control Organisation (CDSCO), MoHFW",
+        "source_type": "Act",
+        "jurisdiction": "India",
+        "section_number": "3",
+        "legal_path": "The Drugs and Magic Remedies Act, 1954 > Section 3",
+        "publication_date": "1954-04-30",
+        "effective_date": "1955-04-01",
+        "status": "Active",
+        "source_url": "https://www.indiacode.nic.in/handle/123456789/1514",
+        "content": "Section 3: Prohibition of advertisement of certain drugs for treatment of certain diseases and disorders.— No person shall take any part in the publication of any advertisement referring to any drug which suggests or leads to the use of that drug for: (a) the procurement of miscarriage; (b) the maintenance or improvement of the capacity of human beings for sexual pleasure; (c) the diagnosis, cure, mitigation, treatment or prevention of any disease, disorder or condition specified in the Schedule (including Diabetes, Cancer, Hypertension, Epilepsy, Kidney stones, Liver disorders, Rheumatism, Infertility).",
+        "plain_summary": "Absolute statutory bar against advertising cures or treatments for 54 schedule disorders including diabetes, cancer, hypertension, and sexual enhancement. Violations carry criminal liability.",
+    },
+
+    # ─── 4. Biological Diversity Act, 2002 ─────────────────────────────────────
     {
         "id": "BIO_DIVERSITY_ACT_SEC_6",
         "act_title": "Biological Diversity Act, 2002",
@@ -108,6 +183,8 @@ STATUTORY_CORPUS: List[Dict[str, Any]] = [
         "content": "Prior intimation to State Biodiversity Board for obtaining biological resource for certain purposes.— No person, who is a citizen of India or a body corporate, association or organisation which is registered in India, shall obtain any biological resource for commercial utilisation, or bio-survey and bio-utilisation for commercial utilisation except after giving prior intimation to the State Biodiversity Board concerned.",
         "plain_summary": "Indian commercial entities harvesting or procuring wild botanical resources must file Form I with the relevant State Biodiversity Board for Access and Benefit Sharing (ABS). Cultivated species may be exempt if source trace is verified.",
     },
+
+    # ─── 5. FSSAI Ayurveda Aahar Regulations, 2022 ────────────────────────────
     {
         "id": "FSSAI_AYURVEDA_AAHAR_2022",
         "act_title": "Food Safety and Standards (Ayurveda Aahar) Regulations, 2022",
@@ -122,7 +199,164 @@ STATUTORY_CORPUS: List[Dict[str, Any]] = [
         "effective_date": "2022-05-05",
         "status": "Active",
         "source_url": "https://www.fssai.gov.in/upload/uploadfiles/files/Gazette_Notification_Ayurveda_Aahar_09_05_2022.pdf",
-        "content": "Regulation 3 & 8: Food prepared in accordance with the authoritative books specified in Schedule A of these regulations. Strict prohibition: No person shall manufacture or sell Ayurveda Aahar with claims for prevention, mitigation, treatment, or cure of any human disease.",
+        "content": "Regulation 3 & 8: Food prepared in accordance with the authoritative books specified in Schedule A of these regulations. Strict prohibition: No person shall manufacture or sell Ayurveda Aahar with claims for prevention, mitigation, treatment, or cure of any human disease. Must display the official Ayurveda Aahar logo.",
         "plain_summary": "Governs food and dietary supplements prepared per classical recipes. Products under this category CANNOT make medicinal or therapeutic claims.",
+    },
+
+    # ─── 6. International Treaties & Frameworks ────────────────────────────────
+    {
+        "id": "TRIPS_AGREEMENT_ART_27",
+        "act_title": "Agreement on Trade-Related Aspects of Intellectual Property Rights (TRIPS)",
+        "title": "WTO TRIPS Agreement — Article 27 (Patentable Subject Matter)",
+        "short_title": "TRIPS Agreement Art 27",
+        "authority": "World Trade Organization (WTO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "27",
+        "legal_path": "WTO TRIPS Agreement > Part II > Section 5 > Article 27",
+        "publication_date": "1994-04-15",
+        "effective_date": "1995-01-01",
+        "status": "Active",
+        "source_url": "https://www.wto.org/english/docs_e/legal_e/27-trips_04c_e.htm",
+        "content": "Article 27.1: Patents shall be available for any inventions, whether products or processes, in all fields of technology, provided that they are new, involve an inventive step and are capable of industrial application. Article 27.3(b): Members may exclude from patentability plants and animals other than micro-organisms, and essentially biological processes. Members shall provide for the protection of plant varieties either by patents or by an effective sui generis system.",
+        "plain_summary": "Core international patent standard. Allows members to exclude plants and biological materials while requiring sui generis plant variety protection (e.g. India's PPV&FR Act). Requires novelty, inventive step, and industrial applicability.",
+    },
+    {
+        "id": "CBD_NAGOYA_PROTOCOL_ART_15",
+        "act_title": "Convention on Biological Diversity & Nagoya Protocol",
+        "title": "CBD Article 15 & Nagoya Protocol (Access and Benefit-Sharing)",
+        "short_title": "CBD / Nagoya Protocol Art 15",
+        "authority": "Secretariat of the Convention on Biological Diversity (SCBD), UNEP",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "15",
+        "legal_path": "Convention on Biological Diversity > Article 15 & Nagoya Protocol",
+        "publication_date": "1992-06-05",
+        "effective_date": "2014-10-12",
+        "status": "Active",
+        "source_url": "https://www.cbd.int/abs/",
+        "content": "Article 15: Sovereign rights of States over their natural resources. Access to genetic resources shall be subject to prior informed consent (PIC) of the Contracting Party providing such resources. Benefit-sharing shall be upon mutually agreed terms (MAT). Nagoya Protocol operationalizes fair and equitable sharing of benefits arising from the utilization of genetic resources and traditional knowledge associated with genetic resources.",
+        "plain_summary": "Governs international access to botanical genetic resources and traditional knowledge. Exporters of Indian botanicals to signatory countries must prove Prior Informed Consent (PIC) and compliance with national ABS frameworks.",
+    },
+    {
+        "id": "WIPO_GRATK_TREATY_2024",
+        "act_title": "WIPO Treaty on Intellectual Property, Genetic Resources and Associated Traditional Knowledge (2024)",
+        "title": "WIPO GRATK Treaty, 2024 — Mandatory Patent Disclosure Requirement",
+        "short_title": "WIPO GRATK Treaty 2024",
+        "authority": "World Intellectual Property Organization (WIPO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "Article 3",
+        "legal_path": "WIPO GRATK Treaty, 2024 > Article 3 (Disclosure Requirement)",
+        "publication_date": "2024-05-24",
+        "effective_date": "2024-05-24",
+        "status": "Active",
+        "source_url": "https://www.wipo.int/diplomatic-conferences/en/genetic-resources/",
+        "content": "Article 3: Mandatory disclosure requirement. Where the claimed invention in a patent application is materially based on genetic resources, each Contracting Party shall require applicants to disclose the country of origin of the genetic resources, or if unknown, the source. Where the claimed invention is materially based on traditional knowledge associated with genetic resources, applicants must disclose the Indigenous Peoples or local community who provided the traditional knowledge.",
+        "plain_summary": "Historic multilateral treaty requiring mandatory patent disclosure of origin for genetic resources and associated traditional knowledge in all contracting party patent offices.",
+    },
+    {
+        "id": "PCT_PATENT_COOPERATION_TREATY",
+        "act_title": "Patent Cooperation Treaty (PCT)",
+        "title": "Patent Cooperation Treaty (PCT) — International Phase Filing",
+        "short_title": "Patent Cooperation Treaty (PCT)",
+        "authority": "World Intellectual Property Organization (WIPO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "Articles 3 & 11",
+        "legal_path": "Patent Cooperation Treaty > Chapter I > Articles 3 & 11",
+        "publication_date": "1970-06-19",
+        "effective_date": "1978-01-24",
+        "status": "Active",
+        "source_url": "https://www.wipo.int/pct/en/",
+        "content": "Enables an applicant to file a single international patent application under the PCT simultaneously seeking protection for an invention in up to 157 Contracting States. Involves an International Search Report (ISR) and Written Opinion by an International Searching Authority (ISA) prior to entering the National Phase at 30/31 months.",
+        "plain_summary": "International patent filing pathway. Provides a unified international search report assessing prior art across global herbal patent databases before investing in individual country filings.",
+    },
+    {
+        "id": "MADRID_SYSTEM_TRADEMARKS",
+        "act_title": "Madrid Agreement & Protocol Concerning the International Registration of Marks",
+        "title": "Madrid System — International Trademark Registration (Class 5 & 3)",
+        "short_title": "Madrid System Trademarks",
+        "authority": "World Intellectual Property Organization (WIPO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "Protocol Article 2",
+        "legal_path": "Madrid Protocol > Article 2",
+        "publication_date": "1989-06-27",
+        "effective_date": "1995-12-01",
+        "status": "Active",
+        "source_url": "https://www.wipo.int/madrid/en/",
+        "content": "Allows trademark owners having a basic application or registration in India to secure international protection across up to 130 member countries through a single international application filed with the Indian Trade Marks Registry as Office of Origin.",
+        "plain_summary": "Streamlined international brand protection for Ayurvedic proprietary brands in Class 5 (pharmaceutical/herbal preparations) and Class 3 (herbal cosmetics).",
+    },
+    {
+        "id": "HAGUE_SYSTEM_DESIGNS",
+        "act_title": "Hague Agreement Concerning the International Registration of Industrial Designs",
+        "title": "Hague System — International Registration of Industrial Designs",
+        "short_title": "Hague System Designs",
+        "authority": "World Intellectual Property Organization (WIPO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "Geneva Act 1999",
+        "legal_path": "Hague Agreement > Geneva Act (1999)",
+        "publication_date": "1999-07-02",
+        "effective_date": "2003-12-23",
+        "status": "Active",
+        "source_url": "https://www.wipo.int/hague/en/",
+        "content": "Governs the international registration of industrial designs for novel packaging, applicator bottles, dispensers, or container aesthetics across multiple jurisdictions via a single centralized filing.",
+        "plain_summary": "Protects novel herbal product packaging shapes, traditional copper/glass container aesthetics, and distinctive applicator devices in global export markets.",
+    },
+    {
+        "id": "BUDAPEST_TREATY_MICROORGANISMS",
+        "act_title": "Budapest Treaty on the International Recognition of the Deposit of Microorganisms",
+        "title": "Budapest Treaty — Deposit of Microorganisms for Patent Procedure",
+        "short_title": "Budapest Treaty Microorganisms",
+        "authority": "World Intellectual Property Organization (WIPO), Geneva",
+        "source_type": "Treaty",
+        "jurisdiction": "International",
+        "section_number": "Article 3",
+        "legal_path": "Budapest Treaty > Article 3",
+        "publication_date": "1977-04-28",
+        "effective_date": "1980-08-19",
+        "status": "Active",
+        "source_url": "https://www.wipo.int/treaties/en/registration/budapest/",
+        "content": "Where an invention involves a microorganism (such as specialized fermentation cultures, probiotics, or bio-transformation bacterial strains in Asava/Arishta production) that is not available to the public, deposit with an International Depositary Authority (IDA, e.g. MTCC Chandigarh) satisfies patent disclosure requirements across all contracting states.",
+        "plain_summary": "Applicable when Ayurvedic patent claims involve proprietary bio-fermentation cultures or probiotic microbial strains. Deposit with recognized IDA is legally mandatory.",
+    },
+
+    # ─── 7. Key Export Market Herbal Regimes ───────────────────────────────────
+    {
+        "id": "EU_THMPD_DIRECTIVE_2004_24",
+        "act_title": "Directive 2004/24/EC on Traditional Herbal Medicinal Products (THMPD)",
+        "title": "European Union Directive 2004/24/EC — Traditional Herbal Registration",
+        "short_title": "EU THMPD Directive 2004/24/EC",
+        "authority": "European Medicines Agency (EMA) / Committee on Herbal Medicinal Products (HMPC)",
+        "source_type": "Guidance",
+        "jurisdiction": "International",
+        "section_number": "Articles 16a - 16i",
+        "legal_path": "Directive 2001/83/EC as amended by Directive 2004/24/EC",
+        "publication_date": "2004-03-31",
+        "effective_date": "2004-04-30",
+        "status": "Active",
+        "source_url": "https://www.ema.europa.eu/en/human-regulatory-overview/herbal-medicinal-products",
+        "content": "Simplified registration procedure for traditional herbal medicinal products. Eligibility criteria: (a) products have indications exclusively appropriate to traditional use without medical supervision; (b) specified strength and posology; (c) oral, external, or inhalation use; (d) bibliographic or expert evidence showing medicinal use throughout a period of at least 30 years preceding application, including at least 15 years within the European Union.",
+        "plain_summary": "Key gateway for Ayurvedic medicines entering the EU. Requires proof of 30 years documented traditional use (including 15 years within the EU), heavy metal/pesticide EU Pharmacopoeia monograph compliance, and non-prescription indication.",
+    },
+    {
+        "id": "US_FDA_BOTANICAL_DRUG_GUIDANCE",
+        "act_title": "US FDA Guidance for Industry: Botanical Drug Development",
+        "title": "US FDA Guidance for Industry: Botanical Drug Development (CDER)",
+        "short_title": "US FDA Botanical Drug Guidance",
+        "authority": "U.S. Food and Drug Administration (FDA), Department of Health and Human Services",
+        "source_type": "Guidance",
+        "jurisdiction": "International",
+        "section_number": "CDER / 21 CFR Part 312",
+        "legal_path": "Federal Food, Drug, and Cosmetic Act > 21 CFR Part 312 / Botanical Guidance",
+        "publication_date": "2016-12-01",
+        "effective_date": "2016-12-01",
+        "status": "Active",
+        "source_url": "https://www.fda.gov/regulatory-information/search-fda-guidance-documents/botanical-drug-development-guidance-industry",
+        "content": "Explains FDA requirements for developing botanical drugs (complex natural extracts) under Investigational New Drug (IND) applications and New Drug Applications (NDA). Emphasizes batch-to-batch consistency, chemical fingerprinting, raw material botanical controls, and dose-response clinical trials. Alternatively, products marketed without disease claims may enter as Dietary Supplements under DSHEA 1994 (21 U.S.C. 321(ff)).",
+        "plain_summary": "In the United States, Ayurvedic formulations can enter as: (1) Dietary Supplements under DSHEA (structure/function claims allowed, disease claims strictly prohibited); or (2) Prescription Botanical Drugs under IND/NDA (requires Phase 1-3 clinical trials and chemical fingerprinting).",
     }
 ]

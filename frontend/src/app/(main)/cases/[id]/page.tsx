@@ -16,6 +16,10 @@ import EvidenceGapView from '@/components/intelligence/EvidenceGapView';
 import WhySeeingThisModal from '@/components/intelligence/WhySeeingThisModal';
 import { RegulatoryTimeMachine } from '@/components/intelligence/RegulatoryTimeMachine';
 import { DocumentUploader } from '@/components/intelligence/DocumentUploader';
+import RelationshipMap from '@/components/intelligence/RelationshipMap';
+import OfficialRegistryRouter from '@/components/intelligence/OfficialRegistryRouter';
+import ABSWorkflowView from '@/components/intelligence/ABSWorkflowView';
+import ExpertConsultationModal from '@/components/intelligence/ExpertConsultationModal';
 
 export default function CaseDetailPage() {
   const { t } = useLanguageStore();
@@ -30,6 +34,7 @@ export default function CaseDetailPage() {
   
   // Interactive test switch for SIH Evaluators: simulate missing data to test safe abstention live
   const [simulateMissingData, setSimulateMissingData] = useState(false);
+  const [expertModalOpen, setExpertModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -206,6 +211,25 @@ export default function CaseDetailPage() {
 
             {/* Quick Actions */}
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setExpertModalOpen(true)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  background: 'rgba(197, 160, 89, 0.15)',
+                  color: '#8c6b1f',
+                  border: '1px solid rgba(197, 160, 89, 0.4)',
+                  padding: '0.55rem 1rem',
+                  borderRadius: '6px',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                }}
+              >
+                <span>🎓</span> {t('action.requestExpertReview') || 'Request Expert Review'}
+              </button>
+
               <Link
                 href={`/cases/${caseData.id}/report`}
                 style={{
@@ -482,12 +506,20 @@ export default function CaseDetailPage() {
 
         {/* ─── 3. EVIDENCE GAP DETECTOR ─── */}
         <section>
-          <EvidenceGapView gaps={evidenceGaps} />
+          <EvidenceGapView
+            gaps={evidenceGaps}
+            onRequestExpert={() => setExpertModalOpen(true)}
+          />
         </section>
 
         {/* ─── 4. SIGNATURE FEATURE: INTERACTIVE EVIDENCE CHAIN ─── */}
         <section style={{ marginBottom: '2.5rem' }}>
           <EvidenceChainView steps={evidenceChain} />
+        </section>
+
+        {/* ─── 4.1 RELATIONAL KNOWLEDGE GRAPH MAP ─── */}
+        <section style={{ marginBottom: '2.5rem' }}>
+          <RelationshipMap />
         </section>
 
         {/* ─── 5. POTENTIAL PATHWAYS (IP, REGULATORY, ABS) ─── */}
@@ -726,6 +758,16 @@ export default function CaseDetailPage() {
           </div>
         </section>
 
+        {/* ─── 5.1 DEDICATED ABS COMPLIANCE NAVIGATOR ─── */}
+        <section style={{ marginBottom: '2.5rem' }}>
+          <ABSWorkflowView />
+        </section>
+
+        {/* ─── 5.2 OFFICIAL REGISTRY & FILING ACTION ROUTER ─── */}
+        <section style={{ marginBottom: '2.5rem' }}>
+          <OfficialRegistryRouter />
+        </section>
+
         {/* ─── 6. PRIOR-ART INTELLIGENCE SIGNALS ─── */}
         {priorArtSignals.length > 0 && (
           <section style={{ marginBottom: '2.5rem' }}>
@@ -861,6 +903,18 @@ export default function CaseDetailPage() {
           setWhySeeingThis(null);
           setSelectedCitation(cit);
         }}
+      />
+
+      {/* Human Expert Consultation Package Generator */}
+      <ExpertConsultationModal
+        isOpen={expertModalOpen}
+        onClose={() => setExpertModalOpen(false)}
+        caseTitle={caseData.title}
+        caseId={caseData.id}
+        ingredients={formulationDNA.ingredients.map((i) => i.name)}
+        classification={candidateClassifications[0]?.name || 'Ayurvedic Formulation'}
+        confidence={candidateClassifications[0]?.confidence || 'POTENTIAL'}
+        evidenceGaps={evidenceGaps.map((g) => g.title)}
       />
     </div>
   );

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useLanguageStore } from '@/store/language';
 import LanguageSelector from './LanguageSelector';
+import JurisdictionSwitch from './JurisdictionSwitch';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -15,6 +16,7 @@ const NAV_LINKS = [
   { href: '/cases', labelKey: 'nav.cases', defaultLabel: 'My Cases' },
   { href: '/evidence', labelKey: 'nav.evidence', defaultLabel: 'Corpus' },
   { href: '/assistant', labelKey: 'nav.assistant', defaultLabel: 'Assistant' },
+  { href: '/admin', labelKey: 'nav.admin', defaultLabel: 'Admin' },
 ];
 
 const QUICK_SEARCHES = [
@@ -515,6 +517,11 @@ export default function Navbar() {
               </>
             )}
 
+            {/* Jurisdiction Mode Switch */}
+            <div className="hide-on-mobile">
+              <JurisdictionSwitch />
+            </div>
+
             {/* Professional All-Indian-Languages Selector */}
             <LanguageSelector />
 
@@ -578,10 +585,39 @@ export default function Navbar() {
                 href={link.href}
                 className={`nav-link${isActive(link.href) ? ' active' : ''}`}
                 style={{ display: 'flex', padding: '10px 12px', marginBottom: '2px' }}
+                onClick={() => setMobileOpen(false)}
               >
                 {t(link.labelKey) || link.defaultLabel}
               </Link>
             ))}
+
+            {/* Dedicated Workflows */}
+            <div style={{ borderTop: '1px solid var(--border-default)', paddingTop: '8px', marginTop: '6px' }}>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '4px 12px' }}>
+                SIH Workflows
+              </div>
+              <Link href="/regulations" style={{ display: 'flex', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-primary)', textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
+                ⚖️ Check Regulations
+              </Link>
+              <Link href="/claims" style={{ display: 'flex', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-primary)', textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
+                📢 Advertising & Claims
+              </Link>
+              <Link href="/label-review" style={{ display: 'flex', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-primary)', textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
+                🏷️ Label Review
+              </Link>
+              <Link href="/international" style={{ display: 'flex', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-primary)', textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
+                🌐 International Access
+              </Link>
+              <Link href="/privacy" style={{ display: 'flex', padding: '8px 12px', fontSize: '0.85rem', color: 'var(--text-primary)', textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
+                🔒 DPDP & Privacy
+              </Link>
+            </div>
+
+            {/* Jurisdiction Switch in mobile */}
+            <div style={{ borderTop: '1px solid var(--border-default)', paddingTop: '10px', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Jurisdiction</span>
+              <JurisdictionSwitch />
+            </div>
 
             {/* Language Selector in mobile */}
             <div style={{ borderTop: '1px solid var(--border-default)', paddingTop: '10px', marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

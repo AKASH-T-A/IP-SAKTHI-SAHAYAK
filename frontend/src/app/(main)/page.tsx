@@ -62,7 +62,10 @@ const IconLeaf = () => (
 const WORKFLOW_CONFIGS = [
   { id: 'analyze', icon: <IconFlask />, titleKey: 'home.workflow.analyze.title', descKey: 'home.workflow.analyze.desc', href: '/cases/new?workflow=analyze', color: 'var(--green-700)', bg: 'var(--green-100)', tagKey: 'home.workflow.mostUsed' },
   { id: 'protect', icon: <IconShield />, titleKey: 'home.workflow.protect.title', descKey: 'home.workflow.protect.desc', href: '/explore/ip', color: 'var(--green-700)', bg: 'var(--green-100)', tagKey: null },
-  { id: 'regulations', icon: <IconScale />, titleKey: 'home.workflow.regulations.title', descKey: 'home.workflow.regulations.desc', href: '/explore/regulations', color: 'var(--gold-700)', bg: 'var(--gold-100)', tagKey: null },
+  { id: 'regulations', icon: <IconScale />, titleKey: 'home.workflow.regulations.title', descKey: 'home.workflow.regulations.desc', href: '/regulations', color: 'var(--gold-700)', bg: 'var(--gold-100)', tagKey: null },
+  { id: 'claims', icon: <span style={{ fontSize: '1.4rem' }}>📢</span>, titleKey: 'regulatory.claimsCheckTitle', descKey: 'regulatory.claimsCheckDesc', href: '/claims', color: 'var(--gold-700)', bg: 'var(--gold-100)', tagKey: null },
+  { id: 'labelReview', icon: <span style={{ fontSize: '1.4rem' }}>🏷️</span>, titleKey: 'regulatory.labelReviewTitle', descKey: 'regulatory.labelReviewDesc', href: '/label-review', color: 'var(--green-700)', bg: 'var(--green-100)', tagKey: null },
+  { id: 'international', icon: <span style={{ fontSize: '1.4rem' }}>🌐</span>, titleKey: 'international.treatiesTitle', descKey: 'international.treatiesDesc', href: '/international', color: 'var(--green-700)', bg: 'var(--green-100)', tagKey: null },
   { id: 'evidence', icon: <IconSearch />, titleKey: 'home.workflow.evidence.title', descKey: 'home.workflow.evidence.desc', href: '/evidence', color: 'var(--gold-700)', bg: 'var(--gold-100)', tagKey: null },
   { id: 'assistant', icon: <IconBot />, titleKey: 'home.workflow.assistant.title', descKey: 'home.workflow.assistant.desc', href: '/assistant', color: 'var(--green-700)', bg: 'var(--green-100)', tagKey: null },
 ];
