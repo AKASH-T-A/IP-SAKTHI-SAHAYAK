@@ -26,6 +26,33 @@ async def init_database():
         await conn.run_sync(Base.metadata.create_all)
         logger.info("Database schema verification complete.")
 
+    # Seed admin user if not present
+    from app.db.session import AsyncSessionLocal
+    from app.models.models import User, UserRole
+    from app.core.security import get_password_hash
+    from sqlalchemy import select
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(User).where(User.email == settings.first_admin_email)
+        )
+        existing_admin = result.scalar_one_or_none()
+        if not existing_admin:
+            logger.info(f"Seeding first admin user: {settings.first_admin_email}")
+            admin_user = User(
+                email=settings.first_admin_email,
+                name="Sakti Administrator",
+                hashed_password=get_password_hash(settings.first_admin_password),
+                role=UserRole.admin,
+                language_preference="en",
+                is_active=True,
+            )
+            session.add(admin_user)
+            await session.commit()
+            logger.info("Admin user seeded successfully.")
+        else:
+            logger.info(f"Admin user {settings.first_admin_email} already exists.")
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

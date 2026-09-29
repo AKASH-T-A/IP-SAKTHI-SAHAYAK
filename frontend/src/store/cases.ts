@@ -62,11 +62,12 @@ interface CasesState {
   error: string | null;
   
   // Actions
-  addCase: (newCase: Omit<CaseItem, 'id' | 'created_at' | 'updated_at'>) => CaseItem;
+  addCase: (newCase: Omit<CaseItem, 'id' | 'created_at' | 'updated_at'>, customId?: string) => CaseItem;
   updateCase: (id: string, updates: Partial<CaseItem>) => void;
   deleteCase: (id: string) => void;
   getCaseById: (id: string) => CaseItem | undefined;
   setActiveCaseId: (id: string | null) => void;
+  syncBackendCases: (backendCases: Array<{ id: string; title: string; description?: string; status: any; jurisdiction: any; language: string; created_at: string; updated_at: string }>) => void;
 }
 
 // Initial representative demo case for first-time inspection
@@ -140,8 +141,8 @@ export const useCasesStore = create<CasesState>()(
       isLoading: false,
       error: null,
 
-      addCase: (newCaseData) => {
-        const id = 'case-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      addCase: (newCaseData, customId) => {
+        const id = customId || ('case-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6));
         const now = new Date().toISOString();
         const created: CaseItem = {
           ...newCaseData,
@@ -151,11 +152,78 @@ export const useCasesStore = create<CasesState>()(
         };
 
         set((state) => ({
-          cases: [created, ...state.cases],
+          cases: [created, ...state.cases.filter((c) => c.id !== id)],
           activeCaseId: id,
         }));
 
         return created;
+      },
+
+      syncBackendCases: (backendCases) => {
+        set((state) => {
+          const existingMap = new Map(state.cases.map((c) => [c.id, c]));
+          const merged: CaseItem[] = [...state.cases];
+
+          for (const bc of backendCases) {
+            if (existingMap.has(bc.id)) {
+              // Update status/updated_at
+              const idx = merged.findIndex((c) => c.id === bc.id);
+              if (idx !== -1) {
+                merged[idx] = {
+                  ...merged[idx],
+                  title: bc.title,
+                  description: bc.description || merged[idx].description,
+                  status: (bc.status as any) || merged[idx].status,
+                  jurisdiction: (bc.jurisdiction as any) || merged[idx].jurisdiction,
+                  updated_at: bc.updated_at,
+                };
+              }
+            } else {
+              // New backend case not yet in local memory
+              const newCaseItem: CaseItem = {
+                id: bc.id,
+                title: bc.title,
+                description: bc.description || '',
+                status: (bc.status as any) || 'active',
+                jurisdiction: (bc.jurisdiction as any) || 'India',
+                language: bc.language || 'en',
+                created_at: bc.created_at,
+                updated_at: bc.updated_at,
+                formulation: {
+                  product_category: 'Ayurvedic formulation',
+                  ingredients: [
+                    {
+                      id: 'ing-1',
+                      name: 'Ashwagandha',
+                      botanical_name: 'Withania somnifera',
+                      part_used: 'Root (Mūla)',
+                      percentage: 60,
+                      source_type: 'cultivated',
+                    },
+                  ],
+                  preparation_method: 'Standard aqueous extraction',
+                  traditional_basis: ['Ayurvedic Formulary of India (AFI)'],
+                  is_classical: false,
+                  intended_use: 'General vitality and wellness support',
+                  claims_type: ['Ayurvedic Proprietary Medicine'],
+                  commercial_intent: 'Domestic commercial manufacture',
+                  target_jurisdiction: (bc.jurisdiction as any) || 'India',
+                  preliminary_rules: {
+                    patent_3p_applicable: true,
+                    patent_3p_note: 'Section 3(p) Indian Patents Act applies.',
+                    abs_nba_required: true,
+                    abs_nba_note: 'Biological Diversity Act 2002 applies.',
+                    regulatory_framework: 'Drugs & Cosmetics Act 1940 (Rule 158B)',
+                    regulatory_note: 'Schedule T GMP compliance required.',
+                    fssai_ayurveda_aahar: false,
+                  },
+                },
+              };
+              merged.unshift(newCaseItem);
+            }
+          }
+          return { cases: merged };
+        });
       },
 
       updateCase: (id, updates) => {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLanguageStore } from '@/store/language';
+import { regulatoryApi } from '@/lib/api/regulatory';
 
 interface FieldStatus {
   field_name: string;
@@ -63,20 +64,11 @@ export default function LabelReviewPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/label/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          label_text: textToReview,
-          product_category: catToReview,
-        }),
+      const data = await regulatoryApi.reviewLabel({
+        label_text: textToReview,
+        product_category: catToReview,
       });
-      if (res.ok) {
-        const data = await res.json();
-        setResult(data);
-      } else {
-        throw new Error('Label review endpoint error');
-      }
+      setResult(data);
     } catch (err) {
       // Client-side fallback matching backend logic
       const lower = textToReview.toLowerCase();
@@ -195,9 +187,9 @@ export default function LabelReviewPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
           <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.home')}</Link>
           <span>/</span>
-          <Link href="/regulations" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Regulations</Link>
+          <Link href="/regulations" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.regulations')}</Link>
           <span>/</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Label Review</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('regulatory.labelReviewTitle')}</span>
         </div>
 
         {/* Header */}
@@ -209,10 +201,10 @@ export default function LabelReviewPage() {
             </span>
           </div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'var(--text-primary)', margin: '0 0 0.5rem', fontWeight: 600 }}>
-            Ayurvedic Label Review & Declaration Audit
+            {t('regulatory.labelReviewTitle')}
           </h1>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '750px', lineHeight: 1.5 }}>
-            Audit product label text and document artwork against <strong>Rule 161 of the Drugs and Cosmetics Rules, 1945</strong>, <strong>Schedule E(1) Cautionary Warnings</strong>, and <strong>Legal Metrology Packaged Commodities Rules</strong>.
+            {t('regulatory.labelReviewDesc')}
           </p>
         </div>
 

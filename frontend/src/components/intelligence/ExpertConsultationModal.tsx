@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguageStore } from '@/store/language';
+import { expertApi, ExpertConsultationPackage } from '@/lib/api/expert';
 
 interface ExpertConsultationModalProps {
   isOpen: boolean;
@@ -27,11 +28,11 @@ export default function ExpertConsultationModal({
   const { t } = useLanguageStore();
   const [copied, setCopied] = useState(false);
   const [userQuestions, setUserQuestions] = useState<string>('');
+  const [backendPackage, setBackendPackage] = useState<ExpertConsultationPackage | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  if (!isOpen) return null;
-
-  const packageId = `EXP-PKG-${caseId.slice(0, 8).toUpperCase()}`;
-  const now = new Date().toISOString();
+  const packageId = backendPackage?.package_id || `EXP-PKG-${caseId.slice(0, 8).toUpperCase()}`;
+  const now = backendPackage?.generated_at || new Date().toISOString();
 
   const questionsList = userQuestions.trim()
     ? userQuestions.split('\n').filter((q) => q.trim().length > 0)
@@ -41,7 +42,37 @@ export default function ExpertConsultationModal({
         'What are the mandatory State Biodiversity Board (SBB) benefit-sharing filing requirements?',
       ];
 
-  const fullDossierText = `# IP-SAKTI SAHAYAK — HUMAN EXPERT CONSULTATION PACKAGE
+  useEffect(() => {
+    if (!isOpen) return;
+    let isCancelled = false;
+    setIsGenerating(true);
+    expertApi
+      .generateConsultationPackage({
+        case_id: caseId,
+        case_title: caseTitle,
+        formulation: {
+          ingredients: ingredients.map((name) => ({ name })),
+        },
+        user_questions: questionsList,
+      })
+      .then((pkg) => {
+        if (!isCancelled) setBackendPackage(pkg);
+      })
+      .catch((err) => {
+        console.warn('Backend expert package generation failed, using local format:', err);
+      })
+      .finally(() => {
+        if (!isCancelled) setIsGenerating(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isOpen, caseId, caseTitle]);
+
+  if (!isOpen) return null;
+
+  const fallbackDossierText = `# IP-SAKTI SAHAYAK — HUMAN EXPERT CONSULTATION PACKAGE
 Package ID: ${packageId}
 Generated At: ${now}
 Case: ${caseTitle} (ID: ${caseId})
@@ -80,6 +111,8 @@ This consultation package is an algorithmic decision-support synthesis.
 It does NOT constitute formal legal advice, attorney-client privileged work product,
 or granted regulatory certification. Not yet submitted to an external expert.
 `;
+
+  const fullDossierText = backendPackage?.markdown_dossier || fallbackDossierText;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fullDossierText);

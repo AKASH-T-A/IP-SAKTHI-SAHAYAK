@@ -6,10 +6,11 @@ import { useRouter } from 'next/navigation';
 import { useCasesStore, CaseItem } from '@/store/cases';
 import { useAuthStore } from '@/store/auth';
 import { useLanguageStore } from '@/store/language';
+import { casesApi } from '@/lib/api/cases';
 
 export default function CasesPage() {
   const router = useRouter();
-  const { cases, deleteCase } = useCasesStore();
+  const { cases, deleteCase, syncBackendCases } = useCasesStore();
   const { isAuthenticated, user } = useAuthStore();
   const { t } = useLanguageStore();
   
@@ -19,7 +20,22 @@ export default function CasesPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    let isCancelled = false;
+    casesApi
+      .list()
+      .then((res) => {
+        if (!isCancelled && res?.items) {
+          syncBackendCases(res.items);
+        }
+      })
+      .catch((err) => {
+        console.warn('Backend cases fetch note:', err);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [syncBackendCases]);
 
   if (!mounted) {
     return (

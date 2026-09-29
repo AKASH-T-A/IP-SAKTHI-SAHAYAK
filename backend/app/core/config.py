@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     # OpenAI
     openai_api_key: str = ""
 
+    # Google Gemini
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.5-flash"
+    gemini_live_model: str = "gemini-2.0-flash"
+
     # Storage
     storage_endpoint: str = ""
     storage_bucket: str = "ipsakti-documents"

@@ -20,6 +20,7 @@ import RelationshipMap from '@/components/intelligence/RelationshipMap';
 import OfficialRegistryRouter from '@/components/intelligence/OfficialRegistryRouter';
 import ABSWorkflowView from '@/components/intelligence/ABSWorkflowView';
 import ExpertConsultationModal from '@/components/intelligence/ExpertConsultationModal';
+import { casesApi } from '@/lib/api/cases';
 
 export default function CaseDetailPage() {
   const { t } = useLanguageStore();
@@ -38,11 +39,60 @@ export default function CaseDetailPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (caseId) {
-      const found = getCaseById(caseId);
-      if (found) {
-        setCaseData(found);
-      }
+    if (!caseId) return;
+
+    const found = getCaseById(caseId);
+    if (found) {
+      setCaseData(found);
+    } else {
+      casesApi
+        .get(caseId)
+        .then((bc) => {
+          if (bc) {
+            setCaseData({
+              id: bc.id,
+              title: bc.title,
+              description: bc.description || '',
+              status: (bc.status as any) || 'active',
+              jurisdiction: (bc.jurisdiction as any) || 'India',
+              language: bc.language || 'en',
+              created_at: bc.created_at,
+              updated_at: bc.updated_at,
+              formulation: {
+                product_category: 'Ayurvedic formulation',
+                ingredients: [
+                  {
+                    id: 'ing-1',
+                    name: 'Ashwagandha',
+                    botanical_name: 'Withania somnifera',
+                    part_used: 'Root (Mūla)',
+                    percentage: 60,
+                    source_type: 'cultivated',
+                  },
+                ],
+                preparation_method: 'Standard aqueous extraction',
+                traditional_basis: ['Ayurvedic Formulary of India (AFI)'],
+                is_classical: false,
+                intended_use: 'General vitality and wellness support',
+                claims_type: ['Ayurvedic Proprietary Medicine'],
+                commercial_intent: 'Domestic commercial manufacture',
+                target_jurisdiction: (bc.jurisdiction as any) || 'India',
+                preliminary_rules: {
+                  patent_3p_applicable: true,
+                  patent_3p_note: 'Section 3(p) Indian Patents Act applies.',
+                  abs_nba_required: true,
+                  abs_nba_note: 'Biological Diversity Act 2002 applies.',
+                  regulatory_framework: 'Drugs & Cosmetics Act 1940 (Rule 158B)',
+                  regulatory_note: 'Schedule T GMP compliance required.',
+                  fssai_ayurveda_aahar: false,
+                },
+              },
+            });
+          }
+        })
+        .catch((err) => {
+          console.warn('Backend case fetch note:', err);
+        });
     }
   }, [caseId, getCaseById]);
 

@@ -42,7 +42,12 @@ const PAGE_VERIFICATIONS = {
   'Assistant': ['assistant.breadcrumb', 'assistant.title', 'assistant.badge', 'assistant.subtitle', 'assistant.activeCase', 'assistant.bannerActive', 'assistant.suggestedInquiries', 'assistant.directAnswer', 'assistant.why', 'assistant.officialCitations', 'assistant.evidenceGaps', 'assistant.practicalMeaning', 'assistant.nextActions', 'assistant.placeholder', 'assistant.send', 'assistant.disclaimerFooter'],
   'Report': ['report.header', 'report.title', 'report.subtitle', 'report.ref', 'report.date', 'report.corpusHash', 'report.returnDossier', 'report.printSave', 'report.sec1', 'report.sec2', 'report.sec3', 'report.sec4', 'report.sec5', 'report.sec6', 'report.sec7', 'report.tableIngredients', 'report.name', 'report.botanical', 'report.part', 'report.ratio', 'report.origin'],
   'Login': ['auth.welcomeBack', 'auth.signInDesc', 'auth.email', 'auth.password', 'auth.signIn', 'auth.noAccount', 'auth.showPassword', 'auth.hidePassword', 'auth.sessionExpired'],
-  'Register': ['auth.createAccountTitle', 'auth.createAccountDesc', 'auth.fullName', 'auth.email', 'auth.password', 'auth.createAccount', 'auth.haveAccount', 'auth.signIn', 'auth.preferredLanguage', 'auth.charRequirement']
+  'Register': ['auth.createAccountTitle', 'auth.createAccountDesc', 'auth.fullName', 'auth.email', 'auth.password', 'auth.createAccount', 'auth.haveAccount', 'auth.signIn', 'auth.preferredLanguage', 'auth.charRequirement'],
+  'Claims': ['regulatory.claimsCheckTitle', 'regulatory.claimsCheckDesc'],
+  'LabelReview': ['regulatory.labelReviewTitle', 'regulatory.labelReviewDesc'],
+  'International': ['international.treatiesTitle', 'international.treatiesDesc'],
+  'Regulations': ['nav.regulations', 'cases.formulationCategory', 'action.requestExpertReview'],
+  'WizardPlantParts': ['wizard.classicalNone', 'wizard.docCoa', 'wizard.docExcerpt', 'wizard.partBark', 'wizard.partFlower', 'wizard.partLeaf', 'wizard.partResin', 'wizard.partRhizome', 'wizard.partRoot', 'wizard.partSeed', 'wizard.partWhole']
 };
 
 // 9 Intelligence Components canonical keys from index.ts

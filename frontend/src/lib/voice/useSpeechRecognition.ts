@@ -170,11 +170,11 @@ export function useSpeechRecognition({
         let friendlyError = voiceStrings.tryAgain;
 
         if (errType === 'not-allowed' || errType === 'service-not-allowed') {
-          friendlyError = voiceStrings.micBlocked;
+          friendlyError = 'Microphone permission is required for voice input.';
         } else if (errType === 'no-speech') {
-          friendlyError = voiceStrings.noSpeechDetected;
+          friendlyError = voiceStrings.noSpeechDetected || 'No speech was detected. Please try again or type your question.';
         } else if (errType === 'language-not-supported') {
-          friendlyError = `${voiceStrings.langNotSupported} (${localeMeta.speechLabel})`;
+          friendlyError = 'Voice recognition for this language is not currently available in this browser.';
         } else if (errType === 'audio-capture') {
           friendlyError = 'Microphone hardware unavailable or in use by another application.';
         } else if (errType === 'network') {

@@ -7,6 +7,7 @@ import { useCasesStore } from '@/store/cases';
 import { useLanguageStore } from '@/store/language';
 import { getLanguageMeta } from '@/i18n/languages';
 import { generateAssistantResponse } from '@/lib/intelligence/assistant';
+import { assistantApi } from '@/lib/api/assistant';
 import { StructuredAssistantResponse, Citation } from '@/lib/intelligence/types';
 import EvidenceDrawer from '@/components/intelligence/EvidenceDrawer';
 import EvidenceStrengthBadge from '@/components/intelligence/EvidenceStrengthBadge';
@@ -15,6 +16,7 @@ import { useSpeechSynthesis } from '@/lib/voice/useSpeechSynthesis';
 import AudioResponsePlayer from '@/components/voice/AudioResponsePlayer';
 import { getVoiceStrings, getVoiceLocaleMeta } from '@/lib/voice/locales';
 import { defaultBhashiniClient } from '@/lib/voice/bhashiniProvider';
+import { unifiedVoiceProvider, UnifiedVoiceState } from '@/lib/voice/unifiedVoiceProvider';
 
 interface ChatMessage {
   id: string;
@@ -149,12 +151,43 @@ function AssistantContent() {
   const [autoReadResponses, setAutoReadResponses] = useState<boolean>(false);
   const [expandedWhy, setExpandedWhy] = useState<Record<string, boolean>>({});
   const [voiceDraft, setVoiceDraft] = useState<string | null>(null);
+  const [geminiStatus, setGeminiStatus] = useState<{ status: string; model?: string; provider?: string }>({
+    status: 'CHECKING',
+  });
+  const [voiceProviderState, setVoiceProviderState] = useState<UnifiedVoiceState | null>(null);
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentMeta = getLanguageMeta(language);
   const voiceStrings = getVoiceStrings(language);
   const voiceLocaleMeta = getVoiceLocaleMeta(language);
   const bhashiniStatus = defaultBhashiniClient.getStatus();
+
+  // Sync Gemini LLM and Unified Voice Provider status
+  useEffect(() => {
+    let isMounted = true;
+    assistantApi.getStatus().then((res) => {
+      if (isMounted) {
+        setGeminiStatus({
+          status: res.gemini?.status || 'GEMINI_NOT_CONFIGURED',
+          model: res.gemini?.model,
+          provider: res.gemini?.provider_name,
+        });
+      }
+    }).catch(() => {
+      if (isMounted) setGeminiStatus({ status: 'GEMINI_NOT_CONFIGURED' });
+    });
+
+    unifiedVoiceProvider.syncWithBackend(language).then((vState) => {
+      if (isMounted) {
+        setVoiceProviderState(vState);
+      }
+    }).catch(() => {
+      // browser fallback
+    });
+
+    return () => { isMounted = false; };
+  }, [language]);
 
   // Match case from context query param if provided
   useEffect(() => {
@@ -223,15 +256,18 @@ function AssistantContent() {
   const {
     status: ttsStatus,
     speakingMessageId,
+    currentVoiceInfo,
     speak: ttsSpeak,
     pause: ttsPause,
     resume: ttsResume,
     stop: ttsStop,
   } = useSpeechSynthesis();
 
-  const handleSend = (textToSend?: string) => {
+  const [isQuerying, setIsQuerying] = useState<boolean>(false);
+
+  const handleSend = async (textToSend?: string) => {
     const q = (textToSend || inputQuery).trim();
-    if (!q) return;
+    if (!q || isQuerying) return;
 
     // Release microphone and cancel active speech
     stopListening();
@@ -245,29 +281,87 @@ function AssistantContent() {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    const structured = generateAssistantResponse(q, activeCase, language);
-    const botMsgId = 'msg-bot-' + Date.now();
-
-    const botMsg: ChatMessage = {
-      id: botMsgId,
-      sender: 'assistant',
-      structured,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setMessages((prev) => [...prev, userMsg, botMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInputQuery('');
     resetSpeech();
+    setIsQuerying(true);
 
-    // Auto-read response if enabled or in Voice Mode
-    if (autoReadResponses || voiceMode) {
-      setTimeout(() => {
-        ttsSpeak(structured.answer, botMsgId, language, () => {
-          if (voiceMode) {
-            startListening();
-          }
-        });
-      }, 300);
+    try {
+      const backendRes = await assistantApi.query({
+        query: q,
+        language: language,
+        case_context: activeCase
+          ? {
+              case_id: activeCase.id,
+              title: activeCase.title,
+              ingredients: activeCase.formulation?.ingredients || [],
+              jurisdiction: activeCase.jurisdiction || 'India',
+            }
+          : undefined,
+      });
+
+      const strengthMap: Record<string, 'HIGH_EVIDENCE' | 'MODERATE_EVIDENCE' | 'LIMITED_EVIDENCE' | 'INSUFFICIENT_EVIDENCE'> = {
+        High: 'HIGH_EVIDENCE',
+        Moderate: 'MODERATE_EVIDENCE',
+        Low: 'LIMITED_EVIDENCE',
+        Insufficient: 'INSUFFICIENT_EVIDENCE',
+      };
+
+      const structured: StructuredAssistantResponse = {
+        answer: backendRes.answer,
+        why: backendRes.why,
+        evidence: (backendRes.citations || []).map((c) => ({
+          sourceId: c.id,
+          sourceTitle: c.short_title,
+          authority: c.authority,
+          hierarchy: { act: c.short_title, section: c.section },
+          version: 'Official Gazette',
+          status: 'ACTIVE',
+          relevanceExplanation: c.canonical_status || 'Authoritative Gazette Text (Canonical)',
+          supportingExcerpt: c.excerpt,
+          canonicalUrl: c.source_url,
+        })),
+        whatIsMissing: backendRes.missing_information || [],
+        whatThisMeans: backendRes.practical_meaning || '',
+        nextAction: backendRes.next_actions || [],
+        confidence: strengthMap[backendRes.evidence_strength] || 'MODERATE_EVIDENCE',
+        confidenceExplanation: backendRes.why,
+        isAbstained: backendRes.abstained,
+      };
+
+      const botMsgId = 'msg-bot-' + Date.now();
+      const botMsg: ChatMessage = {
+        id: botMsgId,
+        sender: 'assistant',
+        structured,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setMessages((prev) => [...prev, botMsg]);
+
+      // Auto-read response if enabled or in Voice Mode
+      if (autoReadResponses || voiceMode) {
+        setTimeout(() => {
+          ttsSpeak(structured.answer, botMsgId, language, () => {
+            if (voiceMode) {
+              startListening();
+            }
+          });
+        }, 300);
+      }
+    } catch (err) {
+      console.warn('Backend query error, using local fallback:', err);
+      const structured = generateAssistantResponse(q, activeCase, language);
+      const botMsgId = 'msg-bot-' + Date.now();
+      const botMsg: ChatMessage = {
+        id: botMsgId,
+        sender: 'assistant',
+        structured,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    } finally {
+      setIsQuerying(false);
     }
   };
 
@@ -308,24 +402,24 @@ function AssistantContent() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.25rem', color: 'var(--green-900)', margin: 0, fontWeight: 700, letterSpacing: '-0.02em' }}>
-                  BHASHINI
+                  IP-SAKTI Sahayak
                 </h1>
                 <span
                   style={{
-                    padding: '3px 10px',
+                    padding: '4px 12px',
                     background: 'rgba(46, 125, 50, 0.12)',
                     border: '1px solid rgba(46, 125, 50, 0.3)',
                     borderRadius: 'var(--radius-full)',
-                    fontSize: '0.75rem',
+                    fontSize: '0.8rem',
                     color: 'var(--green-800)',
                     fontWeight: 700,
                   }}
                 >
-                  🌿 Multilingual AI Assistant
+                  🎙️ Voice Assistant: BHASHINI
                 </span>
                 <span
                   style={{
-                    padding: '3px 10px',
+                    padding: '4px 10px',
                     background: 'var(--bg-subtle)',
                     border: '1px solid var(--border-default)',
                     borderRadius: 'var(--radius-full)',
@@ -338,7 +432,7 @@ function AssistantContent() {
                 </span>
               </div>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', margin: '0.4rem 0 0', lineHeight: 1.5 }}>
-                IP-SAKTI’s Multilingual AI Assistant — Grounded in The Patents Act 1970, Drugs & Cosmetics Rules 1945, and Biological Diversity Act 2002.
+                AI-powered IP & Regulatory Assistant — Grounded in The Patents Act 1970, Drugs & Cosmetics Rules 1945, and Biological Diversity Act 2002.
               </p>
             </div>
 
@@ -438,28 +532,95 @@ function AssistantContent() {
             </div>
           </div>
 
-          {/* Bhashini Provider Status Badge */}
+          {/* Unified AI Engine & Voice Provider Status Badges */}
           <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {/* Gemini / LLM Layer Status */}
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '3px 8px',
+                padding: '4px 10px',
                 borderRadius: 'var(--radius-full)',
-                background: bhashiniStatus.isConfigured ? 'rgba(34, 197, 94, 0.12)' : 'rgba(217, 119, 6, 0.1)',
-                border: `1px solid ${bhashiniStatus.isConfigured ? 'rgba(34, 197, 94, 0.3)' : 'rgba(217, 119, 6, 0.25)'}`,
-                fontSize: '0.6875rem',
+                background: geminiStatus.status === 'GEMINI_READY' ? 'rgba(34, 197, 94, 0.12)' : 'rgba(46, 125, 50, 0.08)',
+                border: `1px solid ${geminiStatus.status === 'GEMINI_READY' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(46, 125, 50, 0.25)'}`,
+                fontSize: '0.72rem',
                 fontWeight: 600,
-                color: bhashiniStatus.isConfigured ? 'var(--green-800)' : 'var(--gold-800)',
+                color: 'var(--green-900)',
               }}
             >
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: bhashiniStatus.isConfigured ? '#16a34a' : '#d97706' }} />
-              {bhashiniStatus.isConfigured ? 'BHASHINI: CONNECTED (NLTM API)' : 'BHASHINI: FALLBACK MODE (Web Speech API)'}
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: geminiStatus.status === 'GEMINI_READY' ? '#16a34a' : '#059669',
+                }}
+              />
+              {geminiStatus.status === 'GEMINI_READY'
+                ? `✨ Gemini 2.5 Flash Grounded Layer (${geminiStatus.model || 'Active'})`
+                : '🏛️ IP-SAKTI Authoritative Statutory RAG Engine (Deterministic Grounded Mode)'}
             </span>
-            <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
-              {bhashiniStatus.notes}
+
+            {/* Voice Provider Status */}
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 10px',
+                borderRadius: 'var(--radius-full)',
+                background: voiceProviderState?.selectionState === 'GEMINI_READY' || voiceProviderState?.selectionState === 'BHASHINI_READY'
+                  ? 'rgba(34, 197, 94, 0.12)'
+                  : 'rgba(217, 119, 6, 0.08)',
+                border: `1px solid ${voiceProviderState?.selectionState === 'GEMINI_READY' || voiceProviderState?.selectionState === 'BHASHINI_READY'
+                  ? 'rgba(34, 197, 94, 0.3)'
+                  : 'rgba(217, 119, 6, 0.25)'}`,
+                fontSize: '0.72rem',
+                fontWeight: 600,
+                color: voiceProviderState?.selectionState === 'GEMINI_READY' || voiceProviderState?.selectionState === 'BHASHINI_READY'
+                  ? 'var(--green-800)'
+                  : 'var(--gold-800)',
+              }}
+            >
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: voiceProviderState?.selectionState === 'GEMINI_READY' || voiceProviderState?.selectionState === 'BHASHINI_READY'
+                    ? '#16a34a'
+                    : '#d97706',
+                }}
+              />
+              {voiceProviderState?.selectionState === 'GEMINI_READY'
+                ? '🎙️ BHASHINI: Gemini Live Audio'
+                : voiceProviderState?.selectionState === 'BHASHINI_READY'
+                ? '🎙️ BHASHINI: NLTM ULCA Neural API'
+                : '🎙️ BHASHINI: Native Browser Speech Engine (23 Languages)'}
             </span>
+
+            {ttsStatus === 'SPEAKING' && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '4px 10px',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'rgba(46, 125, 50, 0.12)',
+                  border: '1px solid rgba(46, 125, 50, 0.3)',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  color: 'var(--green-800)',
+                }}
+              >
+                <span>🔊</span>
+                <span>
+                  Speaking in {currentMeta.nativeName} ({currentVoiceInfo?.isFemale ? 'BHASHINI Female Voice' : 'Browser Voice'})
+                </span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -586,6 +747,7 @@ function AssistantContent() {
                           language={language}
                           synthesisStatus={ttsStatus}
                           activeMessageId={speakingMessageId}
+                          isFemaleVoice={currentVoiceInfo?.isFemale}
                           onSpeak={(text, id) => ttsSpeak(text, id, language)}
                           onPause={ttsPause}
                           onResume={ttsResume}
@@ -633,6 +795,7 @@ function AssistantContent() {
                           language={language}
                           synthesisStatus={ttsStatus}
                           activeMessageId={speakingMessageId}
+                          isFemaleVoice={currentVoiceInfo?.isFemale}
                           onSpeak={(text, id) => ttsSpeak(text, id, language)}
                           onPause={ttsPause}
                           onResume={ttsResume}
@@ -818,6 +981,41 @@ function AssistantContent() {
                 )}
               </div>
             ))}
+            {isQuerying && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: isRtl ? 'flex-end' : 'flex-start',
+                  width: '100%',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--green-800)' }}>
+                    🌿 BHASHINI
+                  </span>
+                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                    Generating answer...
+                  </span>
+                </div>
+                <div
+                  style={{
+                    background: '#ffffff',
+                    border: '1.5px solid var(--border-default)',
+                    padding: '0.85rem 1.25rem',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '0.85rem',
+                    color: 'var(--text-muted)',
+                  }}
+                >
+                  <span style={{ display: 'inline-block' }}>⚙️</span>
+                  Analyzing statutory corpus & synthesizing decision-support response...
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -860,90 +1058,224 @@ function AssistantContent() {
             </div>
           )}
 
-          {/* ─── Voice Recognition Transcript Preview Modal ─────────────────── */}
-          {(speechStatus === 'LISTENING' || voiceDraft) && (
+          {/* Error Message for Voice Recognition */}
+          {speechError && (
             <div
               style={{
-                background: speechStatus === 'LISTENING' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(46, 125, 50, 0.05)',
-                border: speechStatus === 'LISTENING' ? '1.5px solid rgba(220, 38, 38, 0.3)' : '1.5px solid rgba(46, 125, 50, 0.3)',
-                borderRadius: 'var(--radius-lg)',
+                background: '#fff1f2',
+                border: '1.5px solid #fecdd3',
+                borderRadius: '12px',
                 padding: '0.85rem 1rem',
                 marginBottom: '1rem',
+                fontSize: '0.85rem',
+                color: '#be123c',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                boxShadow: '0 2px 8px rgba(220, 38, 38, 0.06)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1rem' }}>⚠️</span>
+                <span style={{ fontWeight: 500 }}>{speechError}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => resetSpeech()}
+                aria-label="Dismiss error"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#be123c',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  padding: '2px 6px',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* ─── Requirement 13: BHASHINI Voice Listening Card ──────────────── */}
+          {speechStatus === 'LISTENING' && (
+            <div
+              style={{
+                background: '#ffffff',
+                border: '2px solid rgba(220, 38, 38, 0.35)',
+                borderRadius: '16px',
+                padding: '1.5rem',
+                marginBottom: '1.25rem',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
+                alignItems: 'center',
+                gap: '12px',
+                textAlign: 'center',
+                boxShadow: '0 6px 20px rgba(220, 38, 38, 0.08)',
+                animation: 'fadeIn 150ms ease',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.25rem' }}>🎙️</span>
+                <span style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--green-900)' }}>
+                  BHASHINI
+                </span>
+              </div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                {voiceStrings.listening} ({currentMeta.nativeName})
+              </div>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '4px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  background: 'rgba(220, 38, 38, 0.1)',
+                  color: '#dc2626',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                }}
+              >
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#dc2626', animation: 'pulse 1s infinite' }} />
+                {voiceStrings.listening}
+              </div>
+              <div
+                style={{
+                  fontSize: '1.05rem',
+                  color: interimTranscript ? 'var(--text-primary)' : 'var(--text-muted)',
+                  fontStyle: interimTranscript ? 'normal' : 'italic',
+                  minHeight: '2rem',
+                  padding: '0 1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                &ldquo;{interimTranscript || voiceStrings.speakQuestion || 'Speak your question...'}&rdquo;
+              </div>
+              <button
+                type="button"
+                onClick={stopListening}
+                aria-label="Stop speech recognition"
+                style={{
+                  background: '#dc2626',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '6px 22px',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(220, 38, 38, 0.25)',
+                  transition: 'all 150ms ease',
+                }}
+              >
+                ⏹ {voiceStrings.stop || 'Stop'}
+              </button>
+            </div>
+          )}
+
+          {/* ─── Requirement 13: BHASHINI Transcript Review Card ────────────── */}
+          {speechStatus !== 'LISTENING' && voiceDraft && (
+            <div
+              style={{
+                background: '#ffffff',
+                border: '2px solid rgba(46, 125, 50, 0.35)',
+                borderRadius: '16px',
+                padding: '1.35rem',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                boxShadow: '0 6px 20px rgba(46, 125, 50, 0.08)',
                 animation: 'fadeIn 150ms ease',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: speechStatus === 'LISTENING' ? '#dc2626' : 'var(--green-800)' }}>
-                  {speechStatus === 'LISTENING' ? `🎤 Listening in ${currentMeta.nativeName}...` : `✍️ Speech Transcript:`}
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--green-900)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  {voiceStrings.reviewTranscript || 'You said'}
                 </span>
-                <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                   Locale: {voiceLocaleMeta.speechLocale}
                 </span>
               </div>
-              <div style={{ fontSize: '0.9375rem', fontWeight: 500, color: 'var(--text-primary)', fontStyle: voiceDraft ? 'normal' : 'italic' }}>
-                {voiceDraft || interimTranscript || 'Speak your question clearly...'}
+              <div
+                style={{
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  color: 'var(--text-primary)',
+                  lineHeight: 1.6,
+                  background: 'var(--bg-subtle)',
+                  padding: '0.85rem 1.15rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-default)',
+                }}
+              >
+                {voiceDraft}
               </div>
-              <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                {voiceDraft && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setInputQuery(voiceDraft);
-                      handleSend(voiceDraft);
-                    }}
-                    style={{
-                      background: 'var(--green-700)',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '4px 12px',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    ✓ Use & Send
-                  </button>
-                )}
-                {speechStatus === 'LISTENING' && (
-                  <button
-                    type="button"
-                    onClick={stopListening}
-                    style={{
-                      background: '#dc2626',
-                      color: '#ffffff',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '4px 12px',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    ⏹ Stop Listening
-                  </button>
-                )}
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '2px' }}>
                 <button
                   type="button"
                   onClick={() => {
-                    stopListening();
-                    resetSpeech();
+                    setInputQuery(voiceDraft);
                     setVoiceDraft(null);
+                    setTimeout(() => inputRef.current?.focus(), 50);
                   }}
+                  aria-label="Edit speech transcript"
+                  style={{
+                    background: 'var(--bg-surface)',
+                    color: 'var(--text-primary)',
+                    border: '1.5px solid var(--border-default)',
+                    borderRadius: '8px',
+                    padding: '6px 16px',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 150ms ease',
+                  }}
+                >
+                  ✏️ {t('common.edit')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleSend(voiceDraft);
+                  }}
+                  aria-label="Send speech transcript"
+                  style={{
+                    background: 'var(--green-700)',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '6px 20px',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
+                    transition: 'all 150ms ease',
+                  }}
+                >
+                  ➤ {t('assistant.send')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVoiceDraft(null);
+                    resetSpeech();
+                  }}
+                  aria-label="Cancel speech transcript"
                   style={{
                     background: 'transparent',
                     color: 'var(--text-muted)',
-                    border: '1px solid var(--border-default)',
-                    borderRadius: '6px',
-                    padding: '4px 10px',
-                    fontSize: '0.75rem',
+                    border: 'none',
+                    padding: '6px 12px',
+                    fontSize: '0.82rem',
                     cursor: 'pointer',
                   }}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
@@ -1004,6 +1336,7 @@ function AssistantContent() {
 
               {/* Text Input */}
               <input
+                ref={inputRef}
                 type="text"
                 placeholder={`Ask BHASHINI in ${currentMeta.nativeName} or English (e.g. Section 3(p), Rule 158B, ABS)...`}
                 value={inputQuery}

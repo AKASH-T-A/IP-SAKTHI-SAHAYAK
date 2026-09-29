@@ -662,7 +662,27 @@ export const EN_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "ACTION",
   "home.domain.plantVarietyProtection": "Plant Variety Protection",
   "cases.noMatch": "No formulation matches \"{query}\". Clear your search query or create a new case.",
-  "cases.jurisdictionIndia": "India (National)"
+  "cases.jurisdictionIndia": "India (National)",
+  "regulatory.claimsCheckTitle": "Claims & Compliance Verification",
+  "regulatory.claimsCheckDesc": "Automated verification against Rule 170, DMROA 1954, and schedule provisions",
+  "regulatory.labelReviewTitle": "Label & Packaging Review",
+  "regulatory.labelReviewDesc": "Statutory labeling compliance for ASU classical and patent medicines",
+  "international.treatiesTitle": "International Treaties & Conventions",
+  "international.treatiesDesc": "Cross-border IP harmonization, Nagoya ABS, and PCT filing frameworks",
+  "cases.formulationCategory": "Formulation Category",
+  "action.requestExpertReview": "Request Expert Review",
+  "wizard.classicalNone": "None / Proprietary ASU formulation",
+  "wizard.docCoa": "Certificate of Analysis (CoA)",
+  "wizard.docExcerpt": "Pharmacopoeial Excerpt / Classical Text Scan",
+  "wizard.partBark": "Bark (Tvāk)",
+  "wizard.partFlower": "Flower (Puṣpa)",
+  "wizard.partLeaf": "Leaf (Patra)",
+  "wizard.partResin": "Resin / Gum (Niryāsa)",
+  "wizard.partRhizome": "Rhizome / Stem (Kanda)",
+  "wizard.partRoot": "Root (Mūla)",
+  "wizard.partSeed": "Seed / Fruit (Phala / Bīja)",
+  "wizard.partWhole": "Whole Plant (Pañcāṅga)",
+  "nav.regulations": "Regulations"
 };
 
 export const HI_TRANSLATIONS: TranslationDict = {
@@ -1317,7 +1337,27 @@ export const HI_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कार्रवाई",
   "home.domain.plantVarietyProtection": "पादप किस्म संरक्षण",
   "cases.noMatch": "\"{query}\" से मेल खाता कोई फॉर्मूलेशन नहीं मिला। अपनी खोज बदलें या नया प्रकरण बनाएं।",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)",
+  "regulatory.claimsCheckTitle": "दावे एवं अनुपालन सत्यापन",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), डीएमआरओए 1954 (DMROA 1954) और अनुसूची प्रावधानों के तहत स्वचालित सत्यापन",
+  "regulatory.labelReviewTitle": "लेबल एवं पैकेजिंग समीक्षा",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, यूनानी (ASU) शास्त्रीय एवं पेटेंट औषधियों हेतु वैधानिक लेबलिंग अनुपालन",
+  "international.treatiesTitle": "अंतर्राष्ट्रीय संधियां एवं अभिसमय",
+  "international.treatiesDesc": "सीमा-पार बौद्धिक संपदा समन्वय, नागोया एबीएस (Nagoya ABS), एवं पीसीटी (PCT) फाइलिंग रूपरेखा",
+  "cases.formulationCategory": "संरचना श्रेणी",
+  "action.requestExpertReview": "विशेषज्ञ समीक्षा का अनुरोध करें",
+  "wizard.classicalNone": "कोई नहीं / मालिकाना (पेटेंट) ASU संरचना",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियल अंश / शास्त्रीय ग्रंथ स्कैन",
+  "wizard.partBark": "छाल (Tvāk)",
+  "wizard.partFlower": "पुष्प (Puṣpa)",
+  "wizard.partLeaf": "पत्ता (Patra)",
+  "wizard.partResin": "राल / गोंद (Niryāsa)",
+  "wizard.partRhizome": "कंद / प्रकंद (Kanda)",
+  "wizard.partRoot": "जड़ (Mūla)",
+  "wizard.partSeed": "बीज / फल (Phala / Bīja)",
+  "wizard.partWhole": "संपूर्ण पौधा (Pañcāṅga)",
+  "nav.regulations": "विनियम"
 };
 
 export const KN_TRANSLATIONS: TranslationDict = {
@@ -1972,7 +2012,27 @@ export const KN_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "ಕ್ರಮ",
   "home.domain.plantVarietyProtection": "ಸಸ್ಯ ಪ್ರಭೇದಗಳ ಸಂರಕ್ಷಣೆ",
   "cases.noMatch": "ಯಾವುದೇ ಸೂತ್ರೀಕರಣ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ \"{query}\".",
-  "cases.jurisdictionIndia": "ಭಾರತ (ರಾಷ್ಟ್ರೀಯ)"
+  "cases.jurisdictionIndia": "ಭಾರತ (ರಾಷ್ಟ್ರೀಯ)",
+  "regulatory.claimsCheckTitle": "ಹಕ್ಕುಸಾಧ್ಯತೆಗಳು ಮತ್ತು ಅನುಸರಣೆ ಪರಿಶೀಲನೆ",
+  "regulatory.claimsCheckDesc": "ನಿಯಮ 170 (Rule 170), ಡಿಎಂಆರ್‌ಒಎ 1954 (DMROA 1954) ಮತ್ತು ಅನುಸೂಚಿ ನಿಬಂಧನೆಗಳ ವಿರುದ್ಧ ಸ್ವಯಂಚಾಲಿತ ಪರಿಶೀಲನೆ",
+  "regulatory.labelReviewTitle": "ಲೇಬಲ್ ಮತ್ತು ಪ್ಯಾಕೇಜಿಂಗ್ ಪರಿಶೀಲನೆ",
+  "regulatory.labelReviewDesc": "ಆಯುರ್ವೇದ, ಸಿದ್ಧ, ಯುನಾನಿ (ASU) ಶಾಸ್ತ್ರೀಯ ಮತ್ತು ಸ್ವಾಮ್ಯದ ಔಷಧಿಗಳಿಗೆ ಶಾಸನಬದ್ಧ ಲೇಬಲಿಂಗ್ ಅನುಸರಣೆ",
+  "international.treatiesTitle": "ಅಂತರರಾಷ್ಟ್ರೀಯ ಒಪ್ಪಂದಗಳು ಮತ್ತು ಸಮ್ಮೇಳನಗಳು",
+  "international.treatiesDesc": "ಗಡಿಯಾಚೆಗಿನ ಐಪಿ ಸಮನ್ವಯತೆ, ನಗೋಯಾ ಎಬಿಎಸ್ (Nagoya ABS), ಮತ್ತು ಪಿಸಿಟಿ (PCT) ಸಲ್ಲಿಕೆ ಚೌಕಟ್ಟುಗಳು",
+  "cases.formulationCategory": "ಫಾರ್ಮುಲೇಶನ್ ವರ್ಗ",
+  "action.requestExpertReview": "ತಜ್ಞರ ವಿಮರ್ಶೆಯನ್ನು ಕೋರಿ",
+  "wizard.classicalNone": "ಯಾವುದೂ ಇಲ್ಲ / ಸ್ವಾಮ್ಯದ ಆಯುರ್ವೇದ, ಸಿದ್ಧ, ಯುನಾನಿ (ASU) ಸೂತ್ರೀಕರಣ",
+  "wizard.docCoa": "ವಿಶ್ಲೇಷಣೆಯ ಪ್ರಮಾಣಪತ್ರ (Certificate of Analysis - CoA)",
+  "wizard.docExcerpt": "ಫಾರ್ಮಾಕೋಪಿಯಾ ಸಾರ / ಶಾಸ್ತ್ರೀಯ ಗ್ರಂಥದ ಪ್ರತಿ",
+  "wizard.partBark": "ತೊಗಟೆ (Tvāk)",
+  "wizard.partFlower": "ಹೂವು (Puṣpa)",
+  "wizard.partLeaf": "ಎಲೆ (Patra)",
+  "wizard.partResin": "ರಾಳ / ಅಂಟು (Niryāsa)",
+  "wizard.partRhizome": "ಗೆಡ್ಡೆ / ಕಾಂಡ (Kanda)",
+  "wizard.partRoot": "ಬೇರು (Mūla)",
+  "wizard.partSeed": "ಬೀಜ / ಹಣ್ಣು (Phala / Bīja)",
+  "wizard.partWhole": "ಸಂಪೂರ್ಣ ಸಸ್ಯ (Pañcāṅga)",
+  "nav.regulations": "ನಿಯಮಾವಳಿಗಳು"
 };
 
 export const TA_TRANSLATIONS: TranslationDict = {
@@ -2627,7 +2687,27 @@ export const TA_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "நடவடிக்கை",
   "home.domain.plantVarietyProtection": "தாவர வகைகள் பாதுகாப்பு",
   "cases.noMatch": "எந்த உருவாக்கமும் பொருந்தவில்லை \"{query}\".",
-  "cases.jurisdictionIndia": "இந்தியா (தேசிய)"
+  "cases.jurisdictionIndia": "இந்தியா (தேசிய)",
+  "regulatory.claimsCheckTitle": "உரிமைகோரல்கள் மற்றும் இணக்க சரிபார்ப்பு",
+  "regulatory.claimsCheckDesc": "விதி 170 (Rule 170), DMROA 1954 மற்றும் அட்டவணை விதிகளுக்கு எதிரான தானியங்கு சரிபார்ப்பு",
+  "regulatory.labelReviewTitle": "லேபிளிங் மற்றும் பேக்கேஜிங் மறுஆய்வு",
+  "regulatory.labelReviewDesc": "ஆயுர்வேத, சித்த, யுனானி (ASU) பாரம்பரிய மற்றும் காப்புரிமை மருந்துகளுக்கான சட்டப்பூர்வ லேபிளிங் இணக்கம்",
+  "international.treatiesTitle": "சர்வதேச உடன்படிக்கைகள் மற்றும் மாநாடுகள்",
+  "international.treatiesDesc": "எல்லை தாண்டிய அறிவுசார் சொத்து ஒருங்கிணைப்பு, நகோயா ABS (Nagoya ABS), மற்றும் PCT தாக்கல் கட்டமைப்புகள்",
+  "cases.formulationCategory": "மருந்து வடிவ வகை",
+  "action.requestExpertReview": "நிபுணர் மதிப்பாய்வைக் கோருங்கள்",
+  "wizard.classicalNone": "ஏதுமில்லை / தனியுரிம ASU மருந்து வடிவம்",
+  "wizard.docCoa": "பகுப்பாய்வு சான்றிதழ் (CoA)",
+  "wizard.docExcerpt": "மருந்தியல் பகுதி / பாரம்பரிய நூலின் நகல்",
+  "wizard.partBark": "பட்டை (Tvāk)",
+  "wizard.partFlower": "மலர் (Puṣpa)",
+  "wizard.partLeaf": "இலை (Patra)",
+  "wizard.partResin": "பிசின் / பிசின் பசையிலை (Niryāsa)",
+  "wizard.partRhizome": "கிழங்கு / தண்டு (Kanda)",
+  "wizard.partRoot": "வேர் (Mūla)",
+  "wizard.partSeed": "விதை / பழம் (Phala / Bīja)",
+  "wizard.partWhole": "முழு தாவரம் (Pañcāṅga)",
+  "nav.regulations": "விதிமுறைகள்"
 };
 
 export const TE_TRANSLATIONS: TranslationDict = {
@@ -3282,7 +3362,27 @@ export const TE_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "చర్య",
   "home.domain.plantVarietyProtection": "మొక్కల రకాల రక్షణ",
   "cases.noMatch": "ఏ ఫార్ములేషన్ సరిపోలలేదు \"{query}\".",
-  "cases.jurisdictionIndia": "భారతదేశం (జాతీయ)"
+  "cases.jurisdictionIndia": "భారతదేశం (జాతీయ)",
+  "regulatory.claimsCheckTitle": "క్లెయిమ్‌లు మరియు సమ్మతి ధృవీకరణ",
+  "regulatory.claimsCheckDesc": "నియమం 170 (Rule 170), DMROA 1954 మరియు షెడ్యూల్ నిబంధనలకు అనుగుణంగా ఆటోమేటెడ్ ధృవీకరణ",
+  "regulatory.labelReviewTitle": "లేబుల్ మరియు ప్యాకేజింగ్ సమీక్ష",
+  "regulatory.labelReviewDesc": "ఆయుర్వేద, సిద్ధ, యునానీ (ASU) సాంప్రదాయ మరియు పేటెంట్ ఔషధాల చట్టబద్ధమైన లేబులింగ్ సమ్మతి",
+  "international.treatiesTitle": "అంతర్జాతీయ ఒప్పందాలు మరియు సమావేశాలు",
+  "international.treatiesDesc": "సరిహద్దు ఐపీ సమన్వయం, నగోయా ABS (Nagoya ABS), మరియు PCT ఫైలింగ్ ఫ్రేమ్‌వర్క్‌లు",
+  "cases.formulationCategory": "సూత్రీకరణ వర్గం",
+  "action.requestExpertReview": "నిపుణుల సమీక్షను అభ్యర్థించండి",
+  "wizard.classicalNone": "ఏదీ లేదు / యాజమాన్య ASU సూత్రీకరణ",
+  "wizard.docCoa": "విశ్లేషణ ధృవీకరణ పత్రం (CoA)",
+  "wizard.docExcerpt": "ఫార్మకోపోయల్ సారాంశం / ప్రామాణిక గ్రంథ స్కాన్",
+  "wizard.partBark": "బెరడు (Tvāk)",
+  "wizard.partFlower": "పువ్వు (Puṣpa)",
+  "wizard.partLeaf": "ఆకు (Patra)",
+  "wizard.partResin": "రజిన్ / జిగురు (Niryāsa)",
+  "wizard.partRhizome": "దుంప / కాండం (Kanda)",
+  "wizard.partRoot": "వేరు (Mūla)",
+  "wizard.partSeed": "విత్తనం / పండు (Phala / Bīja)",
+  "wizard.partWhole": "మొత్తం మొక్క (Pañcāṅga)",
+  "nav.regulations": "నియంత్రణలు"
 };
 
 export const ML_TRANSLATIONS: TranslationDict = {
@@ -3937,7 +4037,27 @@ export const ML_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "നടപടി",
   "home.domain.plantVarietyProtection": "സസ്യ ഇനങ്ങളുടെ സംരക്ഷണം",
   "cases.noMatch": "നിങ്ങളുടെ തിരയലിന് അനുയോജ്യമായ കേസുകളൊന്നും കണ്ടെത്തിയില്ല.",
-  "cases.jurisdictionIndia": "ഇന്ത്യ (ദേശീയ)"
+  "cases.jurisdictionIndia": "ഇന്ത്യ (ദേശീയ)",
+  "regulatory.claimsCheckTitle": "അവകാശവാദങ്ങളും പാലിക്കൽ പരിശോധനയും",
+  "regulatory.claimsCheckDesc": "റൂൾ 170 (Rule 170), ഡിഎംആർഒഎ 1954 (DMROA 1954), ഷെഡ്യൂൾ വ്യവസ്ഥകൾ എന്നിവയ്ക്കെതിരായ ഓട്ടോമേറ്റഡ് പരിശോധന",
+  "regulatory.labelReviewTitle": "ലേബൽ, പാക്കേജിംഗ് അവലോകനം",
+  "regulatory.labelReviewDesc": "ആയുർവേദ, സിദ്ധ, യുനാനി (ASU) ശാസ്ത്രീയ, പേറ്റന്റ് മരുന്നുകൾക്കായുള്ള നിയമാനുസൃത ലേബലിംഗ് പാലിക്കൽ",
+  "international.treatiesTitle": "അന്താരാഷ്ട്ര ഉടമ്പടികളും കൺവെൻഷനുകളും",
+  "international.treatiesDesc": "അതിർത്തി കടന്നുള്ള ഐപി ഏകീകരണം, നഗോയ എബിഎസ് (Nagoya ABS), പിസിടി (PCT) ഫയലിംഗ് ചട്ടക്കൂടുകൾ",
+  "cases.formulationCategory": "ഫോർമുലേഷൻ വിഭാഗം",
+  "action.requestExpertReview": "വിദഗ്ദ്ധ അവലോകനം അഭ്യർത്ഥിക്കുക",
+  "wizard.classicalNone": "ഒന്നുമില്ല / കുത്തകാവകാശമുള്ള ASU ഫോർമുലേഷൻ",
+  "wizard.docCoa": "വിശകലന സർട്ടിഫിക്കറ്റ് (CoA)",
+  "wizard.docExcerpt": "ഫാർമക്കോപ്പിയൽ ഭാഗം / ശാസ്ത്രീയ ഗ്രന്ഥ സ്കാൻ",
+  "wizard.partBark": "തൊലി (Tvāk)",
+  "wizard.partFlower": "പുഷ്പം (Puṣpa)",
+  "wizard.partLeaf": "ഇല (Patra)",
+  "wizard.partResin": "കറ / പശ (Niryāsa)",
+  "wizard.partRhizome": "കിഴങ്ങ് / തണ്ട് (Kanda)",
+  "wizard.partRoot": "വേര് (Mūla)",
+  "wizard.partSeed": "വിത്ത് / ഫലം (Phala / Bīja)",
+  "wizard.partWhole": "സമൂലം (Pañcāṅga)",
+  "nav.regulations": "റെഗുലേഷനുകൾ"
 };
 
 export const MR_TRANSLATIONS: TranslationDict = {
@@ -4592,7 +4712,27 @@ export const MR_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कृती",
   "home.domain.plantVarietyProtection": "वनस्पती वाण संरक्षण",
   "cases.noMatch": "आपल्या शोधाशी जुळणारे कोणतेही प्रकरण आढळले नाही.",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)",
+  "regulatory.claimsCheckTitle": "दावे आणि अनुपालन पडताळणी",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), DMROA 1954 आणि अनुसूची तरतुदींनुसार स्वयंचलित पडताळणी",
+  "regulatory.labelReviewTitle": "लेबल आणि पॅकेजिंग पुनरावलोकन",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, युनानी (ASU) शास्त्रीय व पेटंट औषधांसाठी वैधानिक लेबलिंग अनुपालन",
+  "international.treatiesTitle": "आंतरराष्ट्रीय करार आणि अधिवेशने",
+  "international.treatiesDesc": "सीमापार बौद्धिक संपदा समन्वय, नागोया ABS (Nagoya ABS), आणि PCT दाखल चौकट",
+  "cases.formulationCategory": "फॉर्म्युलेशन श्रेणी",
+  "action.requestExpertReview": "तज्ज्ञ पुनरावलोकनाची विनंती करा",
+  "wizard.classicalNone": "काही नाही / मालकीची ASU रचना",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियातील उतारा / शास्त्रीय ग्रंथ स्कॅन",
+  "wizard.partBark": "साल (Tvāk)",
+  "wizard.partFlower": "फूल (Puṣpa)",
+  "wizard.partLeaf": "पान (Patra)",
+  "wizard.partResin": "डिंक / राळ (Niryāsa)",
+  "wizard.partRhizome": "कंद / खोड (Kanda)",
+  "wizard.partRoot": "मूळ (Mūla)",
+  "wizard.partSeed": "बीज / फळ (Phala / Bīja)",
+  "wizard.partWhole": "संपूर्ण वनस्पती (Pañcāṅga)",
+  "nav.regulations": "विनियम"
 };
 
 export const BN_TRANSLATIONS: TranslationDict = {
@@ -5247,7 +5387,27 @@ export const BN_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "পদক্ষেপ",
   "home.domain.plantVarietyProtection": "উদ্ভিদ জাত সুরক্ষা",
   "cases.noMatch": "আপনার অনুসন্ধানের সাথে মিলে যাওয়া কোনো মামলা পাওয়া যায়নি৤",
-  "cases.jurisdictionIndia": "ভারত (জাতীয়)"
+  "cases.jurisdictionIndia": "ভারত (জাতীয়)",
+  "regulatory.claimsCheckTitle": "দাবিসমূহ এবং সম্মতি যাচাইকরণ",
+  "regulatory.claimsCheckDesc": "নিয়ম 170 (Rule 170), DMROA 1954 এবং তফসিল বিধানের বিরুদ্ধে স্বয়ংক্রিয় যাচাইকরণ",
+  "regulatory.labelReviewTitle": "লেবেল ও প্যাকেজিং পর্যালোচনা",
+  "regulatory.labelReviewDesc": "আয়ুর্বেদ, সিদ্ধ, ইউনানী (ASU) শাস্ত্রীয় এবং পেটেন্ট ওষুধের জন্য বিধিবদ্ধ লেবেলিং সম্মতি",
+  "international.treatiesTitle": "আন্তর্জাতিক চুক্তি ও সম্মেলন",
+  "international.treatiesDesc": "আন্তঃসীমান্ত আইপি সমন্বয়, নাগোয়া এবিএস (Nagoya ABS), এবং পিসিটি (PCT) ফাইলিং কাঠামো",
+  "cases.formulationCategory": "সূত্রায়ন বিভাগ",
+  "action.requestExpertReview": "বিশেষজ্ঞ পর্যালোচনার অনুরোধ করুন",
+  "wizard.classicalNone": "কিছুই নয় / স্বত্বাধিকারযুক্ত এএসইউ সূত্রায়ন",
+  "wizard.docCoa": "বিশ্লেষণ সার্টিফিকেট (CoA)",
+  "wizard.docExcerpt": "ফার্মাকোপিয়াল অংশ / শাস্ত্রীয় পাঠ্য স্ক্যান",
+  "wizard.partBark": "ছাল / বাকল (Tvāk)",
+  "wizard.partFlower": "ফুল (Puṣpa)",
+  "wizard.partLeaf": "পাতা (Patra)",
+  "wizard.partResin": "রজন / আঠা (Niryāsa)",
+  "wizard.partRhizome": "কন্দ / ভূনিম্নস্থ কাণ্ড (Kanda)",
+  "wizard.partRoot": "মূল / শিকড় (Mūla)",
+  "wizard.partSeed": "বীজ / ফল (Phala / Bīja)",
+  "wizard.partWhole": "সমগ্র উদ্ভিদ (Pañcāṅga)",
+  "nav.regulations": "প্রবিধান"
 };
 
 export const GU_TRANSLATIONS: TranslationDict = {
@@ -5902,7 +6062,27 @@ export const GU_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "પગલું",
   "home.domain.plantVarietyProtection": "વનસ્પતિ જાત સંરક્ષણ",
   "cases.noMatch": "તમારી શોધ સાથે મેળ ખાતો કોઈ કેસ મળ્યો નથી.",
-  "cases.jurisdictionIndia": "ભારત (રાષ્ટ્રીય)"
+  "cases.jurisdictionIndia": "ભારત (રાષ્ટ્રીય)",
+  "regulatory.claimsCheckTitle": "દાવાઓ અને પાલન ચકાસણી",
+  "regulatory.claimsCheckDesc": "નિયમ 170 (Rule 170), DMROA 1954 અને અનુસૂચિ જોગવાઈઓ સામે સ્વચાલિત ચકાસણી",
+  "regulatory.labelReviewTitle": "લેબલ અને પેકેજિંગ સમીક્ષા",
+  "regulatory.labelReviewDesc": "આયુર્વેદ, સિદ્ધ, યુનાની (ASU) શાસ્ત્રીય અને પેટન્ટ દવાઓ માટે વૈધાનિક લેબલિંગ પાલન",
+  "international.treatiesTitle": "આંતરરાષ્ટ્રીય સંધિઓ અને સંમેલનો",
+  "international.treatiesDesc": "સીમાપાર આઈપી સુમેળ, નાગોયા એબીએસ (Nagoya ABS), અને પીસીટી (PCT) ફાઇલિંગ માળખું",
+  "cases.formulationCategory": "ફોર્મ્યુલેશન શ્રેણી",
+  "action.requestExpertReview": "નિષ્ણાત સમીક્ષાની વિનંતી કરો",
+  "wizard.classicalNone": "કંઈ નહીં / માલિકીની ASU ફોર્મ્યુલેશન",
+  "wizard.docCoa": "વિશ્લેષણ પ્રમાણપત્ર (CoA)",
+  "wizard.docExcerpt": "ફાર્માકોપિયલ અંશ / શાસ્ત્રીય ગ્રંથ સ્કેન",
+  "wizard.partBark": "છાલ (Tvāk)",
+  "wizard.partFlower": "ફૂલ (Puṣpa)",
+  "wizard.partLeaf": "પાંદડું (Patra)",
+  "wizard.partResin": "ડિગ / ગુંદર (Niryāsa)",
+  "wizard.partRhizome": "ગાંઠ / પ્રકાંડ (Kanda)",
+  "wizard.partRoot": "મૂળ (Mūla)",
+  "wizard.partSeed": "બીજ / ફળ (Phala / Bīja)",
+  "wizard.partWhole": "સમગ્ર વનસ્પતિ (Pañcāṅga)",
+  "nav.regulations": "નિયમો"
 };
 
 export const PA_TRANSLATIONS: TranslationDict = {
@@ -6557,7 +6737,27 @@ export const PA_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "ਕਾਰਵਾਈ",
   "home.domain.plantVarietyProtection": "ਪੌਦਿਆਂ ਦੀ ਕਿਸਮ ਸੁਰੱਖਿਆ",
   "cases.noMatch": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਮੇਲ ਖਾਂਦਾ ਕੋਈ ਕੇਸ ਨਹੀਂ ਮਿਲਿਆ੤",
-  "cases.jurisdictionIndia": "ਭਾਰਤ (ਰਾਸ਼ਟਰੀ)"
+  "cases.jurisdictionIndia": "ਭਾਰਤ (ਰਾਸ਼ਟਰੀ)",
+  "regulatory.claimsCheckTitle": "ਦਾਅਵੇ ਅਤੇ ਪਾਲਣਾ ਤਸਦੀਕ",
+  "regulatory.claimsCheckDesc": "ਨਿਯਮ 170 (Rule 170), DMROA 1954 ਅਤੇ ਅਨੁਸੂਚੀ ਉਪਬੰਧਾਂ ਦੇ ਤਹਿਤ ਸਵੈਚਾਲਤ ਤਸਦੀਕ",
+  "regulatory.labelReviewTitle": "ਲੇਬਲ ਅਤੇ ਪੈਕੇਜਿੰਗ ਸਮੀਖਿਆ",
+  "regulatory.labelReviewDesc": "ਆਯੁਰਵੇਦ, ਸਿੱਧ, ਯੂਨਾਨੀ (ASU) ਸ਼ਾਸਤਰੀ ਅਤੇ ਪੇਟੈਂਟ ਦਵਾਈਆਂ ਲਈ ਕਾਨੂੰਨੀ ਲੇਬਲਿੰਗ ਪਾਲਣਾ",
+  "international.treatiesTitle": "ਅੰਤਰਰਾਸ਼ਟਰੀ ਸੰਧੀਆਂ ਅਤੇ ਕਨਵੈਨਸ਼ਨਾਂ",
+  "international.treatiesDesc": "ਸਰਹੱਦ ਪਾਰ ਆਈਪੀ ਤਾਲਮੇਲ, ਨਾਗੋਆ ਏਬੀਐਸ (Nagoya ABS), ਅਤੇ ਪੀਸੀਟੀ (PCT) ਫਾਈਲਿੰਗ ਢਾਂਚਾ",
+  "cases.formulationCategory": "ਫਾਰਮੂਲੇਸ਼ਨ ਸ਼੍ਰੇਣੀ",
+  "action.requestExpertReview": "ਮਾਹਰ ਸਮੀਖਿਆ ਲਈ ਬੇਨਤੀ ਕਰੋ",
+  "wizard.classicalNone": "ਕੋਈ ਨਹੀਂ / ਮਲਕੀਅਤ ਵਾਲੀ ASU ਫਾਰਮੂਲੇਸ਼ਨ",
+  "wizard.docCoa": "ਵਿਸ਼ਲੇਸ਼ਣ ਸਰਟੀਫਿਕੇਟ (CoA)",
+  "wizard.docExcerpt": "ਫਾਰਮਾਕੋਪੀਅਲ ਅੰਸ਼ / ਸ਼ਾਸਤਰੀ ਗ੍ਰੰਥ ਸਕੈਨ",
+  "wizard.partBark": "ਛਿੱਲੜ (Tvāk)",
+  "wizard.partFlower": "ਫੁੱਲ (Puṣpa)",
+  "wizard.partLeaf": "ਪੱਤਾ (Patra)",
+  "wizard.partResin": "ਗੂੰਦ / ਰਾਲ (Niryāsa)",
+  "wizard.partRhizome": "ਗੰਢ / ਤਣਾ (Kanda)",
+  "wizard.partRoot": "ਜੜ੍ਹ (Mūla)",
+  "wizard.partSeed": "ਬੀਜ / ਫਲ (Phala / Bīja)",
+  "wizard.partWhole": "ਸਾਰਾ ਪੌਦਾ (Pañcāṅga)",
+  "nav.regulations": "ਨਿਯਮ"
 };
 
 export const OR_TRANSLATIONS: TranslationDict = {
@@ -7212,7 +7412,27 @@ export const OR_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "ପଦକ୍ଷେପ",
   "home.domain.plantVarietyProtection": "ଉଦ୍ଭିଦ କିସମ ସୁରକ୍ଷା",
   "cases.noMatch": "ଆପଣଙ୍କ ଅନୁସନ୍ଧାନ ସହିତ ମେଳ ଖାଉଥିବା କୌଣସି ମାମଲା ମିଳିଲା ନାହିଁ୤",
-  "cases.jurisdictionIndia": "ଭାରତ (ଜାତୀୟ)"
+  "cases.jurisdictionIndia": "ଭାରତ (ଜାତୀୟ)",
+  "regulatory.claimsCheckTitle": "ଦାବି ଏବଂ ଅନୁପାଳନ ଯାଞ୍ଚ",
+  "regulatory.claimsCheckDesc": "ନିୟମ ୧୭୦ (Rule 170), DMROA 1954 ଏବଂ ଅନୁସୂଚୀ ପ୍ରାବଧାନ ଅନୁଯାୟୀ ସ୍ୱୟଂଚାଳିତ ଯାଞ୍ଚ",
+  "regulatory.labelReviewTitle": "ଲେବଲ୍ ଏବଂ ପ୍ୟାକେଜିଂ ସମୀକ୍ଷା",
+  "regulatory.labelReviewDesc": "ଆୟୁର୍ବେଦ, ସିଦ୍ଧ, ୟୁନାନୀ (ASU) ଶାସ୍ତ୍ରୀୟ ଏବଂ ପେଟେଣ୍ଟ ଔଷଧ ପାଇଁ ବୈଧାନିକ ଲେବଲିଂ ଅନୁପାଳନ",
+  "international.treatiesTitle": "ଆନ୍ତର୍ଜାତୀୟ ଚୁକ୍ତିନାମା ଏବଂ ସମ୍ମିଳନୀ",
+  "international.treatiesDesc": "ସୀମାପାର ବୌଦ୍ଧିକ ସମ୍ପଦ ସମନ୍ୱୟ, ନାଗୋୟା ଏବିଏସ୍ (Nagoya ABS), ଏବଂ ପିସିଟି (PCT) ଦାଖଲ ଢାଞ୍ଚା",
+  "cases.formulationCategory": "ଫର୍ମୁଲେସନ୍ ବର୍ଗ",
+  "action.requestExpertReview": "ବିଶେଷଜ୍ଞ ସମୀକ୍ଷା ପାଇଁ ଅନୁରୋଧ କରନ୍ତୁ",
+  "wizard.classicalNone": "କିଛି ନାହିଁ / ମାଲିକାନା ASU ଫର୍ମୁଲେସନ୍",
+  "wizard.docCoa": "ବିଶ୍ଳେଷଣ ପ୍ରମାଣପତ୍ର (CoA)",
+  "wizard.docExcerpt": "ଫାର୍ମାକୋପିଆଲ୍ ଅଂଶ / ଶାସ୍ତ୍ରୀୟ ଗ୍ରନ୍ଥ ସ୍କାନ୍",
+  "wizard.partBark": "ଛାଲି (Tvāk)",
+  "wizard.partFlower": "ଫୁଲ (Puṣpa)",
+  "wizard.partLeaf": "ପତ୍ର (Patra)",
+  "wizard.partResin": "ଝୁଣା / ଅଠା (Niryāsa)",
+  "wizard.partRhizome": "କନ୍ଦ / ପ୍ରକନ୍ଦ (Kanda)",
+  "wizard.partRoot": "ମୂଳ (Mūla)",
+  "wizard.partSeed": "ମଞ୍ଜି / ଫଳ (Phala / Bīja)",
+  "wizard.partWhole": "ସମ୍ପୂର୍ଣ୍ଣ ଉଦ୍ଭିଦ (Pañcāṅga)",
+  "nav.regulations": "ନିୟମାବଳୀ"
 };
 
 export const AS_TRANSLATIONS: TranslationDict = {
@@ -7867,7 +8087,27 @@ export const AS_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "পদক্ষেপ",
   "home.domain.plantVarietyProtection": "উদ্ভিদ জাত সুৰক্ষা",
   "cases.noMatch": "আপোনাৰ সন্ধানৰ সৈতে মিলা কোনো গোচৰ পোৱা নগ'ল৤",
-  "cases.jurisdictionIndia": "ভাৰত (ৰাষ্ট্ৰীয়)"
+  "cases.jurisdictionIndia": "ভাৰত (ৰাষ্ট্ৰীয়)",
+  "regulatory.claimsCheckTitle": "দাবী আৰু নিয়মপালন পৰীক্ষণ",
+  "regulatory.claimsCheckDesc": "নিয়ম ১৭০ (Rule 170), DMROA 1954 আৰু অনুসূচী উপবন্ধৰ অধীনত স্বয়ংক্ৰিয় পৰীক্ষণ",
+  "regulatory.labelReviewTitle": "লেবেল আৰু পেকেজিং পৰ্যালোচনা",
+  "regulatory.labelReviewDesc": "আয়ুৰ্বেদ, সিদ্ধ, য়ুনানী (ASU) শাস্ত্ৰীয় আৰু পেটেণ্ট ঔষধৰ বাবে বিধিবদ্ধ লেবেলিং নিয়মপালন",
+  "international.treatiesTitle": "আন্তঃৰাষ্ট্ৰীয় চুক্তি আৰু সন্মিলনসমূহ",
+  "international.treatiesDesc": "সীমা-পাৰ আইপি সমন্বয়, নাগয়া এবিএছ (Nagoya ABS), আৰু পিচিটি (PCT) দাখিলৰ গাঁথনি",
+  "cases.formulationCategory": "সংযোজন শ্ৰেণী",
+  "action.requestExpertReview": "বিশেষজ্ঞ পৰ্যালোচনাৰ বাবে অনুৰোধ কৰক",
+  "wizard.classicalNone": "একো নহয় / স্বত্বাধিকাৰী ASU সংযোজন",
+  "wizard.docCoa": "বিশ্লেষণ প্ৰমাণপত্ৰ (CoA)",
+  "wizard.docExcerpt": "ফাৰ্মাকোপিয়েল অংশ / শাস্ত্ৰীয় গ্ৰন্থৰ স্কেন",
+  "wizard.partBark": "বাকলি (Tvāk)",
+  "wizard.partFlower": "ফুল (Puṣpa)",
+  "wizard.partLeaf": "পাত (Patra)",
+  "wizard.partResin": "ধুনা / আঠা (Niryāsa)",
+  "wizard.partRhizome": "কন্দ / কাণ্ড (Kanda)",
+  "wizard.partRoot": "শিপা / মূল (Mūla)",
+  "wizard.partSeed": "গুটি / ফল (Phala / Bīja)",
+  "wizard.partWhole": "সম্পূৰ্ণ উদ্ভিদ (Pañcāṅga)",
+  "nav.regulations": "নিয়মাৱলী"
 };
 
 export const UR_TRANSLATIONS: TranslationDict = {
@@ -8522,7 +8762,27 @@ export const UR_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "عمل",
   "home.domain.plantVarietyProtection": "پودوں کی اقسام کا تحفظ",
   "cases.noMatch": "کوئی فارمولیشن مماثل نہیں \"{query}\".",
-  "cases.jurisdictionIndia": "بھارت (قومی)"
+  "cases.jurisdictionIndia": "بھارت (قومی)",
+  "regulatory.claimsCheckTitle": "دعوے اور تعمیل کی توثیق",
+  "regulatory.claimsCheckDesc": "رول 170 (Rule 170)، DMROA 1954 اور شیڈول دفعات کے مطابق خودکار توثیق",
+  "regulatory.labelReviewTitle": "لیبل اور پیکیجنگ کا جائزہ",
+  "regulatory.labelReviewDesc": "آیوروید، سدھ، یونانی (ASU) کلاسیکی اور پیٹنٹ ادویات کے لیے قانونی لیبلنگ تعمیل",
+  "international.treatiesTitle": "بین الاقوامی معاہدے اور کنونشنز",
+  "international.treatiesDesc": "سرحد پار آئی پی ہم آہنگی، ناگویا ABS (Nagoya ABS)، اور PCT فائلنگ فریم ورک",
+  "cases.formulationCategory": "فارمولیشن زمرہ",
+  "action.requestExpertReview": "ماہرین کے جائزے کی درخواست کریں",
+  "wizard.classicalNone": "کوئی نہیں / ملکیتی ASU فارمولیشن",
+  "wizard.docCoa": "تجزیاتی سرٹیفکیٹ (CoA)",
+  "wizard.docExcerpt": "فارماکوپیل اقتباس / کلاسیکی متن اسکین",
+  "wizard.partBark": "چھال (Tvāk)",
+  "wizard.partFlower": "پھول (Puṣpa)",
+  "wizard.partLeaf": "پتا (Patra)",
+  "wizard.partResin": "رال / گوند (Niryāsa)",
+  "wizard.partRhizome": "گانٹھ / کَند (Kanda)",
+  "wizard.partRoot": "جڑ (Mūla)",
+  "wizard.partSeed": "بیج / پھل (Phala / Bīja)",
+  "wizard.partWhole": "مکمل پودا (Pañcāṅga)",
+  "nav.regulations": "قوانین و ضوابط"
 };
 
 export const SA_TRANSLATIONS: TranslationDict = {
@@ -9177,7 +9437,27 @@ export const SA_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "क्रिया",
   "home.domain.plantVarietyProtection": "पादपप्रभेदसंरक्षणम्",
   "cases.noMatch": "भवतः अन्वेषणानुकूलं किमपि प्रकरणं न लब्धम्।",
-  "cases.jurisdictionIndia": "भारतम् (राष्ट्रीयम्)"
+  "cases.jurisdictionIndia": "भारतम् (राष्ट्रीयम्)",
+  "regulatory.claimsCheckTitle": "अभियोग-अन्वर्थता-सत्यापनम्",
+  "regulatory.claimsCheckDesc": "नियम १७० (Rule 170), DMROA 1954 तथा अनुसूची-प्रावधानानाम् स्वचालित-सत्यापनम्",
+  "regulatory.labelReviewTitle": "पत्रक-वेष्टन-पुनरावलोकनम्",
+  "regulatory.labelReviewDesc": "आयुर्वेद-सिद्ध-यूनानी (ASU) शास्त्रीय तथा पेटेण्ट-औषधानां वैधानिक-पत्रक-अनुपालनम्",
+  "international.treatiesTitle": "अन्तर्राष्ट्रिय-सन्धयः अभिसमयाश्च",
+  "international.treatiesDesc": "सीमापार-बौद्धिक-सम्पदा-सामञ्जस्यम्, नागोया-ABS, तथा PCT-उपस्थापन-तन्त्रम्",
+  "cases.formulationCategory": "योग-वर्गः",
+  "action.requestExpertReview": "विशेषज्ञ-पुनरावलोकन-प्रार्थनाम् कुरुत",
+  "wizard.classicalNone": "न किमपि / स्वाम्य-प्राप्ता ASU योग-संरचना",
+  "wizard.docCoa": "विश्लेषण-प्रमाणपत्रम् (CoA)",
+  "wizard.docExcerpt": "भेषजसंहिता-अंशः / शास्त्रीय-ग्रन्थ-प्रतिलिपिः",
+  "wizard.partBark": "त्वक् (Tvāk)",
+  "wizard.partFlower": "पुष्पम् (Puṣpa)",
+  "wizard.partLeaf": "पत्रम् (Patra)",
+  "wizard.partResin": "निर्यासः (Niryāsa)",
+  "wizard.partRhizome": "कन्दः / प्रकन्दः (Kanda)",
+  "wizard.partRoot": "मूलम् (Mūla)",
+  "wizard.partSeed": "फलम् / बीजम् (Phala / Bīja)",
+  "wizard.partWhole": "पञ्चाङ्गम् (Pañcāṅga)",
+  "nav.regulations": "नियमाः"
 };
 
 export const KOK_TRANSLATIONS: TranslationDict = {
@@ -9832,7 +10112,27 @@ export const KOK_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कृती",
   "home.domain.plantVarietyProtection": "वनस्पती वाण रक्षण",
   "cases.noMatch": "तुमच्या सोदाक जुळपी कसलोच केस मेळ्ळो ना.",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)",
+  "regulatory.claimsCheckTitle": "दावे आनी अनुपालन तपासणी",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), DMROA 1954 आनी अनुसूची तरतुदीं प्रमाणें स्वयंचलित तपासणी",
+  "regulatory.labelReviewTitle": "लेबल आनी पॅकेजिंग पुनरावलोकन",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, युनानी (ASU) शास्त्रीय आनी पेटंट वखदां खातीर वैधानिक लेबलिंग अनुपालन",
+  "international.treatiesTitle": "आंतरराष्ट्रीय करार आनी अधिवेशनां",
+  "international.treatiesDesc": "सीमापार आयपी समन्वय, नागोया ABS (Nagoya ABS), आनी PCT फायलिंग आराखडो",
+  "cases.formulationCategory": "फॉर्म्युलेशन वर्ग",
+  "action.requestExpertReview": "तज्ज्ञ पुनरावलोकनाची मागणी करा",
+  "wizard.classicalNone": "कांय ना / मालकीची ASU रचना",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियल भाग / शास्त्रीय ग्रंथ स्कॅन",
+  "wizard.partBark": "साल (Tvāk)",
+  "wizard.partFlower": "फूल (Puṣpa)",
+  "wizard.partLeaf": "पान (Patra)",
+  "wizard.partResin": "डिंक / राळ (Niryāsa)",
+  "wizard.partRhizome": "कंद / कांड (Kanda)",
+  "wizard.partRoot": "मूळ (Mūla)",
+  "wizard.partSeed": "बी / फळ (Phala / Bīja)",
+  "wizard.partWhole": "सगळें झाड (Pañcāṅga)",
+  "nav.regulations": "विनियम"
 };
 
 export const MAI_TRANSLATIONS: TranslationDict = {
@@ -10487,7 +10787,27 @@ export const MAI_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कार्रवाई",
   "home.domain.plantVarietyProtection": "पादप प्रभेद संरक्षण",
   "cases.noMatch": "अहाँक खोज सँ मेल खाइत कोनो केस नहि भेटल।",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)",
+  "regulatory.claimsCheckTitle": "दावा आ अनुपालन सत्यापन",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), DMROA 1954 आ अनुसूची प्रावधानक तहत स्वचालित सत्यापन",
+  "regulatory.labelReviewTitle": "लेबल आ पैकेजिंग समीक्षा",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, यूनानी (ASU) शास्त्रीय आ पेटेंट औषधिक लेल वैधानिक लेबलिंग अनुपालन",
+  "international.treatiesTitle": "अंतर्राष्ट्रीय संधि आ अभिसमय",
+  "international.treatiesDesc": "सीमा-पार बौद्धिक संपदा समन्वय, नागोया एबीएस (Nagoya ABS), आ पीसीटी (PCT) फाइलिंग रूपरेखा",
+  "cases.formulationCategory": "फॉर्म्युलेशन श्रेणी",
+  "action.requestExpertReview": "विशेषज्ञ समीक्षा लेल अनुरोध करू",
+  "wizard.classicalNone": "किछु नहि / मालिकाना ASU संरचना",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियल अंश / शास्त्रीय ग्रंथ स्कैन",
+  "wizard.partBark": "छाल (Tvāk)",
+  "wizard.partFlower": "फूल (Puṣpa)",
+  "wizard.partLeaf": "पात (Patra)",
+  "wizard.partResin": "गोंद / राल (Niryāsa)",
+  "wizard.partRhizome": "कंद / प्रकंद (Kanda)",
+  "wizard.partRoot": "जड़ि (Mūla)",
+  "wizard.partSeed": "बीज / फल (Phala / Bīja)",
+  "wizard.partWhole": "संपूर्ण पौधा (Pañcāṅga)",
+  "nav.regulations": "विनियम"
 };
 
 export const DOI_TRANSLATIONS: TranslationDict = {
@@ -11142,7 +11462,27 @@ export const DOI_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कार्रवाई",
   "home.domain.plantVarietyProtection": "बूटे दी किस्म बचाव",
   "cases.noMatch": "तुंदी खोज कन्नै मेल खांदा कोई केस नेईं लब्भा।",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रीय)",
+  "regulatory.claimsCheckTitle": "दावे ते अनुपालन पड़ताल",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), DMROA 1954 ते अनुसूची प्रावधानें तहत स्वचालित पड़ताल",
+  "regulatory.labelReviewTitle": "लेबल ते पैकेजिंग समीक्षा",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, यूनानी (ASU) शास्त्रीय ते पेटेंट दवाइयें लेई कानूनी लेबलिंग अनुपालन",
+  "international.treatiesTitle": "अंतर्राष्ट्रीय संधियां ते सम्मेलन",
+  "international.treatiesDesc": "सीमा-पार बौद्धिक संपदा तालमेल, नागोया ABS (Nagoya ABS), ते PCT फाइलिंग रूपरेखा",
+  "cases.formulationCategory": "फार्मूलेशन वर्ग",
+  "action.requestExpertReview": "माहर समीक्षा लेई दरखास्त करो",
+  "wizard.classicalNone": "कोई नेईं / मालकाना ASU फार्मूलेशन",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियल अंश / शास्त्रीय ग्रंथ स्कैन",
+  "wizard.partBark": "छिल्लड़ (Tvāk)",
+  "wizard.partFlower": "फुल्ल (Puṣpa)",
+  "wizard.partLeaf": "पत्ता (Patra)",
+  "wizard.partResin": "गोंद / राल (Niryāsa)",
+  "wizard.partRhizome": "कंद / तना (Kanda)",
+  "wizard.partRoot": "जड़ (Mūla)",
+  "wizard.partSeed": "बीज / फल (Phala / Bīja)",
+  "wizard.partWhole": "पूरा बूटा (Pañcāṅga)",
+  "nav.regulations": "विनियम"
 };
 
 export const KS_TRANSLATIONS: TranslationDict = {
@@ -11797,7 +12137,27 @@ export const KS_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "عمل",
   "home.domain.plantVarietyProtection": "پودوں کی اقسام کا تحفظ",
   "cases.noMatch": "کوئی فارمولیشن مماثل نہیں \"{query}\".",
-  "cases.jurisdictionIndia": "بھارت (قومی)"
+  "cases.jurisdictionIndia": "بھارت (قومی)",
+  "regulatory.claimsCheckTitle": "دعویٰ تہٕ تعمیلچ تصدیق",
+  "regulatory.claimsCheckDesc": "رول 170 (Rule 170)، DMROA 1954 تہٕ شیڈول شقن تحت خودکار تصدیق",
+  "regulatory.labelReviewTitle": "لیبل تہٕ پیکیجنگ جایزٕ",
+  "regulatory.labelReviewDesc": "آیوروید، سدھ، یونانی (ASU) کلاسیکی تہٕ پیٹنٹ دواین خٲطرٕ قانونی لیبلنگ تعمیل",
+  "international.treatiesTitle": "بین الاقوامی معاہدٕ تہٕ کنونشن",
+  "international.treatiesDesc": "سرحد پار آئی پی ہم آہنگی، ناگویا ABS (Nagoya ABS)، تہٕ PCT فٲئلنگ فریم ورک",
+  "cases.formulationCategory": "فارمولیشن زمرٕ",
+  "action.requestExpertReview": "ماہرانہ جایزٕچ درخاست کٔریو",
+  "wizard.classicalNone": "کانٛہہ نہ / ذاتی ASU فارمولیشن",
+  "wizard.docCoa": "تجزیاتی سند (CoA)",
+  "wizard.docExcerpt": "فارماکوپیل اقتباس / کلاسیکی متن اسکین",
+  "wizard.partBark": "چھل (Tvāk)",
+  "wizard.partFlower": "پوش (Puṣpa)",
+  "wizard.partLeaf": "پنہٕ (Patra)",
+  "wizard.partResin": "گۄند / رال (Niryāsa)",
+  "wizard.partRhizome": "گۆنٛڈ (Kanda)",
+  "wizard.partRoot": "مُول (Mūla)",
+  "wizard.partSeed": "ਬੀਜ / פھل (Phala / Bīja)",
+  "wizard.partWhole": "ساری کُل (Pañcāṅga)",
+  "nav.regulations": "قواعد و ضوابط"
 };
 
 export const SD_TRANSLATIONS: TranslationDict = {
@@ -12452,7 +12812,27 @@ export const SD_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "عمل",
   "home.domain.plantVarietyProtection": "پودوں کی اقسام کا تحفظ",
   "cases.noMatch": "کوئی فارمولیشن مماثل نہیں \"{query}\".",
-  "cases.jurisdictionIndia": "بھارت (قومی)"
+  "cases.jurisdictionIndia": "بھارت (قومی)",
+  "regulatory.claimsCheckTitle": "دعويٰ ۽ تعميل جي تصديق",
+  "regulatory.claimsCheckDesc": "رول 170 (Rule 170)، DMROA 1954 ۽ شيڊول شقن تحت خودڪار تصديق",
+  "regulatory.labelReviewTitle": "ليبل ۽ پيڪنگ جو جائزو",
+  "regulatory.labelReviewDesc": "آيورويڊ، سڌ، يوناني (ASU) ڪلاسيڪي ۽ پيٽنٽ دوائن لاءِ قانوني ليبلنگ تعميل",
+  "international.treatiesTitle": "بین الاقوامی معاهدا ۽ ڪنوينشن",
+  "international.treatiesDesc": "سرحد پار آءِ پي مطابقت، ناگويا ABS (Nagoya ABS)، ۽ PCT فائلنگ فريم ورڪ",
+  "cases.formulationCategory": "فارمولا جو قسم",
+  "action.requestExpertReview": "ماهر جي جائزي جي درخواست ڪريو",
+  "wizard.classicalNone": "ڪجهه به نه / خانگي ASU فارمولا",
+  "wizard.docCoa": "تجزيو سرٽيفڪيٽ (CoA)",
+  "wizard.docExcerpt": "فارماڪوپيئل اقتباس / ڪلاسيڪي متن اسڪين",
+  "wizard.partBark": "ڇلڪو (Tvāk)",
+  "wizard.partFlower": "گل (Puṣpa)",
+  "wizard.partLeaf": "پن (Patra)",
+  "wizard.partResin": "گوندر / رال (Niryāsa)",
+  "wizard.partRhizome": "ڪَند / ڳڙهو (Kanda)",
+  "wizard.partRoot": "پاڙ (Mūla)",
+  "wizard.partSeed": "ٻج / ميوو (Phala / Bīja)",
+  "wizard.partWhole": "سمورو ٻوٽو (Pañcāṅga)",
+  "nav.regulations": "قاعدا ۽ ضابطا"
 };
 
 export const MNI_TRANSLATIONS: TranslationDict = {
@@ -13107,7 +13487,27 @@ export const MNI_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "থবক",
   "home.domain.plantVarietyProtection": "উ-পাম্বী মখল ঙাকথোকপা",
   "cases.noMatch": "নহাক্কী থিবগা চান্নবা কেস অমত্তা ফংদে৤",
-  "cases.jurisdictionIndia": "ভারত (জাতিগী)"
+  "cases.jurisdictionIndia": "ভারত (জাতিগী)",
+  "regulatory.claimsCheckTitle": "ক্লেইমস অমসুং কমপ্লায়েন্স য়েংশিনবা",
+  "regulatory.claimsCheckDesc": "রুল ১৭০ (Rule 170), DMROA 1954 অমসুং সেদ্যুল প্রভিজন্সকী মতুং ইন্না ওটোমেটেড ভেরিফিকেসন",
+  "regulatory.labelReviewTitle": "লেবেল অমসুং পেকেজিং য়েংশিনবা",
+  "regulatory.labelReviewDesc": "আয়ুর্বেদ, সিদ্ধ, য়ুনানী (ASU) ক্লাসিকেল অমসুং পেতেন্ত হিদাকশিংগী স্তেচুটোরি লেবেলিং কমপ্লায়েন্স",
+  "international.treatiesTitle": "ইন্তরনেস্নেল ত্রীতিজ অমসুং কনভেন্সনশিং",
+  "international.treatiesDesc": "ক্রোস-বোর্দর আইপি হার্মোনাইজেসন, নাগোয়া ABS (Nagoya ABS), অমসুং PCT ফাইলিং ফ্রেমৱার্কশিং",
+  "cases.formulationCategory": "ফোর্ম্যুলেসন কাংলুপ",
+  "action.requestExpertReview": "এক্সপার্ত রিভ্যুগী হায়জবা",
+  "wizard.classicalNone": "অমত্তা নত্তে / প্রোপ্রাইটরি ASU ফোর্ম্যুলেসন",
+  "wizard.docCoa": "এনালিসিস সর্তিফিকেত (CoA)",
+  "wizard.docExcerpt": "ফার্মাকোপিয়েল শরুক / ক্লাসিকেল লাইরিক্কী স্কেন",
+  "wizard.partBark": "উহৈ মকোল (Tvāk)",
+  "wizard.partFlower": "লৈ (Puṣpa)",
+  "wizard.partLeaf": "মনা (Patra)",
+  "wizard.partResin": "উহৈ পুম (Niryāsa)",
+  "wizard.partRhizome": "য়াইখুম / কন্দ (Kanda)",
+  "wizard.partRoot": "মরা (Mūla)",
+  "wizard.partSeed": "মরূ / মহৈ (Phala / Bīja)",
+  "wizard.partWhole": "পাম্বী পুম্নমক (Pañcāṅga)",
+  "nav.regulations": "রেগুলেসনশিং"
 };
 
 export const BRX_TRANSLATIONS: TranslationDict = {
@@ -13762,7 +14162,27 @@ export const BRX_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "मावथांखि",
   "home.domain.plantVarietyProtection": "लाइफां रोखोम रैखाथि",
   "cases.noMatch": "नागिरनायजों गोरोबनाय जेबो केस मोनाखै।",
-  "cases.jurisdictionIndia": "भारत (हारियारि)"
+  "cases.jurisdictionIndia": "भारत (हारियारि)",
+  "regulatory.claimsCheckTitle": "दाबि आरो मानिनाय आनजाद",
+  "regulatory.claimsCheckDesc": "नियम 170 (Rule 170), DMROA 1954 आरो फारिलाइ नेमफोरजों गावनोगाव आनजाद",
+  "regulatory.labelReviewTitle": "लेबेल आरो पेकेजिं नयन",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, युनानी (ASU) क्लासिकेल आरो पेटेन्ट मुलिफोरनि थाखाय आइनारि लेबेलिंग मानिनाय",
+  "international.treatiesTitle": "गुबुन हादरारि सुक्ति आरो खौथुमनायफोर",
+  "international.treatiesDesc": "सिमा बारबनाय आइपि गोरोबनाय, नागोया ABS (Nagoya ABS), आरो PCT फाइल खालामनाय दाथाय",
+  "cases.formulationCategory": "फर्मुलेसन थाखो",
+  "action.requestExpertReview": "रोंगोथोगो नयननि थाखाय आरज गाब",
+  "wizard.classicalNone": "जेबो नङा / गावनि ASU फर्मुलेसन",
+  "wizard.docCoa": "बिजिरनाय फोरमानलाइ (CoA)",
+  "wizard.docExcerpt": "फार्माकपियेल बाहागो / क्लासिकेल लिरबिदां स्क्यान",
+  "wizard.partBark": "बिखौ (Tvāk)",
+  "wizard.partFlower": "बिबार (Puṣpa)",
+  "wizard.partLeaf": "बिलाइ (Patra)",
+  "wizard.partResin": "अथा (Niryāsa)",
+  "wizard.partRhizome": "दैथु / खन्दा (Kanda)",
+  "wizard.partRoot": "रोदा (Mūla)",
+  "wizard.partSeed": "बिथार / फिथाइ (Phala / Bīja)",
+  "wizard.partWhole": "गासै लाइफां (Pañcāṅga)",
+  "nav.regulations": "नेमखान्थि"
 };
 
 export const SAT_TRANSLATIONS: TranslationDict = {
@@ -14417,7 +14837,27 @@ export const SAT_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "ᱠᱟᱹᱢᱤ",
   "home.domain.plantVarietyProtection": "ᱫᱟᱨᱮ ᱡᱟᱹᱛ ᱨᱩᱠᱷᱤᱭᱟᱹ",
   "cases.noMatch": "ᱟᱢᱟᱜ ᱥᱮᱸᱫᱽᱨᱟ ᱥᱟᱶ ᱪᱮᱫ ᱠᱮᱥ ᱵᱟᱝ ᱢᱤᱞᱟᱹᱣ ᱞᱮᱱᱟ৤",
-  "cases.jurisdictionIndia": "ᱥᱤᱧᱚᱛ (ᱡᱟᱹᱛᱤᱭᱟᱹᱨᱤ)"
+  "cases.jurisdictionIndia": "ᱥᱤᱧᱚᱛ (ᱡᱟᱹᱛᱤᱭᱟᱹᱨᱤ)",
+  "regulatory.claimsCheckTitle": "ᱫᱟᱵᱤ ᱟᱨ ᱵᱟᱛᱟᱣ ᱯᱟᱨᱠᱷᱟᱣ",
+  "regulatory.claimsCheckDesc": "ᱱᱤᱭᱚᱢ 170 (Rule 170), DMROA 1954 ᱟᱨ ᱛᱷᱚᱠ ᱵᱮᱵᱚᱥᱛᱷᱟ ᱞᱮᱠᱟᱛᱮ ᱟᱯᱱᱟᱨ ᱛᱮ ᱯᱟᱨᱠᱷᱟᱣ",
+  "regulatory.labelReviewTitle": "ᱞᱮᱵᱮᱞ ᱟᱨ ᱯᱮᱠᱮᱡᱤᱝ ᱧᱮᱞ ᱵᱤᱰᱟᱹᱣ",
+  "regulatory.labelReviewDesc": "ᱟᱭᱩᱨᱵᱮᱫᱽ, ᱥᱤᱫᱷ, ᱤᱭᱩᱱᱟᱱᱤ (ASU) ᱥᱟᱥᱛᱨᱤᱭᱚ ᱟᱨ ᱯᱮᱴᱮᱱᱴ ᱨᱟᱱ ᱞᱟᱹᱜᱤᱫ ᱟᱹᱭᱤᱱᱟᱹᱨᱤ ᱞᱮᱵᱮᱞᱤᱝ ᱵᱟᱛᱟᱣ",
+  "international.treatiesTitle": "ᱡᱮᱜᱮᱛᱟᱹᱨᱤ ᱪᱩᱠᱛᱤ ᱟᱨ ᱫᱩᱯᱩᱲᱩᱵ ᱠᱚ",
+  "international.treatiesDesc": "ᱥᱤᱢᱟᱹ ᱯᱟᱨᱚᱢ ᱟᱭᱤᱯᱤ ᱢᱤᱫᱩᱱ, ᱱᱟᱜᱳᱭᱟ ABS (Nagoya ABS), ᱟᱨ PCT ᱯᱷᱟᱭᱤᱞᱤᱝ ᱨᱩᱯ",
+  "cases.formulationCategory": "ᱵᱮᱱᱟᱣ ᱛᱷᱚᱠ",
+  "action.requestExpertReview": "ᱵᱤᱥᱮᱥᱚᱜᱽᱭᱚ ᱧᱮᱞ ᱵᱤᱰᱟᱹᱣ ᱞᱟᱹᱜᱤᱫ ᱱᱮᱦᱚᱸᱨ",
+  "wizard.classicalNone": "ᱡᱟᱦᱟᱱᱟᱜ ᱵᱟᱝ / ᱱᱤᱡᱮᱨᱟᱜ ASU ᱵᱮᱱᱟᱣ",
+  "wizard.docCoa": "ᱵᱤᱥᱞᱮᱥᱚᱱ ᱥᱟᱠᱟᱢ (CoA)",
+  "wizard.docExcerpt": "ᱯᱷᱟᱨᱢᱟᱠᱳᱯᱤᱭᱟ ᱦᱟᱹᱴᱤᱧ / ᱥᱟᱥᱛᱨᱤᱭᱚ ᱯᱚᱛᱷᱤ ᱥᱠᱮᱱ",
+  "wizard.partBark": "ᱪᱷᱟᱞ (Tvāk)",
+  "wizard.partFlower": "ᱵᱟᱦᱟ (Puṣpa)",
+  "wizard.partLeaf": "ᱥᱟᱠᱟᱢ (Patra)",
+  "wizard.partResin": "ᱞᱟᱴᱷᱟ / ᱜᱩᱸᱫᱽ (Niryāsa)",
+  "wizard.partRhizome": "ᱫᱟᱜ ᱫᱟᱹᱲᱤ / ᱠᱟᱸᱫᱽ (Kanda)",
+  "wizard.partRoot": "ᱨᱮᱦᱮᱫ (Mūla)",
+  "wizard.partSeed": "ᱡᱟᱝ / ᱡᱚ (Phala / Bīja)",
+  "wizard.partWhole": "ᱜᱚᱴᱟ ᱫᱟᱨᱮ (Pañcāṅga)",
+  "nav.regulations": "ᱱᱤᱭᱚᱢ ᱠᱚ"
 };
 
 export const NE_TRANSLATIONS: TranslationDict = {
@@ -15072,7 +15512,27 @@ export const NE_TRANSLATIONS: TranslationDict = {
   "home.pipeline.action": "कारबाही",
   "home.domain.plantVarietyProtection": "वनस्पति जात संरक्षण",
   "cases.noMatch": "तपाईंको खोजसँग मेल खाने कुनै मुद्दा फेला परेन।",
-  "cases.jurisdictionIndia": "भारत (राष्ट्रिय)"
+  "cases.jurisdictionIndia": "भारत (राष्ट्रिय)",
+  "regulatory.claimsCheckTitle": "दाबी र अनुपालन प्रमाणीकरण",
+  "regulatory.claimsCheckDesc": "नियम १७० (Rule 170), DMROA 1954 र अनुसूची प्रावधानहरू अनुसार स्वचालित प्रमाणीकरण",
+  "regulatory.labelReviewTitle": "लेबल तथा प्याकेजिङ समीक्षा",
+  "regulatory.labelReviewDesc": "आयुर्वेद, सिद्ध, युनानी (ASU) शास्त्रीय तथा पेटेन्ट औषधिहरूका लागि वैधानिक लेबलिङ अनुपालन",
+  "international.treatiesTitle": "अन्तर्राष्ट्रिय सन्धि तथा महासन्धिहरू",
+  "international.treatiesDesc": "सीमापार बौद्धिक सम्पत्ति सामञ्जस्य, नागोया ABS (Nagoya ABS), र PCT फाइलिङ ढाँचाहरू",
+  "cases.formulationCategory": "सूत्रीकरण वर्ग",
+  "action.requestExpertReview": "विशेषज्ञ समीक्षाको अनुरोध गर्नुहोस्",
+  "wizard.classicalNone": "कुनै पनि होइन / स्वामित्व ASU सूत्रीकरण",
+  "wizard.docCoa": "विश्लेषण प्रमाणपत्र (CoA)",
+  "wizard.docExcerpt": "फार्माकोपियल अंश / शास्त्रीय पाठ स्क्यान",
+  "wizard.partBark": "बोक्रा (Tvāk)",
+  "wizard.partFlower": "फूल (Puṣpa)",
+  "wizard.partLeaf": "पात (Patra)",
+  "wizard.partResin": "खोटो / गम (Niryāsa)",
+  "wizard.partRhizome": "कन्द / काण्ड (Kanda)",
+  "wizard.partRoot": "जरा (Mūla)",
+  "wizard.partSeed": "बीज / फल (Phala / Bīja)",
+  "wizard.partWhole": "सम्पूर्ण बिरुवा (Pañcāṅga)",
+  "nav.regulations": "विनियमहरू"
 };
 
 export const MASTER_DICTIONARY: Record<LanguageCode, TranslationDict> = {

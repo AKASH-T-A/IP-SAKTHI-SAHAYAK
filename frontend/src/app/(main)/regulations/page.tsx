@@ -8,6 +8,7 @@ import EvidenceDrawer from '@/components/intelligence/EvidenceDrawer';
 import { Citation } from '@/lib/intelligence/types';
 import AbstentionBanner from '@/components/intelligence/AbstentionBanner';
 import JurisdictionSwitch from '@/components/layout/JurisdictionSwitch';
+import { regulatoryApi } from '@/lib/api/regulatory';
 
 interface ChecklistItem {
   category: string;
@@ -33,8 +34,52 @@ export default function RegulationsPage() {
   const [isClassical, setIsClassical] = useState<boolean>(false);
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
 
+  // Backend checklist state
+  const [backendChecklist, setBackendChecklist] = useState<ChecklistItem[] | null>(null);
+  const [loadingChecklist, setLoadingChecklist] = useState<boolean>(false);
+
   // Safe Abstention switch
   const [simulateAbstention, setSimulateAbstention] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (currentStep === 4) {
+      let isCancelled = false;
+      setLoadingChecklist(true);
+      regulatoryApi
+        .checklist({
+          product_category: productType,
+          ingredients: [{ name: 'Ashwagandha' }],
+          intended_use: intendedUse,
+          is_classical: isClassical,
+          target_jurisdiction: jurisdiction,
+        })
+        .then((res) => {
+          if (!isCancelled && res?.checklist && res.checklist.length > 0) {
+            const mapped: ChecklistItem[] = res.checklist.map((c: any) => ({
+              category: c.category,
+              item: c.item,
+              status: c.status,
+              authority: c.authority,
+              jurisdiction: c.jurisdiction || jurisdiction,
+              source: c.source,
+              version: c.version || 'Official',
+              details: c.details || '',
+            }));
+            setBackendChecklist(mapped);
+          }
+        })
+        .catch((err) => {
+          console.warn('Backend checklist error, using authoritative client checklist:', err);
+        })
+        .finally(() => {
+          if (!isCancelled) setLoadingChecklist(false);
+        });
+
+      return () => {
+        isCancelled = true;
+      };
+    }
+  }, [currentStep, productType, intendedUse, isClassical, jurisdiction]);
 
   const PRODUCT_CATEGORIES = [
     { id: 'classical', label: 'Classical / Generic Medicine', desc: 'Described in First Schedule ancient authoritative treatises (Charaka, Sushruta, etc.)', rule: 'D&C Act § 3(a)' },
@@ -574,7 +619,7 @@ export default function RegulationsPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {getChecklist().map((item, idx) => {
+                    {(backendChecklist || getChecklist()).map((item, idx) => {
                       const color = getStatusColor(item.status);
                       return (
                         <tr key={idx} style={{ borderBottom: '1px solid var(--border-color)' }}>

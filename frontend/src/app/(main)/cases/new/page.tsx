@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCasesStore, Ingredient, FormulationDNA } from '@/store/cases';
 import { useLanguageStore } from '@/store/language';
+import { casesApi } from '@/lib/api/cases';
 
 const PRODUCT_CATEGORIES = [
   { id: 'Ayurvedic formulation', labelKey: 'wizard.cat.ayurvedic', icon: '🌿', descKey: 'wizard.cat.ayurvedicDesc' },
@@ -176,7 +177,7 @@ function NewCaseContent() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Deterministic preliminary rule assessment
     const hasTraditionalHerb = ingredients.some((i) => !!i.botanical_name || !!i.sanskrit_name);
     const usesBioResource = ingredients.some((i) => i.source_type !== 'imported');
@@ -212,14 +213,32 @@ function NewCaseContent() {
       preliminary_rules: preliminaryRules,
     };
 
-    const newCase = addCase({
-      title: title.trim() || 'Untitled Ayurvedic Case',
-      description: description.trim() || `Formulation analysis for ${ingredients.map(i => i.name).filter(Boolean).join(', ')}`,
-      status: 'active',
-      jurisdiction: targetJurisdiction,
-      language: language || 'en',
-      formulation,
-    });
+    let backendCaseId: string | undefined = undefined;
+    try {
+      const created = await casesApi.create({
+        title: title.trim() || 'Untitled Ayurvedic Case',
+        description: description.trim() || `Formulation analysis for ${ingredients.map(i => i.name).filter(Boolean).join(', ')}`,
+        jurisdiction: targetJurisdiction,
+        language: language || 'en',
+      });
+      if (created && created.id) {
+        backendCaseId = created.id;
+      }
+    } catch (err) {
+      console.warn('Backend case creation note (offline or unauthenticated fallback):', err);
+    }
+
+    const newCase = addCase(
+      {
+        title: title.trim() || 'Untitled Ayurvedic Case',
+        description: description.trim() || `Formulation analysis for ${ingredients.map(i => i.name).filter(Boolean).join(', ')}`,
+        status: 'active',
+        jurisdiction: targetJurisdiction,
+        language: language || 'en',
+        formulation,
+      },
+      backendCaseId
+    );
 
     router.push(`/cases/${newCase.id}`);
   };

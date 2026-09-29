@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLanguageStore } from '@/store/language';
+import { regulatoryApi } from '@/lib/api/regulatory';
 
 interface Finding {
   claim_segment: string;
@@ -62,20 +63,11 @@ export default function ClaimsCheckerPage() {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/claims/check', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          claim_text: textToScan,
-          product_category: catToScan,
-        }),
+      const data = await regulatoryApi.checkClaims({
+        claim_text: textToScan,
+        product_category: catToScan,
       });
-      if (res.ok) {
-        const data = await res.json();
-        setResult(data);
-      } else {
-        throw new Error('Backend claims API responded with error');
-      }
+      setResult(data);
     } catch (err) {
       // Client-side fallback matching backend logic
       const isDiabetes = /diabetes|blood sugar/i.test(textToScan);
@@ -148,9 +140,9 @@ export default function ClaimsCheckerPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
           <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.home')}</Link>
           <span>/</span>
-          <Link href="/regulations" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Regulations</Link>
+          <Link href="/regulations" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.regulations')}</Link>
           <span>/</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Advertising & Claims</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('regulatory.claimsCheckTitle')}</span>
         </div>
 
         {/* Header */}
@@ -162,10 +154,10 @@ export default function ClaimsCheckerPage() {
             </span>
           </div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'var(--text-primary)', margin: '0 0 0.5rem', fontWeight: 600 }}>
-            Ayurvedic Advertising & Claims Compliance
+            {t('regulatory.claimsCheckTitle')}
           </h1>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '720px', lineHeight: 1.5 }}>
-            Audit proposed marketing statements against the <strong>Drugs and Magic Remedies (Objectionable Advertisements) Act 1954</strong>, <strong>D&C Rules Rule 170</strong>, and <strong>FSSAI Ayurveda Aahar Regulation 8</strong>.
+            {t('regulatory.claimsCheckDesc')}
           </p>
         </div>
 

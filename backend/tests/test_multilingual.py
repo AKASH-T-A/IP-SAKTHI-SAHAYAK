@@ -131,3 +131,67 @@ async def test_assistant_multilingual_api_endpoint():
         assert data["detected_intent"] == "PATENT"
         assert len(data["citations"]) > 0
         assert "3(p)" in data["citations"][0]["section"]
+
+
+def test_critical_kannada_query_requirement_16():
+    """
+    Requirement 16:
+    Language: Kannada
+    Query: "ಅಶ್ವಗಂಧ ಮತ್ತು ಬ್ರಾಹ್ಮಿಯನ್ನು ಒಳಗೊಂಡ ಸೂತ್ರೀಕರಣಕ್ಕೆ ಪೇಟೆಂಟ್ ಪಡೆಯಲು ಸಾಧ್ಯವೇ?"
+    Expected: Intent PATENT, localized Kannada response, Section 3(p) canonical identifier preserved.
+    """
+    pipeline = RAGPipeline()
+    query = "ಅಶ್ವಗಂಧ ಮತ್ತು ಬ್ರಾಹ್ಮಿಯನ್ನು ಒಳಗೊಂಡ ಸೂತ್ರೀಕರಣಕ್ಕೆ ಪೇಟೆಂಟ್ ಪಡೆಯಲು ಸಾಧ್ಯವೇ?"
+    res = pipeline.answer_query(
+        query=query,
+        case_context={"title": "ಮೇಧ್ಯಾ ರಸಾಯನ", "ingredients": [{"name": "Ashwagandha"}, {"name": "Brahmi"}]},
+        language="kn"
+    )
+    assert res["abstained"] is False
+    assert res["detected_intent"] == "PATENT"
+    assert res["language"] == "kn"
+    assert "Section 3(p)" in res["practical_meaning"]
+    assert "ಶಾಸನಬದ್ಧ" in res["answer"] or "ಕಾನೂನು" in res["answer"]
+    assert any("3(p)" in c["section"] for c in res["citations"])
+
+
+def test_critical_hindi_query_requirement_17():
+    """
+    Requirement 17:
+    Language: Hindi
+    Query: "क्या अश्वगंधा और ब्राह्मी वाले आयुर्वेदिक फॉर्मूलेशन के लिए पेटेंट मिल सकता है?"
+    Expected: Intent PATENT, localized Hindi response, Section 3(p) canonical identifier preserved.
+    """
+    pipeline = RAGPipeline()
+    query = "क्या अश्वगंधा और ब्राह्मी वाले आयुर्वेदिक फॉर्मूलेशन के लिए पेटेंट मिल सकता है?"
+    res = pipeline.answer_query(
+        query=query,
+        case_context={"title": "मेध्या रसायन", "ingredients": [{"name": "Ashwagandha"}, {"name": "Brahmi"}]},
+        language="hi"
+    )
+    assert res["abstained"] is False
+    assert res["detected_intent"] == "PATENT"
+    assert res["language"] == "hi"
+    assert "Section 3(p)" in res["practical_meaning"]
+    assert any("3(p)" in c["section"] for c in res["citations"])
+
+
+def test_critical_tamil_query_requirement_18():
+    """
+    Requirement 18:
+    Language: Tamil
+    Query: "அஸ்வகந்தா மற்றும் பிராமி கொண்ட ஆயுர்வேத தயாரிப்புக்கு காப்புரிமை பெற முடியுமா?"
+    Expected: Intent PATENT, localized Tamil response, Section 3(p) canonical identifier preserved.
+    """
+    pipeline = RAGPipeline()
+    query = "அஸ்வகந்தா மற்றும் பிராமி கொண்ட ஆயுர்வேத தயாரிப்புக்கு காப்புரிமை பெற முடியுமா?"
+    res = pipeline.answer_query(
+        query=query,
+        case_context={"title": "மேத்யா ரசாயனம்", "ingredients": [{"name": "Ashwagandha"}, {"name": "Brahmi"}]},
+        language="ta"
+    )
+    assert res["abstained"] is False
+    assert res["detected_intent"] == "PATENT"
+    assert res["language"] == "ta"
+    assert "Section 3(p)" in res["practical_meaning"]
+    assert any("3(p)" in c["section"] for c in res["citations"])

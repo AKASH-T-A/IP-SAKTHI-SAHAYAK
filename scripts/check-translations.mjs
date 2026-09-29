@@ -89,6 +89,7 @@ const CANONICAL_EXEMPT_KEYS = new Set([
   'auth.passwordPlaceholder',
   'footer.copyright',
   'home.domain.fssai',
+  'nav.assistant',
 ]);
 
 const CANONICAL_EXEMPT_VALUES = new Set([

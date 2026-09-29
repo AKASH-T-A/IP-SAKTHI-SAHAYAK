@@ -118,49 +118,12 @@ class RAGPipeline:
                 ]
             }
 
-        # Synthesize Grounded Decision-Support Response
-        primary_source = sources[0]
-        citations = [
-            {
-                "id": s.get("id"),
-                "short_title": s.get("short_title"),
-                "section": s.get("section_number"),
-                "authority": s.get("authority"),
-                "source_url": s.get("source_url"),
-                "excerpt": s.get("content"),
-                "canonical_status": "Authoritative Gazette Text (Canonical)",
-            }
-            for s in sources
-        ]
-
-        # Case Context Awareness
-        case_title = case_context.get("title", "Active Formulation") if case_context else "Active Formulation"
-        ingredients = case_context.get("ingredients", []) if case_context else []
-        ing_names = [i.get("name") for i in ingredients if isinstance(i, dict) and i.get("name")]
-        ing_summary = ", ".join(ing_names) if ing_names else "botanical actives"
-
-        # Localized generation using Bharat Multilingual Engine
-        from app.rag.multilingual import build_localized_response
-        localized = build_localized_response(
+        # Grounded Decision-Support Synthesis via Gemini Explainer Layer
+        from app.services.gemini.grounded_explainer import grounded_explainer
+        return grounded_explainer.explain(
+            query=query,
+            retrieved_sources=sources,
+            case_context=case_context,
             language=language,
-            case_title=case_title,
-            ing_summary=ing_summary,
-            source_title=primary_source.get("short_title", "Statutory Framework"),
-            authority=primary_source.get("authority", "Statutory Authority")
+            detected_intent=intent
         )
-
-        return {
-            "abstained": False,
-            "detected_intent": intent,
-            "answer": localized["answer"],
-            "why": localized["why"],
-            "evidence_strength": "High" if len(sources) >= 2 else "Moderate",
-            "citations": citations,
-            "missing_information": localized["missing_information"],
-            "practical_meaning": localized["practical_meaning"],
-            "next_actions": localized["next_actions"],
-            "disclaimer": localized["disclaimer"],
-            "is_rtl": localized["is_rtl"],
-            "language": language,
-            "canonical_language": "en"
-        }

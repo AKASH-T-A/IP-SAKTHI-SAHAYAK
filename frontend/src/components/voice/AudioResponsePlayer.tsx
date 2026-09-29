@@ -19,6 +19,7 @@ interface AudioResponsePlayerProps {
   language: LanguageCode;
   synthesisStatus: SpeechSynthesisStatus;
   activeMessageId: string | null;
+  isFemaleVoice?: boolean;
   onSpeak: (text: string, messageId: string) => void;
   onPause: () => void;
   onResume: () => void;
@@ -31,6 +32,7 @@ export default function AudioResponsePlayer({
   language,
   synthesisStatus,
   activeMessageId,
+  isFemaleVoice = false,
   onSpeak,
   onPause,
   onResume,
@@ -57,12 +59,12 @@ export default function AudioResponsePlayer({
         transition: 'all 150ms ease',
       }}
     >
-      {/* Primary Listen / Resume / Pause Toggle Button */}
+      {/* Primary Listen / Read Answer Button */}
       {!isSpeaking && !isPaused && (
         <button
           type="button"
           onClick={() => onSpeak(answerText, messageId)}
-          aria-label={`${voiceStrings.listen} (${localeMeta.speechLabel})`}
+          aria-label={`Read Answer in ${localeMeta.speechLabel}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -78,7 +80,7 @@ export default function AudioResponsePlayer({
           }}
         >
           <span aria-hidden="true">🔊</span>
-          <span>{voiceStrings.listen}</span>
+          <span>{voiceStrings.listen || 'Read Answer'}</span>
         </button>
       )}
 
@@ -86,7 +88,7 @@ export default function AudioResponsePlayer({
         <button
           type="button"
           onClick={onPause}
-          aria-label={voiceStrings.pause}
+          aria-label="Pause speech playback"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -102,7 +104,7 @@ export default function AudioResponsePlayer({
           }}
         >
           <span aria-hidden="true">⏸</span>
-          <span>{voiceStrings.pause}</span>
+          <span>{voiceStrings.pause || 'Pause'}</span>
         </button>
       )}
 
@@ -110,7 +112,7 @@ export default function AudioResponsePlayer({
         <button
           type="button"
           onClick={onResume}
-          aria-label={voiceStrings.resume}
+          aria-label="Resume speech playback"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -126,7 +128,7 @@ export default function AudioResponsePlayer({
           }}
         >
           <span aria-hidden="true">▶</span>
-          <span>{voiceStrings.resume}</span>
+          <span>{voiceStrings.resume || 'Resume'}</span>
         </button>
       )}
 
@@ -135,7 +137,7 @@ export default function AudioResponsePlayer({
         <button
           type="button"
           onClick={onStop}
-          aria-label={voiceStrings.stop}
+          aria-label="Stop speech playback"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -151,7 +153,7 @@ export default function AudioResponsePlayer({
           }}
         >
           <span aria-hidden="true">⏹</span>
-          <span>{voiceStrings.stop}</span>
+          <span>{voiceStrings.stop || 'Stop'}</span>
         </button>
       )}
 
@@ -168,7 +170,7 @@ export default function AudioResponsePlayer({
           }}
         >
           <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-primary)', animation: 'pulse 1s infinite' }} />
-          {localeMeta.speechLabel}
+          Speaking in {localeMeta.speechLabel}{isFemaleVoice ? ' (Female Voice)' : ''}
         </span>
       )}
     </div>

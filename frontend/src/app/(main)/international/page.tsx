@@ -131,7 +131,7 @@ export default function InternationalPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.home')}</Link>
             <span>/</span>
-            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>International Market Access</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('international.treatiesTitle')}</span>
           </div>
 
           <JurisdictionSwitch />
@@ -146,10 +146,10 @@ export default function InternationalPage() {
             </span>
           </div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'var(--text-primary)', margin: '0 0 0.5rem', fontWeight: 600 }}>
-            International Market Access & Treaty Regimes
+            {t('international.treatiesTitle')}
           </h1>
           <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '750px', lineHeight: 1.5 }}>
-            Structured regulatory pathways and intellectual property coverage for exporting Ayurvedic and herbal formulations to key destination markets (EU, USA, UK, Japan, Australia).
+            {t('international.treatiesDesc')}
           </p>
         </div>
 

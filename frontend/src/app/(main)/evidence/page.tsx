@@ -6,6 +6,7 @@ import { useLanguageStore } from '@/store/language';
 import { STATUTORY_CORPUS } from '@/lib/intelligence/corpus';
 import { Citation, EvidenceSource } from '@/lib/intelligence/types';
 import EvidenceDrawer from '@/components/intelligence/EvidenceDrawer';
+import { sourcesApi } from '@/lib/api/sources';
 
 export default function EvidenceExplorerPage() {
   const { t } = useLanguageStore();
@@ -13,8 +14,48 @@ export default function EvidenceExplorerPage() {
   const [filterType, setFilterType] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
+  const [sourcesList, setSourcesList] = useState<EvidenceSource[]>(Object.values(STATUTORY_CORPUS));
+  const [loadingSources, setLoadingSources] = useState(false);
 
-  const sourcesList: EvidenceSource[] = Object.values(STATUTORY_CORPUS);
+  React.useEffect(() => {
+    let isCancelled = false;
+    setLoadingSources(true);
+    sourcesApi
+      .list()
+      .then((backendSources) => {
+        if (isCancelled || !backendSources || backendSources.length === 0) return;
+        const mapped: EvidenceSource[] = backendSources.map((bs) => ({
+          id: bs.id,
+          title: bs.title || bs.short_title,
+          shortTitle: bs.short_title,
+          authority: bs.authority,
+          sourceType: (bs.source_type?.toUpperCase() as any) || 'ACT',
+          jurisdiction: (bs.jurisdiction as any) || 'India',
+          hierarchy: { act: bs.short_title, section: bs.section_number },
+          publicationDate: '2026-09-20',
+          effectiveDate: '2026-09-20',
+          version: '1.0',
+          status: (bs.status?.toUpperCase() as any) || 'ACTIVE',
+          canonicalUrl: bs.source_url,
+          contentHash: bs.checksum_sha256,
+          retrievedDate: '2026-09-20',
+          verificationStatus: 'VERIFIED',
+          officialExcerpt: bs.content,
+          plainSummary: `Authoritative statutory reference administered by ${bs.authority}`,
+        }));
+        setSourcesList(mapped);
+      })
+      .catch((err) => {
+        console.warn('Backend sources listing error, using local fallback:', err);
+      })
+      .finally(() => {
+        if (!isCancelled) setLoadingSources(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const filteredSources = sourcesList.filter((src) => {
     const matchesAuthority =

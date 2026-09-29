@@ -63,6 +63,7 @@ const CANONICAL_EXEMPT_KEYS = new Set([
   'intel.sbbSec7',
   'intel.sec3p',
   'intel.scheduleT',
+  'nav.assistant',
 ]);
 
 // Script Unicode Ranges

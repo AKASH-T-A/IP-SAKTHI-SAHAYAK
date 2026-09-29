@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { performIntelligentSearch } from '@/lib/intelligence/search';
+import { searchApi, SearchApiResponse } from '@/lib/api/search';
 import { useCasesStore } from '@/store/cases';
 import { useLanguageStore } from '@/store/language';
 import { Citation } from '@/lib/intelligence/types';
@@ -99,24 +100,68 @@ function SearchContent() {
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<string>('ALL');
 
   const { cases } = useCasesStore();
+  const [backendResults, setBackendResults] = useState<SearchApiResponse | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  React.useEffect(() => {
+    if (!rawQ) {
+      setBackendResults(null);
+      return;
+    }
+    let isCancelled = false;
+    setIsSearching(true);
+    searchApi
+      .search(
+        rawQ,
+        10,
+        selectedJurisdiction !== 'ALL' ? selectedJurisdiction : 'India',
+        selectedAuthority !== 'ALL' ? selectedAuthority : undefined
+      )
+      .then((data) => {
+        if (!isCancelled) setBackendResults(data);
+      })
+      .catch((err) => {
+        console.warn('Backend search error, falling back to local search engine:', err);
+      })
+      .finally(() => {
+        if (!isCancelled) setIsSearching(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [rawQ, selectedAuthority, selectedJurisdiction]);
 
   const rawResults = rawQ ? performIntelligentSearch(rawQ, cases) : null;
 
-  // Filter statutory evidence by authority if selected
+  // Filter statutory evidence by authority if selected and overlay backend evidence
   const searchResults = React.useMemo(() => {
     if (!rawResults) return null;
     let evidence = rawResults.groups.evidence;
-    if (selectedAuthority !== 'ALL') {
+    if (backendResults && backendResults.results && backendResults.results.length > 0) {
+      evidence = backendResults.results.map((r) => ({
+        sourceId: r.id,
+        sourceTitle: r.short_title,
+        authority: r.authority,
+        hierarchy: { act: r.short_title, section: r.section_number },
+        version: 'Official Gazette',
+        status: (r.status?.toUpperCase() as any) || 'ACTIVE',
+        relevanceExplanation: `Authoritative statutory reference retrieved from legal corpus (${r.jurisdiction})`,
+        supportingExcerpt: r.content,
+        canonicalUrl: r.source_url,
+      }));
+    } else if (selectedAuthority !== 'ALL') {
       evidence = evidence.filter((e: Citation) => e.authority.toLowerCase().includes(selectedAuthority.toLowerCase()));
     }
     return {
       ...rawResults,
+      detectedIntent: (backendResults?.detected_intent as any) || rawResults.detectedIntent,
       groups: {
         ...rawResults.groups,
         evidence,
       },
     };
-  }, [rawResults, selectedAuthority]);
+  }, [rawResults, backendResults, selectedAuthority]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,6 +428,27 @@ function SearchContent() {
             )}
           </div>
         </div>
+
+        {/* Loading Indicator */}
+        {isSearching && (
+          <div
+            style={{
+              background: 'rgba(46, 125, 50, 0.08)',
+              border: '1px solid rgba(46, 125, 50, 0.25)',
+              borderRadius: '8px',
+              padding: '0.75rem 1.25rem',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              fontSize: '0.88rem',
+              color: 'var(--color-primary-dark)',
+            }}
+          >
+            <span>⚙️</span>
+            <span>Querying authoritative statutory corpus from FastAPI backend...</span>
+          </div>
+        )}
 
         {/* Results Area */}
         {!searchResults ? (
