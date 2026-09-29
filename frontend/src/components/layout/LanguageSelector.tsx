@@ -117,7 +117,7 @@ export default function LanguageSelector() {
   };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
+    <div ref={containerRef} style={{ position: 'relative', display: 'inline-block', flexShrink: 0 }}>
       {/* ── Trigger Button ────────────────────────────────────────── */}
       <button
         type="button"
@@ -128,17 +128,19 @@ export default function LanguageSelector() {
         style={{
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '5px',
           background: 'var(--bg-subtle)',
           border: '1px solid var(--border-default)',
           borderRadius: 'var(--radius-full)',
-          padding: '5px 12px',
+          padding: '5px 10px',
           fontSize: '0.8125rem',
           fontWeight: 600,
           color: 'var(--text-primary)',
           cursor: 'pointer',
           transition: 'all 150ms ease',
           outline: 'none',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.borderColor = 'var(--green-600)';
@@ -152,11 +154,8 @@ export default function LanguageSelector() {
         <span style={{ color: 'var(--green-700)', display: 'flex', alignItems: 'center' }}>
           <GlobeIcon size={14} />
         </span>
-        <span style={{ fontFamily: 'var(--font-heading)', color: 'var(--green-900)' }}>
+        <span style={{ fontFamily: 'var(--font-heading)', color: 'var(--green-900)', fontWeight: 700 }}>
           {currentMeta.nativeName}
-        </span>
-        <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-          ({currentMeta.name})
         </span>
         <span style={{ fontSize: '0.625rem', color: 'var(--text-muted)', marginLeft: '1px' }}>▼</span>
       </button>
@@ -170,8 +169,8 @@ export default function LanguageSelector() {
             position: 'absolute',
             top: 'calc(100% + 8px)',
             insetInlineEnd: 0,
-            width: '360px',
-            maxWidth: '92vw',
+            width: '340px',
+            maxWidth: 'min(340px, calc(100vw - 20px))',
             maxHeight: '480px',
             background: 'var(--bg-surface)',
             border: '1px solid var(--border-default)',

@@ -1,19 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCasesStore } from '@/store/cases';
 import { useLanguageStore } from '@/store/language';
+import { getLanguageMeta } from '@/i18n/languages';
 import { generateAssistantResponse } from '@/lib/intelligence/assistant';
 import { StructuredAssistantResponse, Citation } from '@/lib/intelligence/types';
 import EvidenceDrawer from '@/components/intelligence/EvidenceDrawer';
 import EvidenceStrengthBadge from '@/components/intelligence/EvidenceStrengthBadge';
 import { useSpeechRecognition } from '@/lib/voice/useSpeechRecognition';
 import { useSpeechSynthesis } from '@/lib/voice/useSpeechSynthesis';
-import VoiceInputButton from '@/components/voice/VoiceInputButton';
 import AudioResponsePlayer from '@/components/voice/AudioResponsePlayer';
 import { getVoiceStrings, getVoiceLocaleMeta } from '@/lib/voice/locales';
+import { defaultBhashiniClient } from '@/lib/voice/bhashiniProvider';
 
 interface ChatMessage {
   id: string;
@@ -23,20 +24,137 @@ interface ChatMessage {
   timestamp: string;
 }
 
+// ─── Welcome Messages Map across Indian Languages ─────────────────────────────
+const WELCOME_MESSAGES_MAP: Record<string, string> = {
+  kn: 'ನಮಸ್ಕಾರ! ನಾನು BHASHINI — IP-SAKTI ಯ ಬಹುಭಾಷಾ ಐಪಿ ಮತ್ತು ನಿಯಂತ್ರಕ ನಿರ್ಧಾರ ಸಹಾಯಕ. ನಿಮ್ಮ ಸೂತ್ರೀಕರಣ, ಭಾರತೀಯ ಪೇಟೆಂಟ್ ಕಾಯಿದೆ 1970, ಔಷಧ ಮತ್ತು ಸೌಂದರ್ಯವರ್ಧಕ ನಿಯಮಗಳು 1945 ಮತ್ತು ಜೈವಿಕ ವೈವಿಧ್ಯ ಕಾಯಿದೆ 2002 ರ ಅಧಿಕೃತ ಶಾಸನಬದ್ಧ ನಿಬಂಧನೆಗಳ ಆಧಾರದ ಮೇಲೆ ನಾನು ಮಾರ್ಗದರ್ಶನ ನೀಡುತ್ತೇನೆ. ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?',
+  hi: 'नमस्ते! मैं BHASHINI हूँ — IP-SAKTI का बहुभाषी बौद्धिक संपदा एवं विनियामक निर्णय सहायक। मैं आपके फॉर्मूलेशन, भारतीय पेटेंट अधिनियम 1970, औषधि एवं प्रसाधन नियमावली 1945 और जैव विविधता अधिनियम 2002 के अधिकृत प्रावधानों पर आधारित हूँ। आज मैं आपकी क्या सहायता कर सकता हूँ?',
+  ta: 'வணக்கம்! நான் BHASHINI — IP-SAKTI இன் பன்மொழி அறிவுசார் சொத்துரிமை மற்றும் ஒழுங்குமுறை முடிவெடுக்கும் உதவியாளர். இந்திய காப்புரிமைச் சட்டம் 1970, மருந்துகள் விதிகள் 1945 மற்றும் பல்லுயிர் சட்டம் 2002 ஆகியவற்றின் அடிப்படையில் நான் வழிகாட்டுகிறேன். இன்று நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?',
+  te: 'నమస్కారం! నేను BHASHINI — IP-SAKTI యొక్క బహుభాషా ఐపీ మరియు నియంత్రణ నిర్ణయ సహాయకుడిని. భారత పేటెంట్ చట్టం 1970, డ్రగ్స్ & కాస్మెటిక్స్ నియమాలు 1945 మరియు జీవ వైవిధ్య చట్టం 2002 ఆధారంగా నేను మార్గదర్శనం చేస్తాను. ఈరోజు నేను మీకు ఎలా సహాయపడగలను?',
+  ml: 'നമസ്കാരം! ഞാൻ BHASHINI — IP-SAKTI യുടെ ബഹുഭാഷാ ഐപി, റെഗുലേറ്ററി അസിസ്റ്റന്റ്. ഇന്ത്യൻ പേറ്റന്റ് ആക്റ്റ് 1970, ഡ്രഗ്സ് റൂൾസ് 1945, ബയോഡൈവേഴ്സിറ്റി ആക്റ്റ് 2002 എന്നിവയുടെ അടിസ്ഥാനത്തിലാണ് ഞാൻ പ്രവർത്തിക്കുന്നത്. ഇന്ന് ഞാൻ നിങ്ങളെ എങ്ങനെ സഹായിക്കണം?',
+  mr: 'नमस्कार! मी BHASHINI — IP-SAKTI ची बहुभाषिक आयपी आणि नियामक सहाय्यक आहे. मी भारतीय पेटंट कायदा 1970, औषध नियमावली 1945 आणि जैवविविधता कायदा 2002 च्या अधिकृत तरतुदींवर आधारित मार्गदर्शन करते. आज मी आपली काय मदत करू शकते?',
+  bn: 'নমস্কার! আমি BHASHINI — IP-SAKTI এর বহুভাষিক আইপি ও রেগুলেটরি সহকারী। ভারতীয় পেটেন্ট আইন ১৯৭০, ওষুধ বিধি ১৯৪৫ এবং জীববৈচিত্র্য আইন ২০০২ এর বিধিবদ্ধ প্রমাণের ভিত্তিতে আমি উত্তর প্রদান করি। আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?',
+  gu: 'નમસ્તે! હું BHASHINI છું — IP-SAKTI નો બહુભાષીય આઈપી અને નિયમનકારી સહાયક. હું ભારતીય પેટન્ટ અધિનિયમ 1970, ઔષધ નિયમો 1945 અને જૈવ વિવિધતા અધિનિયમ 2002 ના આધારે માર્ગદર્શન આપું છું. આજે હું તમને કેવી રીતે સહાય કરી શકું?',
+  pa: 'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ BHASHINI ਹਾਂ — IP-SAKTI ਦਾ ਬਹੁਭਾਸ਼ਾਈ ਆਈਪੀ ਅਤੇ ਰੈਗੂਲੇਟਰੀ ਸਹਾਇਕ। ਮੈਂ ਭਾਰਤੀ ਪੇਟੈਂਟ ਐਕਟ 1970, ਡਰੱਗਜ਼ ਰੂਲਜ਼ 1945 ਅਤੇ ਜੈਵਿਕ ਵਿਭਿੰਨਤਾ ਐਕਟ 2002 ਦੇ ਆਧਾਰ ਤੇ ਮਾਰਗਦਰਸ਼ਨ ਕਰਦਾ ਹਾਂ। ਅੱਜ ਮੈਂ ਤੁਹਾਡੀ ਕੀ ਮਦਦ ਕਰ ਸਕਦਾ ਹਾਂ?',
+  or: 'ନମସ୍କାର! ମୁଁ BHASHINI — IP-SAKTI ର ବହୁଭାଷୀ ଆଇପି ଏବଂ ନିୟାମକ ସହାୟକ। ମୁଁ ଭାରତୀୟ ପେଟେଣ୍ଟ ଆଇନ ୧୯୭୦, ଡ୍ରଗ୍ସ ନିୟମାବଳୀ ୧୯୪୫ ଏବଂ ଜୈବ ବିବିଧତା ଆଇନ ୨୦୦୨ ଆଧାରରେ ମାର୍ଗଦର୍ଶନ ପ୍ରଦାନ କରେ। ଆଜି ମୁଁ ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?',
+  ur: 'آداب! میں بھاشنی (BHASHINI) ہوں — IP-SAKTI کا کثیر لسانی آئی پی اور ریگولیٹری معاون۔ میں بھارتی پیٹنٹ ایکٹ 1970، ڈرگز رولز 1945 اور حیاتیاتی تنوع ایکٹ 2002 کے مستند شواہد پر مبنی رہنمائی فراہم کرتا ہوں۔ آج میں آپ کی کیا مدد کر سکتا ہوں؟',
+  sa: 'नमस्ते! अहं BHASHINI — IP-SAKTI इत्यस्य बहुभाषीय-बौद्धिक-सम्पत्ति-नियामक-सहायकः अस्मि। भारतीय-पेटेण्ट्-अधिनियमः १९७०, औषधि-नियमावली १९४५, जैव-विविधता-अधिनियमः २००२ इत्येतेषां प्रामाणिक-साक्ष्याणाम् आधारेण मार्गदर्शनं करोमि। अद्य भवतां का सहायता करणीया?',
+  en: 'Namaste! I am BHASHINI — IP-SAKTI’s Multilingual IP & Regulatory Assistant. I am grounded in your case context, The Patents Act 1970, Drugs & Cosmetics Rules 1945, and Biological Diversity Act 2002. How can I assist your formulation decision strategy today?',
+};
+
+// ─── Quick Prompts Map across Indian Languages ────────────────────────────────
+const QUICK_PROMPTS_MAP: Record<string, string[]> = {
+  kn: [
+    'ನನ್ನ ಉತ್ಪನ್ನವನ್ನು ವಿಶ್ಲೇಷಿಸಿ',
+    'ಈ ಫಾರ್ಮುಲೇಶನ್ಗೆ ಪೇಟೆಂಟ್ ಸಾಧ್ಯವೇ?',
+    'ABS ಅನುಸರಣೆ ಅಗತ್ಯವಿದೆಯೇ?',
+    'ಈ ಉತ್ಪನ್ನದ ನಿಯಂತ್ರಣ ವರ್ಗ ಯಾವುದು?',
+    'ಸಂಬಂಧಿತ ಕಾನೂನು ಮೂಲಗಳನ್ನು ತೋರಿಸಿ',
+  ],
+  hi: [
+    'मेरे उत्पाद का विश्लेषण करें',
+    'क्या इस फॉर्मूलेशन पर पेटेंट मिल सकता है?',
+    'क्या ABS अनुपालन आवश्यक है?',
+    'इस उत्पाद की नियामक श्रेणी क्या है?',
+    'संबंधित विधिक स्रोत दिखाएं',
+  ],
+  ta: [
+    'எனது தயாரிப்பை பகுப்பாய்வு செய்க',
+    'இந்த கலவைக்கு காப்புரிமை பெற முடியுமா?',
+    'ABS இணக்கம் தேவையா?',
+    'இந்த பொருளின் ஒழுங்குமுறை வகை என்ன?',
+    'தொடர்புடைய சட்ட ஆதாரங்களைக் காட்டுங்கள்',
+  ],
+  te: [
+    'నా ఉత్పత్తిని విశ్లేషించండి',
+    'ఈ ఫార్ములేషన్‌కు పేటెంట్ లభిస్తుందా?',
+    'ABS అనుమతి అవసరమా?',
+    'ఈ ఉత్పత్తి యొక్క నియంత్రణ వర్గం ఏమిటి?',
+    'సంబంధిత చట్టపరమైన ఆధారాలను చూపండి',
+  ],
+  ml: [
+    'എന്റെ ഉൽപ്പന്നം വിശകലനം ചെയ്യുക',
+    'ഈ ഫോർമുലേഷന് പേറ്റന്റ് സാധ്യമാണോ?',
+    'ABS അനുമതി ആവശ്യമാണോ?',
+    'ഈ ഉൽപ്പന്നത്തിന്റെ നിയന്ത്രണ വിഭാഗം ഏതാണ്?',
+    'പ്രസക്തമായ നിയമ സ്രോതസ്സുകൾ കാണിക്കുക',
+  ],
+  mr: [
+    'माझ्या उत्पादनाचे विश्लेषण करा',
+    'या फॉर्म्युलेशनला पेटंट मिळू शकते का?',
+    'ABS अनुपालन आवश्यक आहे का?',
+    'या उत्पादनाची नियामक श्रेणी कोणती आहे?',
+    'संबंधित कायदेशीर स्रोत दाखवा',
+  ],
+  bn: [
+    'আমার পণ্য বিশ্লেষণ করুন',
+    'এই ফর্মুলেশনে পেটেন্ট পাওয়া সম্ভব?',
+    'ABS অনুমোদন কি প্রয়োজনীয়?',
+    'এই পণ্যের নিয়ন্ত্রণ বিভাগ কোনটি?',
+    'প্রাসঙ্গিক আইনি উৎস দেখান',
+  ],
+  gu: [
+    'મારા ઉત્પાદનનું વિશ્લેષણ કરો',
+    'શું આ ફોર્મ્યુલેશન પર પેટન્ટ શક્ય છે?',
+    'શું ABS પાલન જરૂરી છે?',
+    'આ ઉત્પાદનની નિયમનકારી શ્રેણી કઈ છે?',
+    'સંબંધિત કાનૂની સ્ત્રોતો બતાવો',
+  ],
+  pa: [
+    'ਮੇਰੇ ਉਤਪਾਦ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰੋ',
+    'ਕੀ ਇਸ ਫਾਰਮੂਲੇਸ਼ਨ ਨੂੰ ਪੇਟੈਂਟ ਮਿਲ ਸਕਦਾ ਹੈ?',
+    'ਕੀ ABS ਮਨਜ਼ੂਰੀ ਲੋੜੀਂਦੀ ਹੈ?',
+    'ਇਸ ਉਤਪਾਦ ਦੀ ਰੈਗੂਲੇਟਰੀ ਸ਼੍ਰੇਣੀ ਕਿਹੜੀ ਹੈ?',
+    'ਸੰਬੰਧਿਤ ਕਾਨੂੰਨੀ ਸਰੋਤ ਦਿਖਾਓ',
+  ],
+  or: [
+    'ମୋ ଉତ୍ପାଦ ବିଶ୍ଳେଷଣ କରନ୍ତୁ',
+    'ଏହି ଫର୍ମୁଲେସନ ପାଇଁ ପେଟେଣ୍ଟ ସମ୍ଭବ କି?',
+    'ABS ଅନୁପାଳନ ଆବଶ୍ୟକ କି?',
+    'ଏହି ଉତ୍ପାଦର ନିୟାମକ ବର୍ଗ କ\'ଣ?',
+    'ପ୍ରାସଙ୍ଗିକ ଆଇନଗତ ଉତ୍ସ ଦେଖାନ୍ତୁ',
+  ],
+  ur: [
+    'میری مصنوعات کا تجزیہ کریں',
+    'کیا اس فارمولیشن کو پیٹنٹ مل سکتا ہے؟',
+    'کیا ABS کی تعمیل لازمی ہے؟',
+    'اس پروڈکٹ کا ریگولیٹری زمرہ کیا ہے؟',
+    'متعلقہ قانونی ذرائع دکھائیں',
+  ],
+  sa: [
+    'मम उत्पादस्य विश्लेषणं कुरुत',
+    'किम् अस्य योगस्य पेटेण्ट्-अधिकारः सम्भवति?',
+    'किम् ABS-अनुपालनम् आवश्यकम्?',
+    'अस्य उत्पादस्य नियामक-वर्गः कः?',
+    'प्रासङ्गिक-वैधानिक-स्रोतांसि दर्शयत',
+  ],
+  en: [
+    'Analyze my product formulation',
+    'Can this formulation be patented under Section 3(p)?',
+    'Do I need State Biodiversity Board (SBB) approval?',
+    'What are the Rule 158B AYUSH licensing requirements?',
+    'What if I market this as an Ayurveda-Aahar food product?',
+  ],
+};
+
 function AssistantContent() {
   const searchParams = useSearchParams();
   const contextParam = searchParams?.get('context') || '';
 
   const { cases } = useCasesStore();
-  const { language, t } = useLanguageStore();
+  const { language, isRtl, t } = useLanguageStore();
   const [selectedCaseId, setSelectedCaseId] = useState<string>(cases[0]?.id || '');
   const [inputQuery, setInputQuery] = useState('');
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
   const [voiceMode, setVoiceMode] = useState<boolean>(false);
   const [autoReadResponses, setAutoReadResponses] = useState<boolean>(false);
+  const [expandedWhy, setExpandedWhy] = useState<Record<string, boolean>>({});
+  const [voiceDraft, setVoiceDraft] = useState<string | null>(null);
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const currentMeta = getLanguageMeta(language);
   const voiceStrings = getVoiceStrings(language);
   const voiceLocaleMeta = getVoiceLocaleMeta(language);
+  const bhashiniStatus = defaultBhashiniClient.getStatus();
 
   // Match case from context query param if provided
   useEffect(() => {
@@ -53,18 +171,7 @@ function AssistantContent() {
   const activeCase = cases.find((c) => c.id === selectedCaseId) || cases[0];
 
   const getWelcomeMessage = (lang: string) => {
-    switch (lang) {
-      case 'hi':
-        return 'नमस्ते! मैं IP-SAKTI विधिक एवं विनियामक निर्णय सहायक हूँ। मैं आपके प्रकरण, भारतीय पेटेंट अधिनियम 1970, औषधि एवं प्रसाधन नियमावली 1945 और जैव विविधता अधिनियम 2002 के अधिकृत प्रावधानों पर आधारित हूँ। आज मैं आपकी क्या सहायता कर सकता हूँ?';
-      case 'kn':
-        return 'ನಮಸ್ಕಾರ! ನಾನು IP-SAKTI ಶಾಸನಬದ್ಧ ಮತ್ತು ನಿಯಂತ್ರಕ ನಿರ್ಧಾರ ಬೆಂಬಲ ಸಹಾಯಕ. ನಾನು ಭಾರತೀಯ ಪೇಟೆಂಟ್ ಕಾಯಿದೆ 1970, ಔಷಧ ಮತ್ತು ಸೌಂದರ್ಯವರ್ಧಕ ನಿಯಮಗಳು 1945 ಮತ್ತು ಜೈವಿಕ ವೈವಿಧ್ಯ ಕಾಯಿದೆ 2002 ರ ಅಧಿಕೃತ ನಿಬಂಧನೆಗಳ ಮೇಲೆ ಆಧಾರಿತನಾಗಿದ್ದೇನೆ. ಇಂದು ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?';
-      case 'ta':
-        return 'வணக்கம்! நான் IP-SAKTI சட்டரீதியான முடிவெடுக்கும் உதவியாளர். இந்திய காப்புரிமைச் சட்டம் 1970, மருந்துகள் மற்றும் அழகுசாதனப் பொருட்கள் விதிகள் 1945 மற்றும் பல்லுயிர் சட்டம் 2002 ஆகியவற்றின் அடிப்படையில் நான் பதிலளிக்கிறேன். இன்று நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?';
-      case 'te':
-        return 'నమస్కారం! నేను IP-SAKTI చట్టపరమైన మరియు నియంత్రణ నిర్ణయ సహాయకుడిని. భారత పేటెంట్ చట్టం 1970, డ్రగ్స్ & కాస్మెటిక్స్ నియమాలు 1945 మరియు జీవ వైవిధ్య చట్టం 2002 ఆధారంగా నేను మార్గదర్శనం చేస్తాను. ఈరోజు నేను మీకు ఎలా సహాయపడగలను?';
-      default:
-        return 'Namaste! I am the IP-SAKTI Sahayak Statutory Intelligence Assistant. I am grounded in your case context, The Patents Act 1970, Drugs & Cosmetics Rules 1945, and Biological Diversity Act 2002. How can I assist your formulation decision strategy today?';
-    }
+    return WELCOME_MESSAGES_MAP[lang] || WELCOME_MESSAGES_MAP.en;
   };
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -86,6 +193,11 @@ function AssistantContent() {
     });
   }, [language]);
 
+  // Auto scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, voiceDraft]);
+
   const {
     status: speechStatus,
     interimTranscript,
@@ -97,12 +209,13 @@ function AssistantContent() {
   } = useSpeechRecognition({
     language,
     onTranscriptChange: (text) => {
-      setInputQuery(text);
+      setVoiceDraft(text);
     },
     onFinalTranscript: (finalText) => {
-      setInputQuery(finalText);
+      setVoiceDraft(finalText);
       if (voiceMode && finalText.trim()) {
         handleSend(finalText.trim());
+        setVoiceDraft(null);
       }
     },
   });
@@ -123,6 +236,7 @@ function AssistantContent() {
     // Release microphone and cancel active speech
     stopListening();
     ttsStop();
+    setVoiceDraft(null);
 
     const userMsg: ChatMessage = {
       id: 'msg-' + Date.now(),
@@ -157,97 +271,82 @@ function AssistantContent() {
     }
   };
 
-  const getSampleQuestions = (lang: string) => {
-    switch (lang) {
-      case 'hi':
-        return [
-          'क्या मेरी formulation के लिए patent protection संभव है?',
-          'Rule 158B के तहत आयुष लाइसेंस की क्या आवश्यकताएं हैं?',
-          'क्या राज्य जैव विविधता बोर्ड (SBB) की अनुमति आवश्यक है?',
-          'यदि मैं इसे आयुर्वेद-आहार (Ayurveda Aahar) के रूप में बेचूं तो क्या नियम हैं?',
-          'क्या आप पेटेंट मिलने की 100% गारंटी दे सकते हैं?',
-        ];
-      case 'kn':
-        return [
-          'ಈ ಗಿಡಮೂಲಿಕೆ ಸಂಯೋಜನೆಗೆ ಪೇಟೆಂಟ್ ಪಡೆಯಬಹುದೇ?',
-          'Rule 158B ಅಡಿಯಲ್ಲಿ ಆಯುಷ್ ಲೈಸೆನ್ಸ್ ಪಡೆಯಲು ಅಗತ್ಯತೆಗಳೇನು?',
-          'ರಾಜ್ಯ ಜೈವಿಕ ವೈವಿಧ್ಯ ಮಂಡಳಿ (SBB) ಅನುಮೋದನೆ ಅಗತ್ಯವಿದೆಯೇ?',
-          'ಇದನ್ನು ಆಯುರ್ವೇದ ಆಹಾರ (Ayurveda Aahar) ಎಂದು ಮಾರಾಟ ಮಾಡಲು ನಿಯಮಗಳೇನು?',
-          'ಪೇಟೆಂಟ್ ಸಿಗುತ್ತದೆ ಎಂದು 100% ಗ್ಯಾರಂಟಿ ನೀಡಲು ಸಾಧ್ಯವೇ?',
-        ];
-      case 'ta':
-        return [
-          'இந்த மூலிகை கலவைக்கு காப்புரிமை பெற முடியுமா?',
-          'Rule 158B இன் கீழ் ஆயுஷ் உரிமத் தேவைகள் என்ன?',
-          'மாநில பல்லுயிர் வாரியத்தின் (SBB) அனுமதி தேவையா?',
-          'இதை ஆயுர்வேத உணவு (Ayurveda Aahar) என சந்தைப்படுத்தினால் என்ன விதிமுறைகள்?',
-          'காப்புரிமை கிடைப்பதற்கு 100% உத்தரவாதம் அளிக்க முடியுமா?',
-        ];
-      case 'te':
-        return [
-          'ఈ మూలికా ఫార్ములేషన్కు పేటెంట్ పొందవచ్చా?',
-          'Rule 158B కింద ఆయుష్ లైసెన్స్ నిబంధనలు ఏమిటి?',
-          'రాష్ట్ర జీవ వైవిధ్య మండలి (SBB) అనుమతి అవసరమా?',
-          'దీనిని ఆయుర్వేద ఆహారంగా మార్కెట్ చేయడానికి నియమాలు ఏమిటి?',
-          'పేటెంట్ లభిస్తుందని 100% హామీ ఇవ్వగలరా?',
-        ];
-      default:
-        return [
-          'Can I explore patent protection for this formulation?',
-          'What are my AYUSH licensing requirements under Rule 158B?',
-          'Do I need State Biodiversity Board (SBB) approval?',
-          'What if I market this as an Ayurveda-Aahar food product?',
-          'Can you guarantee that my patent will be granted?',
-        ];
-    }
+  const getQuickPrompts = (lang: string) => {
+    return QUICK_PROMPTS_MAP[lang] || QUICK_PROMPTS_MAP.hi || QUICK_PROMPTS_MAP.en;
   };
 
-  const sampleQuestions = getSampleQuestions(language);
+  const quickPrompts = getQuickPrompts(language);
+
+  const toggleWhy = (msgId: string) => {
+    setExpandedWhy((prev) => ({ ...prev, [msgId]: !prev[msgId] }));
+  };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', padding: '2.5rem 1.5rem 6rem' }}>
-      <div style={{ maxWidth: '980px', margin: '0 auto' }}>
+    <div
+      dir={isRtl ? 'rtl' : 'ltr'}
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-base)',
+        padding: '2rem 1rem 6rem',
+        color: 'var(--text-primary)',
+      }}
+    >
+      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
 
-        {/* Header & Case Context Selector */}
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+        {/* ─── Breadcrumbs & Context ────────────────────────────────────────── */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
             <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.home')}</Link>
             <span>/</span>
             <Link href="/cases" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.cases')}</Link>
             <span>/</span>
-            <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{t('assistant.breadcrumb')}</span>
+            <span style={{ color: 'var(--green-900)', fontWeight: 600 }}>BHASHINI</span>
           </div>
 
+          {/* ─── Assistant Header Banner ─────────────────────────────────────── */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.1rem', color: 'var(--text-primary)', margin: 0, fontWeight: 600 }}>
-                  {t('assistant.title')}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.25rem', color: 'var(--green-900)', margin: 0, fontWeight: 700, letterSpacing: '-0.02em' }}>
+                  BHASHINI
                 </h1>
                 <span
                   style={{
-                    padding: '0.2rem 0.65rem',
-                    background: 'rgba(46, 125, 50, 0.1)',
+                    padding: '3px 10px',
+                    background: 'rgba(46, 125, 50, 0.12)',
                     border: '1px solid rgba(46, 125, 50, 0.3)',
-                    borderRadius: '20px',
-                    fontSize: '0.72rem',
-                    color: 'var(--color-primary-dark)',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '0.75rem',
+                    color: 'var(--green-800)',
                     fontWeight: 700,
                   }}
                 >
-                  {t('assistant.badge')}
+                  🌿 Multilingual AI Assistant
+                </span>
+                <span
+                  style={{
+                    padding: '3px 10px',
+                    background: 'var(--bg-subtle)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '0.75rem',
+                    color: 'var(--text-secondary)',
+                    fontWeight: 600,
+                  }}
+                >
+                  🇮🇳 {currentMeta.nativeName} ({currentMeta.name})
                 </span>
               </div>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', margin: '0.4rem 0 0', lineHeight: 1.5 }}>
-                {t('assistant.subtitle')}
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', margin: '0.4rem 0 0', lineHeight: 1.5 }}>
+                IP-SAKTI’s Multilingual AI Assistant — Grounded in The Patents Act 1970, Drugs & Cosmetics Rules 1945, and Biological Diversity Act 2002.
               </p>
             </div>
 
             {/* Top Right Controls: Case Selector + Voice Settings Toolbar */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', alignItems: 'flex-end' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: isRtl ? 'flex-start' : 'flex-end' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                 {/* Voice Mode Toggle */}
-                <div style={{ display: 'inline-flex', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '2px' }}>
+                <div style={{ display: 'inline-flex', background: 'var(--bg-surface)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: '2px' }}>
                   <button
                     type="button"
                     onClick={() => { setVoiceMode(false); stopListening(); }}
@@ -255,9 +354,9 @@ function AssistantContent() {
                       padding: '4px 10px',
                       borderRadius: '6px',
                       border: 'none',
-                      background: !voiceMode ? 'var(--color-primary)' : 'transparent',
+                      background: !voiceMode ? 'var(--green-800)' : 'transparent',
                       color: !voiceMode ? '#fff' : 'var(--text-muted)',
-                      fontSize: '0.78rem',
+                      fontSize: '0.75rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 150ms ease',
@@ -272,9 +371,9 @@ function AssistantContent() {
                       padding: '4px 10px',
                       borderRadius: '6px',
                       border: 'none',
-                      background: voiceMode ? 'var(--color-primary)' : 'transparent',
+                      background: voiceMode ? 'var(--green-800)' : 'transparent',
                       color: voiceMode ? '#fff' : 'var(--text-muted)',
-                      fontSize: '0.78rem',
+                      fontSize: '0.75rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       transition: 'all 150ms ease',
@@ -293,11 +392,11 @@ function AssistantContent() {
                     alignItems: 'center',
                     gap: '5px',
                     padding: '5px 10px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-default)',
                     background: autoReadResponses ? 'rgba(46, 125, 50, 0.08)' : 'var(--bg-surface)',
-                    color: autoReadResponses ? 'var(--color-primary-dark)' : 'var(--text-muted)',
-                    fontSize: '0.78rem',
+                    color: autoReadResponses ? 'var(--green-800)' : 'var(--text-muted)',
+                    fontSize: '0.75rem',
                     fontWeight: 600,
                     cursor: 'pointer',
                   }}
@@ -311,9 +410,9 @@ function AssistantContent() {
 
               {/* Case Selector Dropdown */}
               {cases.length > 0 && (
-                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.45rem 0.85rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.15rem' }}>
-                    {t('assistant.activeCase')}
+                <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-md)', padding: '0.35rem 0.75rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.625rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.1rem' }}>
+                    Active Case Context:
                   </label>
                   <select
                     value={selectedCaseId}
@@ -321,9 +420,9 @@ function AssistantContent() {
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      fontSize: '0.85rem',
+                      fontSize: '0.8125rem',
                       fontWeight: 600,
-                      color: 'var(--color-primary-dark)',
+                      color: 'var(--green-900)',
                       outline: 'none',
                       cursor: 'pointer',
                     }}
@@ -338,17 +437,41 @@ function AssistantContent() {
               )}
             </div>
           </div>
+
+          {/* Bhashini Provider Status Badge */}
+          <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '3px 8px',
+                borderRadius: 'var(--radius-full)',
+                background: bhashiniStatus.isConfigured ? 'rgba(34, 197, 94, 0.12)' : 'rgba(217, 119, 6, 0.1)',
+                border: `1px solid ${bhashiniStatus.isConfigured ? 'rgba(34, 197, 94, 0.3)' : 'rgba(217, 119, 6, 0.25)'}`,
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                color: bhashiniStatus.isConfigured ? 'var(--green-800)' : 'var(--gold-800)',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: bhashiniStatus.isConfigured ? '#16a34a' : '#d97706' }} />
+              {bhashiniStatus.isConfigured ? 'BHASHINI: CONNECTED (NLTM API)' : 'BHASHINI: FALLBACK MODE (Web Speech API)'}
+            </span>
+            <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+              {bhashiniStatus.notes}
+            </span>
+          </div>
         </div>
 
-        {/* Active Context Banner */}
+        {/* ─── Active Case Context Banner ──────────────────────────────────── */}
         {activeCase && (
           <div
             style={{
-              background: 'rgba(46, 125, 50, 0.04)',
+              background: 'rgba(46, 125, 50, 0.05)',
               border: '1px solid rgba(46, 125, 50, 0.2)',
-              borderRadius: '8px',
-              padding: '0.85rem 1.25rem',
-              marginBottom: '1.5rem',
+              borderRadius: 'var(--radius-lg)',
+              padding: '0.75rem 1.25rem',
+              marginBottom: '1.25rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -358,187 +481,270 @@ function AssistantContent() {
             }}
           >
             <div>
-              <span style={{ fontWeight: 600, color: 'var(--color-primary-dark)' }}>🌿 {t('assistant.bannerActive')} </span>
-              <span style={{ color: 'var(--text-primary)' }}>
+              <span style={{ fontWeight: 700, color: 'var(--green-800)' }}>🌿 Active Formulation: </span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>
                 {activeCase.title} — {activeCase.formulation.ingredients.map(i => i.name).join(', ')} ({activeCase.jurisdiction})
               </span>
             </div>
             <Link
               href={`/cases/${activeCase.id}`}
-              style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.8rem', textDecoration: 'none' }}
+              style={{ color: 'var(--green-700)', fontWeight: 600, fontSize: '0.8rem', textDecoration: 'none' }}
             >
-              {t('assistant.viewFullDossier')}
+              View Full Dossier ↗
             </Link>
           </div>
         )}
 
-        {/* Chat Stream Card */}
+        {/* ─── Main Chat Conversation Card ─────────────────────────────────── */}
         <div
           style={{
             background: 'var(--bg-surface)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '14px',
-            padding: '1.75rem',
-            minHeight: '480px',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-2xl)',
+            padding: '1.5rem',
+            minHeight: '520px',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
+            boxShadow: 'var(--shadow-md)',
             marginBottom: '1.5rem',
           }}
         >
-          {/* Messages list */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: 1, overflowY: 'auto', marginBottom: '1.5rem' }}>
+          {/* Messages Stream */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', flex: 1, overflowY: 'auto', marginBottom: '1.5rem' }}>
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                  alignItems: msg.sender === 'user' ? (isRtl ? 'flex-start' : 'flex-end') : (isRtl ? 'flex-end' : 'flex-start'),
+                  width: '100%',
                 }}
               >
-                {/* User Message */}
+                {/* ─── USER MESSAGE ─── */}
                 {msg.sender === 'user' && (
-                  <div
-                    style={{
-                      background: 'var(--color-primary)',
-                      color: '#fff',
-                      padding: '0.85rem 1.25rem',
-                      borderRadius: '12px 12px 2px 12px',
-                      maxWidth: '80%',
-                      fontSize: '0.92rem',
-                      lineHeight: 1.45,
-                    }}
-                  >
-                    {msg.text}
-                  </div>
-                )}
-
-                {/* Assistant Simple Welcome */}
-                {msg.sender === 'assistant' && msg.text && (
-                  <div
-                    style={{
-                      background: 'var(--bg-base)',
-                      border: '1px solid var(--border-color)',
-                      padding: '1rem 1.25rem',
-                      borderRadius: '12px 12px 12px 2px',
-                      maxWidth: '85%',
-                      fontSize: '0.92rem',
-                      lineHeight: 1.5,
-                      color: 'var(--text-primary)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.75rem',
-                    }}
-                  >
-                    <div>{msg.text}</div>
-                    <div>
-                      <AudioResponsePlayer
-                        messageId={msg.id}
-                        answerText={msg.text}
-                        language={language}
-                        synthesisStatus={ttsStatus}
-                        activeMessageId={speakingMessageId}
-                        onSpeak={(text, id) => ttsSpeak(text, id, language)}
-                        onPause={ttsPause}
-                        onResume={ttsResume}
-                        onStop={ttsStop}
-                      />
+                  <div style={{ maxWidth: '85%', display: 'flex', flexDirection: 'column', alignItems: isRtl ? 'flex-start' : 'flex-end' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                        You
+                      </span>
+                      <span style={{ width: '18px', height: '18px', borderRadius: '50%', background: 'var(--green-700)', color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.625rem', fontWeight: 700 }}>
+                        👤
+                      </span>
                     </div>
+                    <div
+                      style={{
+                        background: '#1b4332', // Deep botanical green
+                        color: '#ffffff',
+                        padding: '0.85rem 1.25rem',
+                        borderRadius: isRtl ? '16px 16px 16px 4px' : '16px 16px 4px 16px',
+                        fontSize: '0.9375rem',
+                        lineHeight: 1.5,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {msg.text}
+                    </div>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                      {msg.timestamp}
+                    </span>
                   </div>
                 )}
 
-                {/* Assistant Structured Intelligence Response */}
+                {/* ─── ASSISTANT WELCOME MESSAGE ─── */}
+                {msg.sender === 'assistant' && msg.text && (
+                  <div style={{ maxWidth: '90%', display: 'flex', flexDirection: 'column', alignItems: isRtl ? 'flex-end' : 'flex-start' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--green-800)' }}>
+                        🌿 BHASHINI
+                      </span>
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                        AI Assistant
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        background: '#ffffff',
+                        border: '1.5px solid var(--border-default)',
+                        padding: '1.25rem',
+                        borderRadius: isRtl ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                        fontSize: '0.9375rem',
+                        lineHeight: 1.6,
+                        color: 'var(--text-primary)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.85rem',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+                      }}
+                    >
+                      <div>{msg.text}</div>
+                      <div>
+                        <AudioResponsePlayer
+                          messageId={msg.id}
+                          answerText={msg.text}
+                          language={language}
+                          synthesisStatus={ttsStatus}
+                          activeMessageId={speakingMessageId}
+                          onSpeak={(text, id) => ttsSpeak(text, id, language)}
+                          onPause={ttsPause}
+                          onResume={ttsResume}
+                          onStop={ttsStop}
+                        />
+                      </div>
+                    </div>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                      {msg.timestamp}
+                    </span>
+                  </div>
+                )}
+
+                {/* ─── BHASHINI STRUCTURED INTELLIGENCE RESPONSE CARD ─── */}
                 {msg.sender === 'assistant' && msg.structured && (
                   <div
                     style={{
-                      background: 'var(--bg-base)',
-                      border: msg.structured.isAbstained ? '1.5px solid rgba(234, 88, 12, 0.35)' : '1px solid var(--border-color)',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
                       width: '100%',
-                      maxWidth: '880px',
+                      maxWidth: '920px',
+                      background: '#ffffff',
+                      border: msg.structured.isAbstained ? '2px solid rgba(217, 119, 6, 0.4)' : '1.5px solid var(--border-default)',
+                      padding: '1.5rem',
+                      borderRadius: '16px',
                       display: 'flex',
                       flexDirection: 'column',
-                      gap: '1rem',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                      gap: '1.25rem',
+                      boxShadow: '0 4px 18px rgba(0,0,0,0.04)',
                     }}
                   >
-                    {/* Top: Confidence Badge & TTS Audio Controls */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                    {/* Header Banner: BHASHINI + Confidence + Audio Button */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid var(--border-default)', paddingBottom: '0.75rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <EvidenceStrengthBadge strength={msg.structured.confidence} />
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {msg.structured.confidenceExplanation}
+                        <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--green-900)' }}>
+                          🌿 BHASHINI
                         </span>
+                        <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          IP-SAKTI Statutory Answer
+                        </span>
+                        <EvidenceStrengthBadge strength={msg.structured.confidence} />
                       </div>
-                      <AudioResponsePlayer
-                        messageId={msg.id}
-                        answerText={msg.structured.answer}
-                        language={language}
-                        synthesisStatus={ttsStatus}
-                        activeMessageId={speakingMessageId}
-                        onSpeak={(text, id) => ttsSpeak(text, id, language)}
-                        onPause={ttsPause}
-                        onResume={ttsResume}
-                        onStop={ttsStop}
-                      />
+                      <div>
+                        <AudioResponsePlayer
+                          messageId={msg.id}
+                          answerText={msg.structured.answer}
+                          language={language}
+                          synthesisStatus={ttsStatus}
+                          activeMessageId={speakingMessageId}
+                          onSpeak={(text, id) => ttsSpeak(text, id, language)}
+                          onPause={ttsPause}
+                          onResume={ttsResume}
+                          onStop={ttsStop}
+                        />
+                      </div>
                     </div>
 
-                    {/* 1. ANSWER */}
+                    {/* 1. DIRECT ANSWER (Primary Focal Point) */}
                     <div>
-                      <h4 style={{ margin: '0 0 0.35rem', fontSize: '0.8rem', color: 'var(--color-primary-dark)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        {t('assistant.directAnswer')}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-primary)', lineHeight: 1.5, fontWeight: 500 }}>
+                      <div style={{ marginBottom: '0.4rem' }}>
+                        <span
+                          style={{
+                            background: msg.structured.isAbstained ? '#fffbeb' : '#ecfdf5',
+                            color: msg.structured.isAbstained ? '#b45309' : '#065f46',
+                            border: `1px solid ${msg.structured.isAbstained ? '#fde68a' : '#a7f3d0'}`,
+                            borderRadius: '6px',
+                            padding: '3px 8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {msg.structured.isAbstained ? '⚠️ BHASHINI NEEDS MORE EVIDENCE' : '🧠 ANSWER'}
+                        </span>
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: '1.025rem',
+                          color: 'var(--text-primary)',
+                          lineHeight: 1.6,
+                          fontWeight: 500,
+                        }}
+                      >
                         {msg.structured.answer}
                       </p>
                     </div>
 
-                    {/* 2. WHY */}
-                    <div style={{ background: 'var(--bg-surface)', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                      <h4 style={{ margin: '0 0 0.25rem', fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                        {t('assistant.why')}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
-                        {msg.structured.why}
-                      </p>
-                    </div>
+                    {/* 2. WHY THIS APPLIES (Progressive Disclosure) */}
+                    {msg.structured.why && (
+                      <div style={{ background: 'var(--bg-subtle)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-default)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                          <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                            💡 Why This Applies
+                          </span>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                          {msg.structured.why}
+                        </p>
+                      </div>
+                    )}
 
-                    {/* 3. EVIDENCE CITATIONS */}
+                    {/* 3. EVIDENCE & CITATIONS (1-3 Key Items) */}
                     {msg.structured.evidence.length > 0 && (
                       <div>
-                        <h4 style={{ margin: '0 0 0.4rem', fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                          {t('assistant.officialCitations')}
-                        </h4>
+                        <div style={{ marginBottom: '0.4rem' }}>
+                          <span
+                            style={{
+                              background: 'rgba(217, 119, 6, 0.08)',
+                              color: 'var(--gold-800)',
+                              border: '1px solid rgba(217, 119, 6, 0.25)',
+                              borderRadius: '6px',
+                              padding: '2px 8px',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              letterSpacing: '0.04em',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            📚 Statutory Evidence Supporting This Answer
+                          </span>
+                        </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                          {msg.structured.evidence.map((ev, i) => (
+                          {msg.structured.evidence.slice(0, 3).map((ev, i) => (
                             <div
                               key={i}
                               style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                background: 'var(--bg-surface)',
-                                padding: '0.5rem 0.75rem',
-                                borderRadius: '6px',
-                                border: '1px solid var(--border-color)',
+                                background: '#ffffff',
+                                padding: '0.55rem 0.85rem',
+                                borderRadius: '8px',
+                                border: '1px solid var(--border-default)',
                                 fontSize: '0.82rem',
                               }}
                             >
-                              <span>📖 {ev.sourceTitle} — {ev.authority}</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span>📖</span>
+                                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                                  {ev.sourceTitle}
+                                </span>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                  ({ev.authority})
+                                </span>
+                              </div>
                               <button
+                                type="button"
                                 onClick={() => setSelectedCitation(ev)}
                                 style={{
-                                  background: 'transparent',
+                                  background: 'none',
                                   border: 'none',
-                                  color: 'var(--color-primary-dark)',
-                                  fontWeight: 600,
+                                  color: 'var(--green-700)',
+                                  fontWeight: 700,
                                   cursor: 'pointer',
                                   fontSize: '0.78rem',
+                                  whiteSpace: 'nowrap',
                                 }}
                               >
-                                {t('assistant.viewEvidence')} ↗
+                                View Source ↗
                               </button>
                             </div>
                           ))}
@@ -546,13 +752,26 @@ function AssistantContent() {
                       </div>
                     )}
 
-                    {/* 4. WHAT IS MISSING */}
+                    {/* 4. IMPORTANT LIMITATIONS / EVIDENCE GAPS */}
                     {msg.structured.whatIsMissing.length > 0 && (
-                      <div style={{ background: 'rgba(234, 88, 12, 0.06)', border: '1px solid rgba(234, 88, 12, 0.2)', padding: '0.75rem 1rem', borderRadius: '6px' }}>
-                        <h4 style={{ margin: '0 0 0.3rem', fontSize: '0.75rem', color: '#c2410c', textTransform: 'uppercase' }}>
-                          {t('assistant.evidenceGaps')}
-                        </h4>
-                        <ul style={{ margin: 0, paddingInlineStart: '1.2rem', fontSize: '0.82rem', color: '#c2410c', lineHeight: 1.45 }}>
+                      <div style={{ background: 'rgba(234, 88, 12, 0.05)', border: '1px solid rgba(234, 88, 12, 0.2)', padding: '0.75rem 1rem', borderRadius: '8px' }}>
+                        <div style={{ marginBottom: '0.3rem' }}>
+                          <span
+                            style={{
+                              background: '#fff7ed',
+                              color: '#c2410c',
+                              border: '1px solid #ffedd5',
+                              borderRadius: '4px',
+                              padding: '2px 6px',
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            ⚠️ Important Limitations & Missing Evidence
+                          </span>
+                        </div>
+                        <ul style={{ margin: 0, paddingInlineStart: '1.2rem', fontSize: '0.82rem', color: '#c2410c', lineHeight: 1.5 }}>
                           {msg.structured.whatIsMissing.map((item, i) => (
                             <li key={i}>{item}</li>
                           ))}
@@ -560,135 +779,283 @@ function AssistantContent() {
                       </div>
                     )}
 
-                    {/* 5. WHAT THIS MEANS */}
-                    <div>
-                      <h4 style={{ margin: '0 0 0.25rem', fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                        {t('assistant.practicalMeaning')}
-                      </h4>
-                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.45 }}>
-                        {msg.structured.whatThisMeans}
-                      </p>
-                    </div>
+                    {/* 5. RECOMMENDED NEXT ACTIONS */}
+                    {msg.structured.nextAction.length > 0 && (
+                      <div style={{ background: 'rgba(46, 125, 50, 0.05)', border: '1px solid rgba(46, 125, 50, 0.25)', padding: '0.85rem 1rem', borderRadius: '8px' }}>
+                        <div style={{ marginBottom: '0.35rem' }}>
+                          <span
+                            style={{
+                              background: '#ecfdf5',
+                              color: 'var(--green-800)',
+                              border: '1px solid #a7f3d0',
+                              borderRadius: '4px',
+                              padding: '2px 6px',
+                              fontSize: '0.7rem',
+                              fontWeight: 700,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            ➜ Recommended Next Actions
+                          </span>
+                        </div>
+                        <ul style={{ margin: 0, paddingInlineStart: '1.2rem', fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+                          {msg.structured.nextAction.map((act, i) => (
+                            <li key={i}>{act}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
-                    {/* 6. NEXT ACTION */}
-                    <div style={{ background: 'rgba(46, 125, 50, 0.06)', border: '1px solid rgba(46, 125, 50, 0.25)', padding: '0.85rem 1rem', borderRadius: '8px' }}>
-                      <h4 style={{ margin: '0 0 0.35rem', fontSize: '0.75rem', color: 'var(--color-primary-dark)', textTransform: 'uppercase' }}>
-                        {t('assistant.nextActions')}
-                      </h4>
-                      <ul style={{ margin: 0, paddingInlineStart: '1.2rem', fontSize: '0.85rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
-                        {msg.structured.nextAction.map((act, i) => (
-                          <li key={i}>{act}</li>
-                        ))}
-                      </ul>
+                    {/* Bottom Metadata & Timestamp */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.6875rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-default)', paddingTop: '0.5rem' }}>
+                      <span>
+                        🛡️ Decision support guidance. Canonical citations govern legal interpretations.
+                      </span>
+                      <span>{msg.timestamp}</span>
                     </div>
 
                   </div>
                 )}
-
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                  {msg.timestamp}
-                </span>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggested Sample Questions */}
-          <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '0.85rem', marginBottom: '1rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              {t('assistant.suggestedInquiries')}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-              {sampleQuestions.map((sq, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleSend(sq)}
-                  style={{
-                    background: 'var(--bg-base)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '16px',
-                    padding: '0.3rem 0.75rem',
-                    fontSize: '0.78rem',
-                    color: 'var(--text-primary)',
-                    cursor: 'pointer',
-                    textAlign: 'start',
-                  }}
-                >
-                  {sq}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Input Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend();
-            }}
-            style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
-          >
-            <input
-              type="text"
-              placeholder={speechStatus === 'LISTENING' ? voiceStrings.listening : t('assistant.placeholder')}
-              value={inputQuery}
-              onChange={(e) => setInputQuery(e.target.value)}
-              style={{
-                flex: 1,
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                border: speechStatus === 'LISTENING' ? '1.5px solid #dc2626' : '1.5px solid var(--border-color)',
-                background: 'var(--bg-base)',
-                fontSize: '0.92rem',
-                color: 'var(--text-primary)',
-                outline: 'none',
-              }}
-            />
-            <VoiceInputButton
-              status={speechStatus}
-              language={language}
-              isSupported={isSpeechSupported}
-              onStart={startListening}
-              onStop={stopListening}
-              errorMessage={speechError}
-              interimTranscript={interimTranscript}
-              onDismissError={resetSpeech}
-            />
-            <button
-              type="submit"
-              disabled={!inputQuery.trim()}
-              style={{
-                background: 'var(--color-primary)',
-                color: '#fff',
-                border: 'none',
-                padding: '0.75rem 1.6rem',
-                borderRadius: '8px',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                cursor: inputQuery.trim() ? 'pointer' : 'not-allowed',
-                opacity: inputQuery.trim() ? 1 : 0.7,
-              }}
-            >
-              {t('assistant.send')} 🚀
-            </button>
-          </form>
-
-          {/* Transcript review hint if speech was recorded */}
-          {inputQuery && speechStatus === 'IDLE' && (
-            <div style={{ marginTop: '0.4rem', fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span>✍️ {voiceStrings.reviewTranscript}</span>
+          {/* ─── Empty State Quick Prompts ───────────────────────────────────── */}
+          {messages.length === 1 && (
+            <div style={{ borderTop: '1px solid var(--border-default)', paddingTop: '1rem', marginBottom: '1.25rem' }}>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.5rem', fontWeight: 600 }}>
+                💡 Quick Inquiries in {currentMeta.nativeName}:
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                {quickPrompts.map((promptText, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleSend(promptText)}
+                    style={{
+                      background: 'var(--bg-subtle)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: 'var(--radius-full)',
+                      padding: '0.4rem 0.85rem',
+                      fontSize: '0.8125rem',
+                      color: 'var(--text-primary)',
+                      cursor: 'pointer',
+                      textAlign: 'start',
+                      transition: 'all 150ms ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--green-600)';
+                      e.currentTarget.style.background = 'var(--bg-surface)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border-default)';
+                      e.currentTarget.style.background = 'var(--bg-subtle)';
+                    }}
+                  >
+                    • {promptText}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
+
+          {/* ─── Voice Recognition Transcript Preview Modal ─────────────────── */}
+          {(speechStatus === 'LISTENING' || voiceDraft) && (
+            <div
+              style={{
+                background: speechStatus === 'LISTENING' ? 'rgba(220, 38, 38, 0.05)' : 'rgba(46, 125, 50, 0.05)',
+                border: speechStatus === 'LISTENING' ? '1.5px solid rgba(220, 38, 38, 0.3)' : '1.5px solid rgba(46, 125, 50, 0.3)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '0.85rem 1rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+                animation: 'fadeIn 150ms ease',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: speechStatus === 'LISTENING' ? '#dc2626' : 'var(--green-800)' }}>
+                  {speechStatus === 'LISTENING' ? `🎤 Listening in ${currentMeta.nativeName}...` : `✍️ Speech Transcript:`}
+                </span>
+                <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                  Locale: {voiceLocaleMeta.speechLocale}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.9375rem', fontWeight: 500, color: 'var(--text-primary)', fontStyle: voiceDraft ? 'normal' : 'italic' }}>
+                {voiceDraft || interimTranscript || 'Speak your question clearly...'}
+              </div>
+              <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                {voiceDraft && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInputQuery(voiceDraft);
+                      handleSend(voiceDraft);
+                    }}
+                    style={{
+                      background: 'var(--green-700)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 12px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✓ Use & Send
+                  </button>
+                )}
+                {speechStatus === 'LISTENING' && (
+                  <button
+                    type="button"
+                    onClick={stopListening}
+                    style={{
+                      background: '#dc2626',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 12px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ⏹ Stop Listening
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    stopListening();
+                    resetSpeech();
+                    setVoiceDraft(null);
+                  }}
+                  style={{
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: '6px',
+                    padding: '4px 10px',
+                    fontSize: '0.75rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ─── Bottom Composer ────────────────────────────────────────────── */}
+          <div
+            style={{
+              borderTop: '1px solid var(--border-default)',
+              paddingTop: '1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            {/* Language indicator */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              <span>
+                Conversing in: <strong style={{ color: 'var(--green-900)' }}>{currentMeta.nativeName} ({currentMeta.name} • 🇮🇳)</strong>
+              </span>
+              <span>
+                Type in {currentMeta.nativeName} or English
+              </span>
+            </div>
+
+            {/* Input Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSend();
+              }}
+              style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+            >
+              {/* Microphone Trigger */}
+              <button
+                type="button"
+                onClick={speechStatus === 'LISTENING' ? stopListening : startListening}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: speechStatus === 'LISTENING' ? '#fee2e2' : 'var(--bg-subtle)',
+                  border: `1.5px solid ${speechStatus === 'LISTENING' ? '#dc2626' : 'var(--border-default)'}`,
+                  color: speechStatus === 'LISTENING' ? '#dc2626' : 'var(--text-primary)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 150ms ease',
+                  whiteSpace: 'nowrap',
+                }}
+                aria-label="Toggle voice input"
+              >
+                <span>{speechStatus === 'LISTENING' ? '🔴' : '🎤'}</span>
+                <span>{speechStatus === 'LISTENING' ? 'Listening...' : 'Speak'}</span>
+              </button>
+
+              {/* Text Input */}
+              <input
+                type="text"
+                placeholder={`Ask BHASHINI in ${currentMeta.nativeName} or English (e.g. Section 3(p), Rule 158B, ABS)...`}
+                value={inputQuery}
+                onChange={(e) => setInputQuery(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem 1rem',
+                  borderRadius: 'var(--radius-lg)',
+                  border: '1.5px solid var(--border-default)',
+                  background: 'var(--bg-base)',
+                  fontSize: '0.9375rem',
+                  color: 'var(--text-primary)',
+                  outline: 'none',
+                  transition: 'border-color 150ms ease',
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--green-600)'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; }}
+              />
+
+              {/* Send Button */}
+              <button
+                type="submit"
+                disabled={!inputQuery.trim()}
+                style={{
+                  background: 'var(--green-700)',
+                  color: '#ffffff',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: 'var(--radius-lg)',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  cursor: inputQuery.trim() ? 'pointer' : 'not-allowed',
+                  opacity: inputQuery.trim() ? 1 : 0.6,
+                  transition: 'all 150ms ease',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ➤ Send
+              </button>
+            </form>
+          </div>
 
         </div>
 
         {/* Institutional Safeguard Note */}
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
-          🛡️ {t('assistant.disclaimerFooter')}
+          🛡️ BHASHINI operates under strict statutory constraints. Canonical statutory citations and gazette notifications govern all legal conclusions.
         </div>
 
       </div>
 
+      {/* Evidence Drawer for Inspecting Citations */}
       <EvidenceDrawer
         isOpen={Boolean(selectedCitation)}
         onClose={() => setSelectedCitation(null)}
@@ -700,7 +1067,7 @@ function AssistantContent() {
 
 export default function AssistantPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>Loading...</div>}>
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>Loading BHASHINI...</div>}>
       <AssistantContent />
     </Suspense>
   );

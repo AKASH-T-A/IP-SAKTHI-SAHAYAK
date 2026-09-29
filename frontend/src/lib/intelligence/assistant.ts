@@ -152,6 +152,7 @@ export function generateAssistantResponse(
   // Safe Abstention Check: Legal Guarantee or Compliance Certification
   const isGuaranteeQuery =
     q.includes('guarantee') ||
+    q.includes('गारंटी') ||
     q.includes('वारंटी') ||
     q.includes('ಖಾತರಿ') ||
     q.includes('ಗ್ಯಾರಂಟಿ') ||
@@ -347,7 +348,71 @@ export function generateAssistantResponse(
     };
   }
 
-  // Topic 2: Regulations & AYUSH Licensing (Rule 158B)
+  // Topic 2: FSSAI Ayurveda-Aahar (Specific dietary formulation category)
+  if (q.includes('fssai') || q.includes('aahar') || q.includes('food') || q.includes('dietary') || q.includes('ಆಹಾರ') || q.includes('உணவு') || q.includes('आहार')) {
+    if (effectiveLang === 'kn') {
+      return {
+        answer: `"${caseTitle}" ಅನ್ನು ಆಯುರ್ವೇದ ಆಹಾರ (Ayurveda Aahar) ಎಂದು ಮಾರಾಟ ಮಾಡಲು FSSAI ನಿಯಮಗಳು 2022 ರ Regulation 3 ಅಡಿಯಲ್ಲಿ ಕೇಂದ್ರೀಯ ಪರವಾನಗಿ ಪಡೆಯಬೇಕು ಮತ್ತು Regulation 8 ರ ಅನ್ವಯ ಯಾವುದೇ ಚಿಕಿತ್ಸಕ ರೋಗ ಗುಣಪಡಿಸುವ ಕ್ಲೈಮ್‌ಗಳನ್ನು (disease cure claims) ಕಡ್ಡಾಯವಾಗಿ ತ್ಯಜಿಸಬೇಕು.`,
+        why: `ಆಹಾರ ಸುರಕ್ಷತೆ ಮತ್ತು ಗುಣಮಟ್ಟ (ಆಯುರ್ವೇದ ಆಹಾರ) ನಿಯಮಗಳು 2022 ಆಹಾರ ಸೂತ್ರಗಳನ್ನು ಚಿಕಿತ್ಸಕ ಔಷಧಿಗಳಿಂದ ಕಟ್ಟುನಿಟ್ಟಾಗಿ ಪ್ರತ್ಯೇಕಿಸುತ್ತವೆ. ರೋಗ ಚಿಕಿತ್ಸೆಯ ಹಕ್ಕುಗಳು ಕೇವಲ D&C Act ಅಡಿಯಲ್ಲಿ ಪರವಾನಗಿ ಪಡೆದ ಆಯುಷ್ ಔಷಧಿಗಳಿಗೆ ಮಾತ್ರ ಸೀಮಿತ.`,
+        evidence: [
+          makeCitation('FSSAI_AYURVEDA_AAHAR_REG_3_8', 'ರೋಗ ಗುಣಪಡಿಸುವ ಕ್ಲೈಮ್‌ಗಳ ನಿಷೇಧ ಮತ್ತು ಲೋಗೋ ಮುದ್ರಣ ನಿಯಮಗಳು (Regulation 8).'),
+        ],
+        whatIsMissing: [
+          'FoSCoS Category 13 ಅಡಿಯಲ್ಲಿ ಆಯುರ್ವೇದ ಆಹಾರ ಪರವಾನಗಿ ಅರ್ಜಿ ಮತ್ತು ಲೇಬಲ್ ವಿನ್ಯಾಸ ಪುರಾವೆ.',
+        ],
+        whatThisMeans: `ಆಯುರ್ವೇದ ಆಹಾರ ಉತ್ಪನ್ನದ ಮೇಲೆ ರೋಗ ವಾಸಿ ಮಾಡುವ ಹಕ್ಕುಗಳನ್ನು ಪ್ರದರ್ಶಿಸುವುದು ಆಹಾರ ಕಾಯಿದೆಯಡಿ ಅಪರಾಧವಾಗಿದ್ದು, ಉತ್ಪನ್ನ ಜಪ್ತಿ ಹಾಗೂ ದಂಡಕ್ಕೆ ಕಾರಣವಾಗುತ್ತದೆ.`,
+        nextAction: [
+          '1. ಪ್ಯಾಕೇಜಿಂಗ್‌ನಲ್ಲಿ ಕೇವಲ ಆರೋಗ್ಯ ಪೋಷಕ (wellness/dietary) ಕ್ಲೈಮ್‌ಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ.',
+          '2. ಅಧಿಕೃತ ಆಯುರ್ವೇದ ಆಹಾರ ಲೋಗೋ ಮತ್ತು ಕಡ್ಡಾಯ ಎಚ್ಚರಿಕೆ ನಮೂದನ್ನು ಮುದ್ರಿಸಿ.',
+        ],
+        confidence: 'HIGH_EVIDENCE',
+        confidenceExplanation: 'Directly supported by FSS (Ayurveda Aahar) Regulations, 2022.',
+        isAbstained: false,
+      };
+    }
+
+    if (effectiveLang === 'hi') {
+      return {
+        answer: `यदि आप "${caseTitle}" को आयुर्वेद-आहार (Ayurveda Aahar) के रूप में विपणन करना चाहते हैं, तो FSSAI विनियम 2022 के Regulation 3 के तहत केंद्रीय लाइसेंस प्राप्त करना होगा और Regulation 8 के तहत पैकेजिंग पर किसी भी प्रकार के रोगोपचार या चिकित्सा दावों को पूर्णतः हटाना होगा।`,
+        why: `खाद्य सुरक्षा और मानक (आयुर्वेद आहार) विनियम, 2022 पारंपरिक आहार योगों को औषधियों से स्पष्ट रूप से अलग करते हैं। रोग निवारण के दावे केवल D&C Act औषधियों हेतु आरक्षित हैं।`,
+        evidence: [
+          makeCitation('FSSAI_AYURVEDA_AAHAR_REG_3_8', 'रोगोपचार दावों का वैधानिक निषेध एवं अनिवार्य आयुर्वेद आहार लोगो (Regulation 8)।'),
+        ],
+        whatIsMissing: [
+          'FoSCoS Category 13 लाइसेंस आवेदन और उत्पाद पैकेजिंग आर्टवर्क अनुमोदन।',
+        ],
+        whatThisMeans: `खाद्य उत्पाद पर उपचारात्मक दावे प्रदर्शित करना विनियामक उल्लंघन है, जिसके परिणामस्वरूप जब्ती व जुर्माना हो सकता है।`,
+        nextAction: [
+          '1. पैकेजिंग की समीक्षा कर केवल पोषण/कल्याण दावों को बनाए रखें।',
+          '2. आधिकारिक आयुर्वेद आहार लोगो व अनिवार्य उपभोक्ता परामर्श अंकित करें।',
+        ],
+        confidence: 'HIGH_EVIDENCE',
+        confidenceExplanation: 'Directly supported by FSS (Ayurveda Aahar) Regulations, 2022.',
+        isAbstained: false,
+      };
+    }
+
+    return {
+      answer: `If marketing "${caseTitle}" as an Ayurveda Aahar food product, you must obtain an FSSAI Central License under Regulation 3 and strictly omit all therapeutic disease cure claims on packaging per Regulation 8.`,
+      why: `The Food Safety and Standards (Ayurveda Aahar) Regulations, 2022 strictly distinguish dietary Ayurvedic recipes from therapeutic medicines. Disease treatment claims are exclusively reserved for D&C Act licensed drugs.`,
+      evidence: [
+        makeCitation('FSSAI_AYURVEDA_AAHAR_REG_3_8', 'Prohibition of disease cure claims and mandatory logo placement.'),
+      ],
+      whatIsMissing: [
+        'FoSCoS Category 13 license application and product packaging proof.',
+      ],
+      whatThisMeans: `Displaying therapeutic claims on an Ayurveda-Aahar food package is a direct regulatory violation subject to product seizure and misbranding penalties.`,
+      nextAction: [
+        '1. Audit product packaging to ensure only wellness/nutritional indications are claimed.',
+        '2. Affix official Ayurveda Aahar logo and mandatory consumer advisory statement.',
+      ],
+      confidence: 'HIGH_EVIDENCE',
+      confidenceExplanation: 'Directly supported by FSS (Ayurveda Aahar) Regulations, 2022.',
+      isAbstained: false,
+    };
+  }
+
+  // Topic 3: Regulations & AYUSH Licensing (Rule 158B)
   const isRegulationQuery =
     q.includes('regulation') ||
     q.includes('rule 158') ||
@@ -466,6 +531,49 @@ export function generateAssistantResponse(
       };
     }
 
+    if (effectiveLang === 'hi') {
+      return {
+        answer: `जैविक जड़ी-बूटियों (${ingNames}) के व्यावसायिक उपयोग हेतु जैविक विविधता अधिनियम, 2002 की Section 7 के तहत राज्य जैव विविधता बोर्ड (SBB) को Form I पूर्व सूचना देना अनिवार्य है। यदि पेटेंट आवेदन कर रहे हैं, तो Section 6 के तहत राष्ट्रीय जैव विविधता प्राधिकरण (NBA) से Form III अनुमोदन प्राप्त करना होगा।`,
+        why: `जैविक विविधता अधिनियम भारतीय जैविक संसाधनों के व्यावसायिक उपयोग पर न्यायसंगत और समान लाभ साझाकरण (Access and Benefit Sharing) अनिवार्य करता है।`,
+        evidence: [
+          makeCitation('BIOLOGICAL_DIVERSITY_SEC_7', 'भारतीय व्यावसायिक संस्थाओं द्वारा SBB को पूर्व सूचना (Section 7)।'),
+          makeCitation('BIOLOGICAL_DIVERSITY_SEC_6', 'भारतीय जैव संसाधनों पर पेटेंट अनुदान पूर्व NBA अनुमोदन (Section 6 NBA Form III)।'),
+        ],
+        whatIsMissing: [
+          'जड़ी-बूटियों की खेती या जंगली संग्रह के स्रोत को प्रमाणित करने वाले खरीद बिल व मंडी रसीदें।',
+        ],
+        whatThisMeans: `राज्य जैव विविधता बोर्ड को पूर्व सूचना न देने पर Section 55 के तहत वैधानिक दंड का प्रावधान है। किसान-उत्पादित जड़ी-बूटियों पर रियायती दरें (0.1% से 0.5%) लागू होती हैं।`,
+        nextAction: [
+          '1. संबंधित राज्य के जैव विविधता बोर्ड को Form I प्रस्तुत करें।',
+          '2. कृषि स्रोत प्रमाणित करने हेतु मंडी रसीदें व किसान घोषणापत्र संकलित करें।',
+          '3. पेटेंट फाइलिंग से पूर्व NBA Form III की प्रक्रिया प्रारंभ करें।',
+        ],
+        confidence: 'HIGH_EVIDENCE',
+        confidenceExplanation: 'Directly supported by Sections 6 and 7 of the Biological Diversity Act, 2002.',
+        isAbstained: false,
+      };
+    }
+
+    if (effectiveLang === 'ta') {
+      return {
+        answer: `உயிரியல் மூலிகைகளின் (${ingNames}) வணிகப் பயன்பாட்டிற்கு பல்லுயிர் சட்டம் 2002 இன் Section 7 இன் கீழ் மாநில பல்லுயிர் வாரியத்திற்கு (SBB) Form I மூலம் முன் அறிவிப்பு சமர்ப்பிப்பது கட்டாயமாகும். காப்புரிமை கோரினால் Section 6 இன் கீழ் தேசிய பல்லுயிர் ஆணையத்திடம் (NBA) Form III ஒப்புதல் பெற வேண்டும்.`,
+        why: `இந்திய உயிரியல் வளங்களை வணிக ரீதியாக பயன்படுத்தும்போது நியாயமான மற்றும் சமமான பயன் பகிர்வை (Access and Benefit Sharing) சட்டம் கட்டாயமாக்குகிறது.`,
+        evidence: [
+          makeCitation('BIOLOGICAL_DIVERSITY_SEC_7', 'SBB க்கு முன் தகவல் அளித்தல் (Section 7).'),
+          makeCitation('BIOLOGICAL_DIVERSITY_SEC_6', 'காப்புரிமைக்கு முன் NBA ஒப்புதல் (Section 6 Form III).'),
+        ],
+        whatIsMissing: ['மூலிகைகள் சாகுபடி செய்யப்பட்டதா அல்லது காடுகளிலிருந்து சேகரிக்கப்பட்டதா என்பதற்கான கொள்முதல் ரசீதுகள்.'],
+        whatThisMeans: `மாநில பல்லுயிர் வாரியத்திற்கு அறிவிக்கத் தவறினால் Section 55 இன் கீழ் சட்டரீதியான அபராதம் விதிக்கப்படும்.`,
+        nextAction: [
+          '1. சம்பந்தப்பட்ட மாநில பல்லுயிர் வாரியத்திடம் Form I சமர்ப்பிக்கவும்.',
+          '2. சாகுபடி நிலைக்கான ஆவணங்களை திரட்டவும்.',
+        ],
+        confidence: 'HIGH_EVIDENCE',
+        confidenceExplanation: 'Directly supported by Sections 6 and 7 of the Biological Diversity Act, 2002.',
+        isAbstained: false,
+      };
+    }
+
     return {
       answer: `Commercial utilization of biological herbs (${ingNames}) requires filing Form I Prior Intimation with the State Biodiversity Board (SBB) under Section 7 of the Biological Diversity Act, 2002. If filing a patent, NBA Form III approval is mandatory under Section 6.`,
       why: `The Biological Diversity Act mandates fair and equitable benefit sharing when Indian biological resources are accessed for commercial manufacturing. Indian commercial companies are strictly subject to SBB intimation.`,
@@ -487,27 +595,7 @@ export function generateAssistantResponse(
     };
   }
 
-  // Topic 4: FSSAI Ayurveda-Aahar
-  if (q.includes('fssai') || q.includes('aahar') || q.includes('food') || q.includes('dietary') || q.includes('ಆಹಾರ') || q.includes('உணவு')) {
-    return {
-      answer: `If marketing "${caseTitle}" as an Ayurveda Aahar food product, you must obtain an FSSAI Central License under Regulation 3 and strictly omit all therapeutic disease cure claims on packaging per Regulation 8.`,
-      why: `The Food Safety and Standards (Ayurveda Aahar) Regulations, 2022 strictly distinguish dietary Ayurvedic recipes from therapeutic medicines. Disease treatment claims are exclusively reserved for D&C Act licensed drugs.`,
-      evidence: [
-        makeCitation('FSSAI_AYURVEDA_AAHAR_REG_3_8', 'Prohibition of disease cure claims and mandatory logo placement.'),
-      ],
-      whatIsMissing: [
-        'FoSCoS Category 13 license application and product packaging proof.',
-      ],
-      whatThisMeans: `Displaying therapeutic claims on an Ayurveda-Aahar food package is a direct regulatory violation subject to product seizure and misbranding penalties.`,
-      nextAction: [
-        '1. Audit product packaging to ensure only wellness/nutritional indications are claimed.',
-        '2. Affix official Ayurveda Aahar logo and mandatory consumer advisory statement.',
-      ],
-      confidence: 'HIGH_EVIDENCE',
-      confidenceExplanation: 'Directly supported by FSS (Ayurveda Aahar) Regulations, 2022.',
-      isAbstained: false,
-    };
-  }
+
 
   // Default: General decision-support synthesis
   if (effectiveLang === 'kn') {
@@ -528,6 +616,31 @@ export function generateAssistantResponse(
         '1. ರಾಜ್ಯ ಜೈವಿಕ ವೈವಿಧ್ಯ ಮಂಡಳಿಗೆ Form I ಸಲ್ಲಿಸಿ.',
         '2. Class 5 ರಲ್ಲಿ ಟ್ರೇಡ್‌ಮಾರ್ಕ್ ನೋಂದಣಿ ಮಾಡಿ.',
         '3. ರಾಜ್ಯ ಆಯುಷ್ ಪರವಾನಗಿ ಪ್ರಾಧಿಕಾರಕ್ಕಾಗಿ Rule 158B ದಾಖಲೆಗಳನ್ನು ಸಿದ್ಧಪಡಿಸಿ.',
+      ],
+      confidence: 'HIGH_EVIDENCE',
+      confidenceExplanation: 'Grounded in active statutory provisions from Patents Act 1970, D&C Act 1940, and BDA 2002.',
+      isAbstained: false,
+    };
+  }
+
+  if (effectiveLang === 'hi') {
+    return {
+      answer: `"${caseTitle}" हेतु समग्र कार्यनीति: (1) पेटेंट आवेदन से पूर्व Section 3(p) सहक्रियाशीलता मूल्यांकन करें, (2) Rule 158B के तहत आयुष प्रोप्रायटरी लाइसेंस प्राप्त करें, और (3) जड़ी-बूटियों के व्यावसायिक उपयोग हेतु SBB Form I दाखिल करें।`,
+      why: `${ingNames} युक्त यह पॉलीहर्बल फॉर्मूलेशन औषधि नियमावली एवं पेटेंट पारंपरिक ज्ञान दोनों के विधिक दायरे में आता है।`,
+      evidence: [
+        makeCitation('PATENTS_ACT_SEC_3P', 'पेटेंट पारंपरिक ज्ञान सीमा (Section 3(p))।'),
+        makeCitation('DRUGS_COSMETICS_RULE_158B', 'आयुर्वेदिक प्रोप्रायटरी औषधि लाइसेंसिंग (Rule 158B)।'),
+        makeCitation('BIOLOGICAL_DIVERSITY_SEC_7', 'SBB व्यावसायिक प्रवेश पूर्व सूचना (Section 7)।'),
+      ],
+      whatIsMissing: [
+        'अंतिम उत्पाद का भारी धातु व सूक्ष्मजीव विश्लेषणात्मक CoA।',
+        'घटकों के अनुपात व बैच विनिर्माण प्रलेख।',
+      ],
+      whatThisMeans: `दोहरी कार्यनीति आपको Class 5 में ट्रेडमार्क द्वारा ब्रांड मूल्य सुरक्षित करने और समानांतर रूप से आयुष लाइसेंस प्राप्त करने में सक्षम बनाती है।`,
+      nextAction: [
+        '1. राज्य जैव विविधता बोर्ड को Form I प्रस्तुत करें।',
+        '2. Class 5 में ट्रेडमार्क पंजीकरण आवेदन करें।',
+        '3. राज्य आयुष SLA हेतु Rule 158B तकनीकी डोजियर तैयार करें।',
       ],
       confidence: 'HIGH_EVIDENCE',
       confidenceExplanation: 'Grounded in active statutory provisions from Patents Act 1970, D&C Act 1940, and BDA 2002.',

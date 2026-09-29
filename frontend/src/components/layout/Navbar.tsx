@@ -15,7 +15,7 @@ const NAV_LINKS = [
   { href: '/explore', labelKey: 'nav.explore', defaultLabel: 'Explore' },
   { href: '/cases', labelKey: 'nav.cases', defaultLabel: 'My Cases' },
   { href: '/evidence', labelKey: 'nav.evidence', defaultLabel: 'Corpus' },
-  { href: '/assistant', labelKey: 'nav.assistant', defaultLabel: 'Assistant' },
+  { href: '/assistant', labelKey: 'nav.assistant', defaultLabel: 'BHASHINI' },
   { href: '/admin', labelKey: 'nav.admin', defaultLabel: 'Admin' },
 ];
 
@@ -175,11 +175,13 @@ export default function Navbar() {
           style={{
             maxWidth: '1280px',
             margin: '0 auto',
-            padding: '0 24px',
+            padding: '0 16px',
             height: '100%',
             display: 'flex',
             alignItems: 'center',
-            gap: '12px',
+            gap: '8px',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {/* ── Logo ─────────────────────────────────────────────────── */}
@@ -243,8 +245,9 @@ export default function Navbar() {
             ref={searchContainerRef}
             className="search-bar-container"
             style={{
-              flex: 1,
-              maxWidth: '400px',
+              flex: '1 1 auto',
+              maxWidth: '320px',
+              minWidth: '120px',
               position: 'relative',
             }}
           >
@@ -508,17 +511,17 @@ export default function Navbar() {
             ) : (
               /* Auth CTAs */
               <>
-                <Link href="/login" className="btn-ghost hide-on-mobile" style={{ fontSize: '0.875rem', padding: '7px 14px' }}>
+                <Link href="/login" className="btn-ghost hide-on-tablet" style={{ fontSize: '0.8125rem', padding: '6px 12px', whiteSpace: 'nowrap' }}>
                   {t('nav.signIn')}
                 </Link>
-                <Link href="/cases/new" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.875rem' }}>
+                <Link href="/cases/new" className="btn-primary hide-on-tablet" style={{ padding: '6px 14px', fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
                   {t('nav.startCase')}
                 </Link>
               </>
             )}
 
             {/* Jurisdiction Mode Switch */}
-            <div className="hide-on-mobile">
+            <div className="hide-on-tablet">
               <JurisdictionSwitch />
             </div>
 
@@ -641,11 +644,12 @@ export default function Navbar() {
       </header>
 
       <style>{`
-        @media (max-width: 900px) {
+        @media (max-width: 1080px) {
           .nav-desktop { display: none !important; }
           .search-bar-container { display: none !important; }
           .mobile-toggle { display: flex !important; }
           .show-on-mobile { display: flex !important; }
+          .hide-on-tablet { display: none !important; }
         }
         @media (max-width: 640px) {
           .hide-on-mobile { display: none !important; }

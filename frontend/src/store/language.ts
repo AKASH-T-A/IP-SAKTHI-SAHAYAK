@@ -62,6 +62,30 @@ export const useLanguageStore = create<LanguageState>()(
         let val: string = (dict ? dict[key] : '') || '';
 
         if (!val) {
+          // Check supplemental fallback action keys if any
+          const supplemental: Record<string, Record<string, string>> = {
+            "action.requestExpertReview": {
+              en: "Request Expert Legal Review",
+              kn: "ತಜ್ಞರ ಕಾನೂನು ಪರಿಶೀಲನೆ ಕೋರಿ",
+              hi: "विशेषज्ञ कानूनी समीक्षा का अनुरोध करें",
+              ta: "நிபுணர் சட்ட மதிப்பாய்வைக் கோருங்கள்",
+              te: "నిపుణుల న్యాయ సమీక్షను అభ్యర్థించండి",
+              ml: "വിദഗ്ദ്ധ നിയമ അവലോകനം അഭ്യർത്ഥിക്കുക",
+              mr: "तज्ञ कायदेशीर पुनरावलोकनाची विनंती करा",
+              bn: "বিশেষজ্ঞ আইনি পর্যালোচনার অনুরোধ করুন",
+              gu: "નિષ્ણાત કાનૂની સમીક્ષાની વિનંતી કરો",
+              pa: "ਮਾਹਰ ਕਾਨੂੰਨੀ ਸਮੀਖਿਆ ਲਈ ਬੇਨਤੀ ਕਰੋ",
+              or: "ବିଶେଷଜ୍ଞ ଆଇନଗତ ସମୀକ୍ଷା ଅନୁରୋଧ କରନ୍ତୁ",
+              as: "বিশেষজ্ঞ আইনগত পৰ্যালোচনাৰ বাবে অনুৰোধ কৰক",
+              ur: "ماہر قانونی جائزہ کی درخواست کریں",
+            }
+          };
+          if (supplemental[key]) {
+            val = supplemental[key][lang] || supplemental[key].en || '';
+          }
+        }
+
+        if (!val) {
           // If translation is missing in the selected language
           if (lang !== 'en') {
             const isDev = process.env.NODE_ENV === 'development';
