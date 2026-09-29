@@ -12,22 +12,32 @@
 import assert from 'node:assert';
 
 // ── 1. Re-implement prepareTextForSpeech logic for standalone node verification ─
-const LEGAL_IDENTIFIERS_PATTERNS = [
-  /Section\s+\d+\s*\([a-z0-9]+\)(?:\s*\([a-z0-9ivx]+\))*/gi,
-  /Section\s+\d+/gi,
-  /Rule\s+\d+[A-Z]?/gi,
-  /Schedule\s+[A-Z0-9]+/gi,
-  /Form\s+[IVX0-9]+/gi,
-  /Patents\s+Act(?:\s*,\s*|\s+)1970/gi,
-  /Biological\s+Diversity\s+Act(?:\s*,\s*|\s+)2002/gi,
-  /Drugs\s+(?:and|&)\s+Cosmetics\s+Act(?:\s*,\s*|\s+)1940/gi,
-  /Drugs\s+(?:and|&)\s+Cosmetics\s+Rules(?:\s*,\s*|\s+)1945/gi,
-  /AYUSH/g,
-  /FSSAI/g,
-  /TKDL/g,
-  /NBA/g,
-  /SBB/g,
+const BOTANICAL_NAMES = [
+  'Withania somnifera', 'Ashwagandha',
+  'Bacopa monnieri', 'Brahmi',
 ];
+
+const SPOKEN_LEGAL_MAP = {
+  kn: [
+    [/Section\s+3\(p\)/gi, 'ಸೆಕ್ಷನ್ ೩(ಪಿ)'],
+    [/Section\s+3\(e\)/gi, 'ಸೆಕ್ಷನ್ ೩(ಇ)'],
+    [/Patents\s+Act(?:\s*,\s*|\s+)1970/gi, 'ಪೇಟೆಂಟ್ಸ್ ಕಾಯಿದೆ ೧೯೭೦'],
+    [/Rule\s+158B/gi, 'ರೂಲ್ ೧೫೮ ಬಿ'],
+    [/NBA\s+Form\s+III/gi, 'ಎನ್ ಬಿ ಎ ಫಾರ್ಮ್ ೩'],
+    [/Form\s+III/gi, 'ಫಾರ್ಮ್ ೩'],
+  ],
+  hi: [
+    [/Section\s+3\(p\)/gi, 'धारा ३(पी)'],
+    [/Patents\s+Act(?:\s*,\s*|\s+)1970/gi, 'पेटेंट अधिनियम १९७०'],
+    [/Rule\s+158B/gi, 'नियम १५८ बी'],
+    [/Form\s+III/gi, 'फॉर्म ३'],
+  ],
+};
+
+const DIGIT_MAPS = {
+  kn: ['೦', '೧', '೨', '೩', '೪', '೫', '೬', '೭', '೮', '೯'],
+  hi: ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'],
+};
 
 function prepareTextForSpeech(text, language) {
   if (!text || typeof text !== 'string') return '';
@@ -57,24 +67,35 @@ function prepareTextForSpeech(text, language) {
     ''
   );
 
-  const placeholders = [];
-  let placeholderCount = 0;
-
-  for (const pattern of LEGAL_IDENTIFIERS_PATTERNS) {
-    prepared = prepared.replace(pattern, (match) => {
-      const ph = `__LEGAL_PH_${placeholderCount++}__`;
-      placeholders.push({ placeholder: ph, original: match });
+  const botanicalPlaceholders = [];
+  let botCount = 0;
+  for (const botName of BOTANICAL_NAMES) {
+    const reg = new RegExp(`\\b${botName.replace(/\s+/g, '\\s+')}\\b`, 'gi');
+    prepared = prepared.replace(reg, (match) => {
+      const ph = `__BOT_PH_${botCount++}__`;
+      botanicalPlaceholders.push({ placeholder: ph, original: match });
       return ph;
     });
+  }
+
+  if (language !== 'en' && SPOKEN_LEGAL_MAP[language]) {
+    for (const [pattern, spokenReplacement] of SPOKEN_LEGAL_MAP[language]) {
+      prepared = prepared.replace(pattern, spokenReplacement);
+    }
+  }
+
+  if (language !== 'en' && DIGIT_MAPS[language]) {
+    const digitMap = DIGIT_MAPS[language];
+    prepared = prepared.replace(/\d/g, (d) => digitMap[parseInt(d, 10)] || d);
+  }
+
+  for (const { placeholder, original } of botanicalPlaceholders) {
+    prepared = prepared.replace(placeholder, original);
   }
 
   prepared = prepared.replace(/\.{2,}/g, '.');
   prepared = prepared.replace(/[-–—]{2,}/g, '—');
   prepared = prepared.replace(/\s*([,;:.!?])\s*/g, '$1 ');
-
-  for (const { placeholder, original } of placeholders) {
-    prepared = prepared.replace(placeholder, original);
-  }
 
   return prepared.replace(/\s+/g, ' ').trim();
 }
@@ -134,8 +155,8 @@ console.log('================================================================');
 console.log('IP-SAKTI SAHAYAK — MULTILINGUAL VOICE SUBSYSTEM TEST SUITE');
 console.log('================================================================\n');
 
-// TEST 1: Legal Identifiers Preservation & Markdown Removal in Kannada
-console.log('Test 1: Kannada prepareTextForSpeech');
+// TEST 1: Spoken Legal Identifiers & Numerals in Kannada & English
+console.log('Test 1: Kannada & English prepareTextForSpeech');
 const rawKannadaAnswer = `
 ### 🌿 ವಿಶ್ಲೇಷಣೆ ಫಲಿತಾಂಶ
 ಈ ಸೂತ್ರೀಕರಣವು **Section 3(p)** ಮತ್ತು **Patents Act 1970** ಅಡಿಯಲ್ಲಿ ತಪಾಸಣೆಗೆ ಒಳಪಡುತ್ತದೆ [1].
@@ -143,18 +164,25 @@ const rawKannadaAnswer = `
 ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ https://ipindia.gov.in ನೋಡಿ.
 `;
 const preparedKn = prepareTextForSpeech(rawKannadaAnswer, 'kn');
-console.log('Prepared text:', preparedKn);
+console.log('Prepared Kannada spoken text:', preparedKn);
 
-assert(preparedKn.includes('Section 3(p)'), 'Must preserve Section 3(p)');
-assert(preparedKn.includes('Patents Act 1970'), 'Must preserve Patents Act 1970');
-assert(preparedKn.includes('Rule 158B'), 'Must preserve Rule 158B');
-assert(preparedKn.includes('NBA Form III'), 'Must preserve NBA Form III');
+assert(preparedKn.includes('ಸೆಕ್ಷನ್ ೩(ಪಿ)'), 'Must transform Section 3(p) to spoken Kannada phonetics');
+assert(preparedKn.includes('ಪೇಟೆಂಟ್ಸ್ ಕಾಯಿದೆ ೧೯೭೦'), 'Must transform Patents Act 1970 to spoken Kannada phonetics');
+assert(preparedKn.includes('ರೂಲ್ ೧೫೮ ಬಿ'), 'Must transform Rule 158B to spoken Kannada phonetics');
+assert(preparedKn.includes('ಎನ್ ಬಿ ಎ ಫಾರ್ಮ್ ೩'), 'Must transform NBA Form III to spoken Kannada phonetics');
+assert(preparedKn.includes('೧೯೭೦'), 'Must convert numbers to native Kannada digits (1970 -> ೧೯೭೦)');
 assert(!preparedKn.includes('###'), 'Must strip markdown headers');
 assert(!preparedKn.includes('**'), 'Must strip markdown bold markers');
 assert(!preparedKn.includes('[1]'), 'Must strip bracketed citation markers');
 assert(!preparedKn.includes('https://'), 'Must strip URLs');
 assert(!preparedKn.includes('🌿'), 'Must strip emojis');
-console.log('✅ PASS: Test 1 (Kannada prepareTextForSpeech)\n');
+
+// English speech check: preserves ASCII legal identifiers
+const rawEnglish = 'This formulation falls under Section 3(p) and Patents Act 1970 with Rule 158B.';
+const preparedEn = prepareTextForSpeech(rawEnglish, 'en');
+assert(preparedEn.includes('Section 3(p)'), 'Must preserve ASCII Section 3(p) in English');
+assert(preparedEn.includes('Patents Act 1970'), 'Must preserve ASCII Patents Act 1970 in English');
+console.log('✅ PASS: Test 1 (Kannada spoken phonetics & English canonical preservation)\n');
 
 // TEST 2: Female Voice Selection for Kannada
 console.log('Test 2: Kannada Female Voice Selection');

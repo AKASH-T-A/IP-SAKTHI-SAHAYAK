@@ -22,6 +22,7 @@ export type { LanguageCode };
 export interface LanguageState {
   language: LanguageCode;
   setLanguage: (lang: LanguageCode) => void;
+  completeHydration: () => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   tDual: (termKey: string) => string;
   isRtl: boolean;
@@ -54,10 +55,37 @@ export const useLanguageStore = create<LanguageState>()(
         set({
           language: lang,
           isRtl: isRtlLanguage(lang),
+          isHydrated: true,
         });
       },
+      completeHydration: () => {
+        if (typeof window === 'undefined') return;
+        try {
+          const raw = localStorage.getItem('ip-sakti-language');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            const storedLang = parsed?.state?.language;
+            if (storedLang && ALL_LANGUAGES.some((l) => l.code === storedLang)) {
+              syncDocumentDirection(storedLang);
+              syncCookie(storedLang);
+              set({
+                language: storedLang as LanguageCode,
+                isRtl: isRtlLanguage(storedLang as LanguageCode),
+                isHydrated: true,
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('[LanguageStore] Error reading stored language:', e);
+        }
+        set({ isHydrated: true });
+      },
       t: (key: string, params?: Record<string, string | number>): string => {
-        const lang = get().language;
+        const state = get();
+        // HYDRATION INVARIANT:
+        // Before hydration completes, ALWAYS return English to ensure 100% deterministic match with SSR.
+        const lang = state.isHydrated ? state.language : 'en';
         const dict = MASTER_DICTIONARY[lang] || MASTER_DICTIONARY.en;
         let val: string = (dict ? dict[key] : '') || '';
 
@@ -105,7 +133,8 @@ export const useLanguageStore = create<LanguageState>()(
         return val || key;
       },
       tDual: (termKey: string): string => {
-        const lang = get().language;
+        const state = get();
+        const lang = state.isHydrated ? state.language : 'en';
         return getDualTerm(termKey, lang);
       },
     }),
@@ -117,7 +146,11 @@ export const useLanguageStore = create<LanguageState>()(
         const currentLang = state?.language || 'en';
         syncDocumentDirection(currentLang);
         syncCookie(currentLang);
-        useLanguageStore.setState({ isHydrated: true });
+        useLanguageStore.setState({
+          isHydrated: true,
+          language: currentLang,
+          isRtl: isRtlLanguage(currentLang),
+        });
       },
     }
   )

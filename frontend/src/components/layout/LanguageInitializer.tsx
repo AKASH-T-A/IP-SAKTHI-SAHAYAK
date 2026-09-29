@@ -16,9 +16,9 @@ export default function LanguageInitializer() {
     // Rehydrate persisted language and auth state strictly on client mount (post-hydration)
     if (typeof window !== 'undefined') {
       try {
-        useLanguageStore.persist?.rehydrate?.();
+        useLanguageStore.getState().completeHydration();
       } catch (e) {
-        console.warn('[LanguageInitializer] Failed to rehydrate language store:', e);
+        console.warn('[LanguageInitializer] Failed to complete language hydration:', e);
       }
       try {
         useAuthStore.persist?.rehydrate?.();

@@ -126,6 +126,7 @@ class GroundedExplainer:
                 sources=retrieved_sources,
                 case_context=case_context,
                 language=lang_code,
+                detected_intent=detected_intent,
                 provider="IP_SAKTI_DETERMINISTIC_RAG"
             )
 
@@ -133,6 +134,24 @@ class GroundedExplainer:
         parsed = self._safe_parse_json(raw_response)
         if not parsed or "answer" not in parsed:
             logger.warning("Failed to parse Gemini structured JSON; falling back.")
+            return self._build_deterministic_fallback(
+                query=query,
+                sources=retrieved_sources,
+                case_context=case_context,
+                language=lang_code,
+                detected_intent=detected_intent,
+                provider="IP_SAKTI_DETERMINISTIC_RAG"
+            )
+
+        # ─── 4b. Language Compliance Verification ─────────────────────────────
+        # Requirement 34: Lightweight language validation step.
+        # If Gemini returned mostly English when an Indian language was requested,
+        # fall back to the deterministic multilingual RAG engine.
+        if not self._validate_response_language(parsed.get("answer", ""), lang_code):
+            logger.warning(
+                f"Gemini response for '{lang_code}' failed script validation (returned English/unsupported script). "
+                "Falling back to authoritative deterministic localized RAG."
+            )
             return self._build_deterministic_fallback(
                 query=query,
                 sources=retrieved_sources,
@@ -207,6 +226,61 @@ class GroundedExplainer:
                 except Exception:
                     pass
         return None
+
+    def _validate_response_language(self, text: str, lang_code: str) -> bool:
+        """
+        Lightweight validation ensuring the model respected the requested language
+        instead of replying in English.
+        """
+        if not text or not text.strip():
+            return False
+
+        if lang_code == "en":
+            return True
+
+        # Script code ranges for supported languages
+        script_ranges = {
+            "kn": [(0x0C80, 0x0CFF)],          # Kannada
+            "hi": [(0x0900, 0x097F)],          # Devanagari (Hindi)
+            "mr": [(0x0900, 0x097F)],          # Marathi
+            "sa": [(0x0900, 0x097F)],          # Sanskrit
+            "kok": [(0x0900, 0x097F)],         # Konkani
+            "mai": [(0x0900, 0x097F)],         # Maithili
+            "doi": [(0x0900, 0x097F)],         # Dogri
+            "brx": [(0x0900, 0x097F)],         # Bodo
+            "ne": [(0x0900, 0x097F)],          # Nepali
+            "ta": [(0x0B80, 0x0BFF)],          # Tamil
+            "te": [(0x0C00, 0x0C7F)],          # Telugu
+            "ml": [(0x0D00, 0x0D7F)],          # Malayalam
+            "bn": [(0x0980, 0x09FF)],          # Bengali
+            "as": [(0x0980, 0x09FF)],          # Assamese
+            "gu": [(0x0A80, 0x0AFF)],          # Gujarati
+            "pa": [(0x0A00, 0x0A7F)],          # Gurmukhi (Punjabi)
+            "or": [(0x0B00, 0x0B7F)],          # Odia
+            "ur": [(0x0600, 0x06FF), (0x0750, 0x077F), (0xFB50, 0xFDFF), (0xFE70, 0xFEFF)],  # Arabic/Urdu
+            "ks": [(0x0600, 0x06FF), (0x0750, 0x077F)],                                      # Kashmiri Perso-Arabic
+            "sd": [(0x0600, 0x06FF), (0x0750, 0x077F)],                                      # Sindhi Perso-Arabic
+            "sat": [(0x1C50, 0x1C7F), (0x0900, 0x097F)],                                     # Ol Chiki / Devanagari
+            "mni": [(0xABC0, 0xABFF), (0x0980, 0x09FF)],                                     # Meetei Mayek / Bengali
+        }
+
+        ranges = script_ranges.get(lang_code)
+        if not ranges:
+            # For languages without specific range definitions, allow
+            return True
+
+        # Count characters matching the target script
+        matching_chars = 0
+        for ch in text:
+            cp = ord(ch)
+            if any(low <= cp <= high for low, high in ranges):
+                matching_chars += 1
+
+        # If zero target script characters found, response failed target language instruction
+        if matching_chars == 0:
+            return False
+
+        return True
 
     def _validate_citations(
         self,

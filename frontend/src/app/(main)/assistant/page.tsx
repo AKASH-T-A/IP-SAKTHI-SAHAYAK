@@ -158,9 +158,15 @@ function AssistantContent() {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const currentMeta = getLanguageMeta(language);
-  const voiceStrings = getVoiceStrings(language);
-  const voiceLocaleMeta = getVoiceLocaleMeta(language);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const effectiveLang = mounted ? language : 'en';
+  const currentMeta = getLanguageMeta(effectiveLang);
+  const voiceStrings = getVoiceStrings(effectiveLang);
+  const voiceLocaleMeta = getVoiceLocaleMeta(effectiveLang);
   const bhashiniStatus = defaultBhashiniClient.getStatus();
 
   // Sync Gemini LLM and Unified Voice Provider status
@@ -211,20 +217,22 @@ function AssistantContent() {
     {
       id: 'welcome',
       sender: 'assistant',
-      text: getWelcomeMessage(language),
+      text: getWelcomeMessage('en'),
       timestamp: 'Just now',
     },
   ]);
 
   // Update welcome message when language changes if only welcome is present
   useEffect(() => {
-    setMessages((prev) => {
-      if (prev.length === 1 && prev[0].id === 'welcome') {
-        return [{ ...prev[0], text: getWelcomeMessage(language) }];
-      }
-      return prev;
-    });
-  }, [language]);
+    if (mounted) {
+      setMessages((prev) => {
+        if (prev.length === 1 && prev[0].id === 'welcome') {
+          return [{ ...prev[0], text: getWelcomeMessage(language) }];
+        }
+        return prev;
+      });
+    }
+  }, [mounted, language]);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -390,9 +398,9 @@ function AssistantContent() {
         {/* ─── Breadcrumbs & Context ────────────────────────────────────────── */}
         <div style={{ marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-            <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.home')}</Link>
+            <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{mounted ? (t('nav.home') || 'Home') : 'Home'}</Link>
             <span>/</span>
-            <Link href="/cases" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{t('nav.cases')}</Link>
+            <Link href="/cases" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>{mounted ? (t('nav.cases') || 'My Cases') : 'My Cases'}</Link>
             <span>/</span>
             <span style={{ color: 'var(--green-900)', fontWeight: 600 }}>BHASHINI</span>
           </div>
